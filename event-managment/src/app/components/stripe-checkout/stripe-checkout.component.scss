@@ -1,0 +1,65 @@
+.credit-card-form {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(252,176,69,1) 0%, rgba(253,29,29,1) 100%);
+    color: #fff;
+  }
+  
+  .credit-card-inputs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .ngx-stripe-card-element {
+    position: relative;
+  }
+  
+  .ngx-stripe-card-element::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://via.placeholder.com/800x500'); /* Placeholder image URL */
+    background-size: cover;
+    opacity: 0.3; /* Adjust opacity as needed */
+    z-index: -1;
+    border-radius: 10px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-success:disabled {
+    background-color: #b5d3b5;
+    cursor: not-allowed;
+  }
+  
+.visa-logo {
+    position: absolute;
+    right: 20px;
+    bottom: 7px;   
+  }

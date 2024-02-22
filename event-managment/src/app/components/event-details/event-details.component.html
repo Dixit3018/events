@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{ eventData.name }}</h2>
+
+<mat-dialog-content class="mat-typography">
+  <div class="text-center">
+    <img [src]="eventData.cover_img" width="500px" height="300px">
+  </div>
+  <h3>Description: </h3>
+  <p>{{ eventData.description }}</p>  
+  <h3>Start Date: <span>{{ eventData.start_date | date : "d MMMM y (EEEE)" }}</span></h3>
+  <h3>End Date: <span>{{ eventData.end_date | date : "d MMMM y (EEEE)" }}</span></h3>
+  <h3>Required Volunteers: <span>{{ eventData.volunteers }}</span></h3>
+  <h3>Pay Per Volunteer: <span>{{ '&#x20b9; '+eventData.pay_per_volunteer }}</span></h3>
+  
+  <h3>Address: <span>{{ eventData.city + ","+ eventData.state }}</span></h3>
+ 
+  <div class="btn btn-warning" mat-dialog-close (click)="onEdit(eventData._id)">Edit</div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

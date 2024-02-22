@@ -1,0 +1,6 @@
+@if (touched) {
+    <span *ngIf="control.touched && control.hasError(controlErr)" class="text-danger">{{ errorMsg }}</span>
+}
+@else {
+    <span *ngIf="control.touched && control.hasError(controlErr)" class="text-danger">{{ errorMsg }}</span>
+}

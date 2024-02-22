@@ -1,0 +1,66 @@
+<mat-dialog-content class="p-0">
+  <form
+    ngxStripeCardGroup
+    [elementsOptions]="elementsOptions"
+    [formGroup]="paymentForm"
+    class="credit-card-form"
+  >
+    <div class="form-group mb-3">
+      <label for="name">Card Holder Name</label>
+      <input
+        id="name"
+        class="form-control"
+        type="text"
+        formControlName="name"
+      />
+      <app-error
+        [control]="paymentForm.get('name')"
+        controlErr="required"
+        errorMsg="Name is Required"
+      />
+    </div>
+    <div class="form-group mb-3">
+      <label for="amount">Amount</label>
+      <input
+        id="amount"
+        class="form-control"
+        type="text"
+        value="{{ '&#8377; ' + amount }}"
+        readonly
+      />
+    </div>
+
+    <div class="credit-card-inputs">
+      <div class="form-group mb-3">
+        <label for="cardNumber" style="margin-right: 60px">Card Number</label>
+        <ngx-stripe-card-number
+          [options]="cardOptions"
+          (change)="onCardChange($event)"
+        ></ngx-stripe-card-number>
+    </div>
+
+      <div class="form-group mb-3">
+        <label for="expiryDate">Expiry Date</label>
+        <ngx-stripe-card-expiry
+          (change)="onCardChange($event)"
+          [options]="cardOptions"
+        ></ngx-stripe-card-expiry>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="cvc">CVV</label>
+        <ngx-stripe-card-cvc
+          (change)="onCardChange($event)"
+          [options]="cardOptions"
+        ></ngx-stripe-card-cvc>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-success" (click)="pay()" [disabled]="!validForm || paymentInProcess">
+        {{paymentInProcess ? 'Please Wait ...' :'PAY NOW'}}
+      </button>
+      <button class="btn btn-danger fw-bold" mat-dialog-close>Cancel</button>
+    </div>
+    <img class="visa-logo" src="/assets/images/card/visa-logo.png" alt="" />
+  </form>
+</mat-dialog-content>

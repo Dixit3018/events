@@ -1,0 +1,97 @@
+<header>
+  <div class="header-area header-style-two">
+    <div class="container">
+      <div class="row">
+        <div
+          class="col-xl-2 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-xl-flex align-items-center"
+        >
+          <div class="logo d-flex align-items-center justify-content-between">
+            <a routerLink="home"
+              ><img src="assets/images/logo.png" alt="logo"
+            /></a>
+            <div class="mobile-menu d-flex">
+              <a href="javascript:void(0)" class="hamburger d-block d-xl-none">
+                <span class="h-top"></span>
+                <span class="h-middle"></span>
+                <span class="h-bottom"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-7 col-lg-8 col-md-8 col-sm-6 col-xs-6">
+          <nav class="main-nav">
+            <div class="inner-logo d-xl-none">
+              <a href="#"><img src="assets/images/logo-v2.png" alt /></a>
+            </div>
+            @if(loggedIn){
+            <ul>
+              <li>
+                <a routerLinkActive="active" routerLink="/dashboard"
+                  >Dashboard</a
+                >
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/volunteer-list"
+                  >Volunteers</a
+                >
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/create-event"
+                  >Create Event</a
+                >
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/event-list"
+                  >Event List</a
+                >
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/profile"
+                  >Profile</a
+                >
+              </li>
+            </ul>
+            } @else {
+            <ul>
+              <li>
+                <a routerLinkActive="active" routerLink="/home">Home</a>
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/about">About</a>
+              </li>
+              <li>
+                <a routerLinkActive="active" routerLink="/contact">Contact</a>
+              </li>
+            </ul>
+            }
+          </nav>
+        </div>
+        <div class="col-xl-3 col-2 d-none d-xl-block">
+          <div
+            class="nav-right h-100 d-flex align-items-center justify-content-end"
+          >
+            <ul class="d-flex align-items-center nav-right-list">
+              @if (loggedIn) {
+              <li class="nav-btn">
+                <img
+                  class="rounded-circle"
+                  style="width: 45px"
+                  [src]="userImg"
+                  alt=""
+                />
+                <a class="ms-4 btn btn-danger" (click)="onLogout()">Logout</a>
+              </li>
+              } @else {
+              <li class="nav-btn">
+                <a class="primary-btn-fill" routerLink="login"
+                  >Login / Signup</a
+                >
+              </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,22 @@
+.checkpoints {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.icon-text-success {
+    display: flex;
+    align-items: center;
+    color: green; 
+}
+.icon-text-danger {
+    display: flex;
+    align-items: center;
+    gap:5px;
+    color: red; 
+}
+.image-preview {
+    width: 100px;
+    height: 100px;
+}

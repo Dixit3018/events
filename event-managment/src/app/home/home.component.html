@@ -1,0 +1,189 @@
+<!-- Hero Section -->
+<div class="hero-section mb-4" [@fadeInOut]>
+  <div class="row overlay px-2 m-0 align-items-center">
+    <div class="col-md-6">
+      <div class="text-container">
+        <h1>
+          A new place to connect <br />
+          organizers and volunteers.
+        </h1>
+        <p>
+          One of the best place to find volunteers to work with and
+          <br />
+          get a great experience here...
+        </p>
+        <div class="mt-5 mx-3">
+          <button routerLink="/login" class="btn btn-danger w-50 py-2 fs-5 rounded">
+            Get started
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="showImage"
+      class="col-md-5 d-flex align-items-center justify-content-center"
+    >
+      <img
+        src="/assets/images/characters/character3.png"
+        class="character mt-4"
+        alt=""
+        [@bounce]
+      />
+    </div>
+  </div>
+</div>
+
+<!-- Popular Events Tabs -->
+<div class="container mt-3">
+  <div class="row">
+    <div class="section-head-style-two">
+      <h5>Event</h5>
+      <h3>Popular <span>Event</span></h3>
+    </div>
+  </div>
+
+  <mat-tab-group color="accent" animationDuration="1000ms">
+    @for (evType of eventsType; track $index) {
+    <mat-tab [label]="evType">
+      <div class="row m-0 p-0">
+        <div class="col-lg-4 col-md-5">
+          <div class="event-card-style-two">
+            <div class="event-thumb">
+              <img src="assets/images/event/ev-md13.png" alt />
+              <div class="event-date">
+                <a href="#">
+                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                </a>
+              </div>
+            </div>
+            <div class="event-content">
+              <div class="event-seat-lavbel">
+                <h6><i class="bi bi-diagram-3"></i> 100 seat</h6>
+              </div>
+              <div class="event-card-main">
+                <div class="event-location">
+                  <a href="#">
+                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  >
+                </div>
+                <h5 class="event-title">
+                  <a href="#"
+                    >Media companies need to better one then educate
+                    advertisers.</a
+                  >
+                </h5>
+                <div class="event-readme">
+                  <a href="event-details.html">Book Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-5">
+          <div class="event-card-style-two">
+            <div class="event-thumb">
+              <img src="assets/images/event/ev-md13.png" alt />
+              <div class="event-date">
+                <a href="#">
+                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                </a>
+              </div>
+            </div>
+            <div class="event-content">
+              <div class="event-seat-lavbel">
+                <h6><i class="bi bi-diagram-3"></i> 100 seat</h6>
+              </div>
+              <div class="event-card-main">
+                <div class="event-location">
+                  <a href="#">
+                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  >
+                </div>
+                <h5 class="event-title">
+                  <a href="#"
+                    >Media companies need to better one then educate
+                    advertisers.</a
+                  >
+                </h5>
+                <div class="event-readme">
+                  <a href="event-details.html">Book Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-5">
+          <div class="event-card-style-two">
+            <div class="event-thumb">
+              <img src="assets/images/event/ev-md13.png" alt />
+              <div class="event-date">
+                <a href="#">
+                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                </a>
+              </div>
+            </div>
+            <div class="event-content">
+              <div class="event-seat-lavbel">
+                <h6><i class="bi bi-diagram-3"></i> 100 seat</h6>
+              </div>
+              <div class="event-card-main">
+                <div class="event-location">
+                  <a href="#">
+                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  >
+                </div>
+                <h5 class="event-title">
+                  <a href="#"
+                    >Media companies need to better one then educate
+                    advertisers.</a
+                  >
+                </h5>
+                <div class="event-readme">
+                  <a href="event-details.html">Book Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    }
+  </mat-tab-group>
+</div>
+
+<!-- Achievements -->
+<div class="achievement-style-two mt-120">
+  <div class="container">
+    <div class="row">
+      <div
+        class="col-lg-3 col-md-6 col-sm-6"
+        *ngFor="let achievement of achievements"
+      >
+        <app-achievement-box-two
+          [title]="achievement.title"
+          [limit]="achievement.limit"
+          [speed]="achievement.speed"
+        ></app-achievement-box-two>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Testimonial Slider -->
+<div class="testimonial-style-two mt-120 position-relative">
+  <div class="row">
+    <div class="section-head-style-two">
+      <h5>Testimonials</h5>
+      <h3>What People <span>Say</span></h3>
+    </div>
+    <div class="col-lg-12">
+      <app-testimonial-slider></app-testimonial-slider>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <app-footer></app-footer>
+</footer>

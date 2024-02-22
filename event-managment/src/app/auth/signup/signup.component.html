@@ -1,0 +1,319 @@
+<div class="row m-0 p-0 justify-content-center py-3">
+  <div class="col-md-5">
+    <div class="row justify-content-center align-items-center p-0 m-0 h-100">
+      <div class="col-12">
+        <h4 class="form-title">Register</h4>
+        <mat-stepper #stepper color="accent" [formGroup]="signupForm">
+          <mat-step [stepControl]="signupForm.get('credentials')">
+            <ng-template matStepLabel>Create Credentials</ng-template>
+            <div formGroupName="credentials">
+              <div class="primary-input-group mt-1">
+                <label for="uname">Username</label>
+                <input
+                  type="text"
+                  id="uname"
+                  formControlName="uname"
+                  placeholder="Username"
+                  required
+                />
+                <app-error
+                  [control]="signupForm.get('credentials.uname')"
+                  controlErr="required"
+                  errorMsg="Username Required"
+                />
+              </div>
+              <div class="primary-input-group">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  formControlName="password"
+                  placeholder="Password"
+                />
+                <div class="checkpoints my-2">
+                  <span
+                    *ngFor="
+                      let validation of passwordValidations;
+                      let i = index
+                    "
+                    [ngClass]="{
+                      'text-success fw-normal': !signupForm
+                        .get('credentials.password')
+                        .hasError(validation.title),
+                      'text-danger fw-normal':
+                        signupForm
+                          .get('credentials.password')
+                          .hasError(validation.title) ||
+                        signupForm.get('credentials.password').value === null ||
+                        signupForm.get('credentials.password').value === ''
+                    }"
+                  >
+                    <img
+                      [src]="getValidationImagePath(validation.title)"
+                      width="20px"
+                      alt=""
+                    />
+                    {{ validation.message }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <button mat-raised-button matStepperNext color="accent">
+                Next
+              </button>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="signupForm.get('personalInfo')">
+            <ng-template matStepLabel>Personal Details</ng-template>
+            <div formGroupName="personalInfo">
+              <div class="primary-input-group mt-0">
+                <label for="firstname">Firstname</label>
+                <input
+                  type="text"
+                  id="firstname"
+                  formControlName="fname"
+                  placeholder="Firstname"
+                  required
+                />
+                <app-error
+                  [control]="signupForm.get('personalInfo.fname')"
+                  controlErr="required"
+                  errorMsg="Firstname Required"
+                />
+              </div>
+              <div class="primary-input-group">
+                <label for="lastname">Lastname</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  formControlName="lname"
+                  placeholder="Lastname"
+                  required
+                />
+                <app-error
+                  [control]="signupForm.get('personalInfo.lname')"
+                  controlErr="required"
+                  errorMsg="Lastname Required"
+                />
+              </div>
+              <div class="primary-input-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  formControlName="email"
+                  id="email"
+                  placeholder="Email"
+                  required
+                />
+                <app-error
+                  [control]="signupForm.get('personalInfo.email')"
+                  controlErr="required"
+                  errorMsg="Email Required"
+                />
+                <app-error
+                  *ngIf="
+                    !signupForm.get('personalInfo.email').hasError('required')
+                  "
+                  [control]="signupForm.get('personalInfo.email')"
+                  controlErr="email"
+                  errorMsg="Not a Valid Email!"
+                />
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-4">
+              <button mat-raised-button matStepperPrevious>Back</button>
+              <button mat-raised-button matStepperNext color="accent">
+                Next
+              </button>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="signupForm.get('generalInfo')">
+            <div formGroupName="generalInfo">
+              <ng-template matStepLabel>Profile Information</ng-template>
+              <div
+                class="d-flex justify-content-around mt-2 align-items-center"
+              >
+                <div>
+                  <div class="input-group">
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="image"
+                      (change)="onFileChange($event)"
+                      accept="image/*"
+                    />
+                  </div>
+                  <app-error
+                    [control]="signupForm.get('generalInfo.image')"
+                    controlErr="required"
+                    errorMsg="Please Select Image"
+                  />
+                </div>
+
+                <div *ngIf="imagePreview">
+                  <img
+                    [src]="imagePreview"
+                    alt="Image Preview"
+                    class="image-preview rounded-circle"
+                  />
+                </div>
+
+                <div *ngIf="!imagePreview">
+                  <img
+                    src="/assets/images/profile/default-profile.png"
+                    alt="Image Preview"
+                    class="image-preview rounded-circle"
+                  />
+                </div>
+              </div>
+
+              <div class="row justify-content-around">
+                <div class="col-md-6">
+                  <div class="primary-input-group">
+                    <label for="age">Age</label>
+                    <input
+                      type="number"
+                      id="age"
+                      formControlName="age"
+                      placeholder="Age"
+                      required
+                    />
+                    <app-error
+                      [control]="signupForm.get('generalInfo.age')"
+                      controlErr="required"
+                      errorMsg="Age Required"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="primary-input-group">
+                    <label for="address">Address</label>
+                    <input
+                      type="text"
+                      id="address"
+                      formControlName="address"
+                      placeholder="Address 103. Col , EP Soc Road"
+                      required
+                    />
+                    <span
+                      *ngIf="
+                        signupForm
+                          .get('generalInfo.address')
+                          .hasError('required') &&
+                        signupForm.get('generalInfo.address').touched
+                      "
+                      class="text-danger"
+                    >
+                      Address Required
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mt-2">
+                  <label for="city" class="form-label">City</label>
+                  <select
+                    (change)="setState($event)"
+                    class="form-select form-select-sm"
+                    formControlName="city"
+                    id="city"
+                  >
+                    <option selected value="Select City">Select City</option>
+                    @for (data of citiesAndStates; track $index) {
+                    <option [value]="data[0]">{{ data[0] }}</option>
+                    }
+                  </select>
+                  <app-error
+                    [control]="signupForm.get('generalInfo.city')"
+                    controlErr="required"
+                    errorMsg="City Required"
+                  />
+                  <app-error
+                    *ngIf="
+                      !signupForm.get('generalInfo.city').hasError('required')
+                    "
+                    [control]="signupForm.get('generalInfo.city')"
+                    controlErr="notSelected"
+                    errorMsg="Please Select City"
+                  />
+                </div>
+                <div class="col-md-6 mt-2">
+                  <label for="state" class="form-label">State</label>
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control"
+                    formControlName="state"
+                    [value]="state"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-12 mt-2">
+                <div class="form-check">
+                  <input
+                    class="form-check-input p-0"
+                    type="radio"
+                    formControlName="role"
+                    value="volunteer"
+                    id="volunteer"
+                  />
+                  <label class="form-check-label" for="volunteer">
+                    Volunteer
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input p-0"
+                    type="radio"
+                    formControlName="role"
+                    value="organizer"
+                    id="organizer"
+                    checked
+                  />
+                  <label class="form-check-label" for="organizer">
+                    Organizer
+                  </label>
+                </div>
+
+                <app-error
+                  [control]="signupForm.get('generalInfo.role')"
+                  controlErr="required"
+                  errorMsg="Please Select Role"
+                />
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-2">
+              <button
+                mat-raised-button
+                (click)="onSubmit()"
+                color="accent"
+                [disabled]="!this.signupForm.valid"
+              >
+                Submit
+              </button>
+              <button
+                mat-raised-button
+                (click)="stepper.reset()"
+                color="primary"
+              >
+                Reset
+              </button>
+            </div>
+          </mat-step>
+          <!-- </form> -->
+        </mat-stepper>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <img
+      src="/assets/images/backgrounds/signup-bg.jpg"
+      width="auto"
+      height="500px"
+    />
+  </div>
+</div>

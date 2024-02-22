@@ -1,0 +1,43 @@
+**/node_modules/
+#angular ignores
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+event-managment/dist
+event-managment/tmp
+event-managment/out-tsc
+event-managment/bazel-out
+
+# Node
+event-managment/npm-debug.log
+event-managment/yarn-error.log
+
+# IDEs and editors
+event-managment/.idea/
+event-managment/.project
+event-managment/.classpath
+event-managment/.c9/
+*.launch
+event-managment/.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+event-managment/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+event-managment/.history/*
+
+# Miscellaneous
+event-managment/.angular/cache
+event-managment/.sass-cache/
+event-managment/connect.lock
+event-managment/coverage
+event-managment/libpeerconnection.log
+event-managment/testem.log
+event-managment/typings
+
+# System files
+event-managment/.DS_Store
+event-managment/Thumbs.db

@@ -1,0 +1,246 @@
+<div class="container-fluid">
+  <div class="hero-event-form">
+    <div class="container p-4">
+      <h2>Create Event</h2>
+
+      <form class="row g-3" [formGroup]="eventForm">
+        <div class="col-md-6">
+          <label for="name" class="form-label">Event Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            placeholder="Event Name"
+            formControlName="eventName"
+          />
+          <app-error
+            [control]="eventForm.get('eventName')"
+            controlErr="required"
+            errorMsg="Event Name is required"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="venue" class="form-label">Venue</label>
+          <input
+            type="text"
+            class="form-control"
+            id="venue"
+            placeholder="Venue"
+            formControlName="eventVenue"
+          />
+          <app-error
+            [control]="eventForm.get('eventVenue')"
+            controlErr="required"
+            errorMsg="Event Venue is required"
+          />
+        </div>
+        <div class="col-12">
+          <label for="description" class="form-label">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            id="description"
+            placeholder="Event Description"
+            formControlName="eventDescription"
+          />
+          <app-error
+            [control]="eventForm.get('eventDescription')"
+            controlErr="required"
+            errorMsg="Event Description is required"
+          />
+        </div>
+        <div class="col-3">
+          <label for="needed-volunteers" class="form-label"
+            >Needed Volunteers</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="needed-volunteers"
+            placeholder="Ex 4"
+            formControlName="eventNeededVolunteers"
+          />
+          <app-error
+            [control]="eventForm.get('eventNeededVolunteers')"
+            controlErr="required"
+            errorMsg="Volunteers is required"
+          />
+          <app-error
+            *ngIf="!eventForm.get('eventNeededVolunteers').hasError('required')"
+            [control]="eventForm.get('eventNeededVolunteers')"
+            controlErr="atLeastOne"
+            errorMsg="Not a valid number"
+          />
+        </div>
+        <div class="col-3">
+          <label for="payper-day" class="form-label"
+            >Pay Per Day <span class="fw-normal">(Per volunteer)</span>
+          </label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">{{
+              "&#8377;"
+            }}</span>
+            <input
+              type="number"
+              class="form-control"
+              placeholder="INR"
+              id="payper-day"
+              formControlName="eventPayPerDay"
+            />
+          </div>
+          <app-error
+            [control]="eventForm.get('eventPayPerDay')"
+            controlErr="required"
+            errorMsg="Amount is required"
+          />
+          <app-error
+            *ngIf="!eventForm.get('eventPayPerDay').hasError('required')"
+            [control]="eventForm.get('eventPayPerDay')"
+            controlErr="atLeastOne"
+            errorMsg="Not a valid number"
+          />
+          <app-error
+            *ngIf="
+              !eventForm.get('eventPayPerDay').hasError('required') &&
+              !eventForm.get('eventPayPerDay').hasError('atLeastOne')
+            "
+            [control]="eventForm.get('eventPayPerDay')"
+            controlErr="minAmount"
+            errorMsg="Atleast &#8377;100 required"
+          />
+        </div>
+        <div class="col-3">
+          <label for="start-date" class="form-label">Event Start Date</label>
+          <input
+            type="date"
+            class="form-control"
+            id="start-date"
+            formControlName="eventStartDate"
+            [min]="minStartDate"
+            (input)="updateDays()"
+          />
+          <app-error
+            [control]="eventForm.get('eventStartDate')"
+            controlErr="required"
+            errorMsg="Starting date is required"
+          />
+        </div>
+        <div class="col-3">
+          <label for="end-date" class="form-label">Event End Date</label>
+          <input
+            type="date"
+            class="form-control"
+            id="end-date"
+            formControlName="eventEndDate"
+            [min]="minEndDate"
+            (input)="updateDays()"
+          />
+          <app-error
+            [control]="eventForm.get('eventEndDate')"
+            controlErr="required"
+            errorMsg="Ending date is required"
+          />
+          <app-error
+            [control]="eventForm"
+            controlErr="dateRange"
+            errorMsg="Not a valid date range"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="days" class="form-label">Number of Days</label>
+          <input
+            readonly
+            type="number"
+            class="form-control"
+            id="days"
+            formControlName="eventDays"
+          />
+          <app-error
+            [control]="eventForm.get('eventDays')"
+            controlErr="required"
+            errorMsg="Days is required"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="city" class="form-label">City</label>
+          <select
+            id="city"
+            class="form-select"
+            formControlName="eventCity"
+            (change)="setState($event)"
+          >
+            <option selected value>Choose...</option>
+            @for (data of list; track $index) {
+            <option [value]="data[0]">{{ data[0] }}</option>
+            }
+          </select>
+          <app-error
+            [control]="eventForm.get('eventCity')"
+            controlErr="required"
+            errorMsg="City is required"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="state" class="form-label">State</label>
+          <input
+            readonly
+            type="text"
+            class="form-control"
+            id="state"
+            placeholder="State"
+            formControlName="eventState"
+            [value]="state"
+          />
+        </div>
+
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="mb-3">
+            <label for="eventPhoto" class="form-label"
+              >Upload Event Image</label
+            >
+            <input
+              class="form-control mb-2"
+              (change)="onFileChange($event)"
+              formControlName="eventImage"
+              type="file"
+              id="eventPhotos"
+            />
+            <app-error
+              [control]="eventForm.get('eventImage')"
+              controlErr="required"
+              errorMsg="Event Image is required"
+            />
+            <span
+              class="text-danger"
+              *ngIf="
+                imageFormatErr !== '' &&
+                eventForm.get('eventImage').touched &&
+                !eventForm.get('eventImage').hasError('required')
+              "
+              >{{ imageFormatErr }}</span
+            >
+          </div>
+        </div>
+        <div class="col-md-6">
+          <img
+            class="event-image-preview"
+            [src]="imagePreview"
+            width="300px"
+            height="200px"
+          />
+        </div>
+        <div class="col-3">
+          <button
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="!(eventForm.valid && !imageFormatErr)"
+            class="btn btn-primary w-100 p-2 rounded-3"
+            (click)="openDialog('500ms', '500ms')"
+          >
+            Proceed To Pay
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
