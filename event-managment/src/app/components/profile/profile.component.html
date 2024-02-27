@@ -26,91 +26,105 @@
     <div class="card">
       <div class="card-body">
         <i class="fa fa-pen fa-xs edit"></i>
-        <form>
-          <table class="w-100">
-            <tbody>
-              <tr>
-                <td>Fullname</td>
-                <td>:</td>
-                <td>
+        <form [formGroup]="profileForm">
+          <div class="row fs-6 gap-2 justify-content-around">
+          
+              <div class="col-md-5">
+                Firstname
+                <div>
                   <input
                     type="text"
+                    formControlName="firstname"
                     [readonly]="!isEditMode"
-                    value="{{ userData.firstname + ' ' + userData.lastname }}"
                   />
-                </td>
+                </div>
+              </div>
 
-                <td>Username</td>
-                <td>:</td>
-                <td>
+              <div class="col-md-5">
+                Lastname
+                <div>
                   <input
-                    type="text"
-                    [readonly]="!isEditMode"
-                    value="{{ userData.username }}"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>Email</td>
-                <td>:</td>
-                <td>
+                  type="text"
+                  formControlName="lastname"
+                  [readonly]="!isEditMode"
+                />
+                </div>
+              </div>
+       
+              <div class="col-md-5">
+                Username
+                <div>
                   <input
-                    type="email"
-                    [readonly]="!isEditMode"
-                    value="{{ userData.email }}"
-                  />
-                </td>
+                  type="text"
+                  formControlName="username"
+                  [readonly]="!isEditMode"
+                />
+                </div>
+              </div>
 
-                <td>Address</td>
-                <td>:</td>
-                <td>
+              <div class="col-md-5">
+                Email
+                <div>
+                  <input
+                  type="email"
+                  formControlName="email"
+                  [readonly]="!isEditMode"
+                />
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                Address
+                <div>
                   <textarea
-                    [readonly]="!isEditMode"
-                    id=""
-                    class="form-control"
-                    >{{ userData.address }}</textarea
+                  [readonly]="!isEditMode"
+                  id="address"
+                  formControlName="address"
+                  class="form-control"
+                  style="background-color: white"
+                ></textarea>
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                Age
+                <div>
+                  <input
+                  type="number"
+                  formControlName="age"
+                  [readonly]="!isEditMode"
+                />
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                <div>
+                <label for="city" class="form-label">City</label>
+                  <select
+                  style="background-color: white;"
+                    (change)="setState($event)"
+                    class="form-select form-select-sm"
+                    formControlName="city"
+                    id="city"
                   >
-                </td>
-              </tr>
+                    <option selected value="Select City">Select City</option>
+                    @for (data of citiesAndStates; track $index) {
+                    <option [value]="data[0]">{{ data[0] }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
 
-              <tr>
-                <td>Role</td>
-                <td>:</td>
-                <td>{{ userData.role | titlecase }}</td>
-
-                <td>Age</td>
-                <td>:</td>
-                <td>
+              <div class="col-md-5 mt-2">
+                State
+                <div>
                   <input
-                    type="number"
-                    [readonly]="!isEditMode"
-                    value="{{ userData.age }}"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>State</td>
-                <td>:</td>
-                <td>
-                  <input
-                    type="text"
-                    [readonly]="!isEditMode"
-                    value="{{ userData.state }}"
-                  />
-                </td>
-
-                <td>City</td>
-                <td>:</td>
-                <td>
-                  <input
-                    type="text"
-                    [readonly]="!isEditMode"
-                    value="{{ userData.city }}"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  type="text"
+                  formControlName="state"
+                  readonly
+                />
+                </div>
+          </div>
           <div class="d-flex align-items-center gap-2">
             <mat-icon
               [ngStyle]="!isEditMode ? { color: 'red' } : { color: 'green' }"
@@ -121,8 +135,8 @@
               >Click on the <b>Lock Icon</b> to toggle Edit.</span
             >
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
     <!-- End -->
   </div>

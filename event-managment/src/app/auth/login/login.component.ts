@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -26,9 +27,21 @@ export class LoginComponent implements OnInit {
     this._auth
       .login(loginData.email, loginData.password, loginData.role)
       .subscribe((data: {message: string, user:any}) => {
-        localStorage.setItem('user',JSON.stringify(data.user));
-        this._auth.user.next(data.user);
-        this.router.navigate(['/dashboard']);
+        
+        
+        if(data.user){
+          localStorage.setItem('user',JSON.stringify(data.user));
+          this._auth.user.next(data.user);
+          this.router.navigate(['/dashboard']);
+        }
+      }, error => {
+        Swal.fire({
+          title: "Error",
+          text: "Invalid Credentials",
+          icon:'error',
+          confirmButtonColor: 'green',
+          confirmButtonText: 'Proceed!'
+        })
       });
   }
 }

@@ -17,6 +17,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { EventListComponent } from './components/event-list/event-list.component';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 import { FormCanDeactivateGuard } from './guards/form-candeactivate.guard';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -25,8 +27,10 @@ const routes: Routes = [
   { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },
   { path: 'login', component: LoginComponent, canActivate: [homeGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [homeGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [homeGuard] },
   { path: 'terms-conditions', component: TermsConditionsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'reset-password/:id/:token', component: ResetPasswordComponent },
   {
     path: 'dashboard',
     component: DashboardComponent,

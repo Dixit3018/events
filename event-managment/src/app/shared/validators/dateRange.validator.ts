@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const dateRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const startDate = control.get('eventStartDate');
@@ -9,10 +9,16 @@ export const dateRangeValidator: ValidatorFn = (control: AbstractControl): Valid
   }
 
   const start = new Date(startDate.value);
+  const today = new Date();
   const end = new Date(endDate.value);
 
   if (start > end) {
-    return { dateRange: 'End date must be greater than start date' };
+    return { dateRange: 'End date must be greater or equal than start date' };
+  }
+
+  // Validate if the selected start date is today or later
+  if (start.toISOString().split('T')[0] <= today.toISOString().split('T')[0]) {
+    return { dateRange: 'Start date must be later than today' };
   }
 
   return null;

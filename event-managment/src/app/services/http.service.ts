@@ -22,10 +22,34 @@ export class HttpService {
     return this._http.get(`http://localhost:4000/api/get-events`);
   }
 
-  updateProfileImg(formData:any) {
+  singleEvent(id: string) {
+    return this._http.post(`http://localhost:4000/api/get-event`, { id: id });
+  }
+
+  updateUser(userData: any) {
+    return this._http.post(`http://localhost:4000/api/update-user`, userData);
+  }
+
+  updateProfileImg(formData: any) {
     return this._http.post(
       `http://localhost:4000/api/update-profile-img`,
       formData
+    );
+  }
+
+  forgotPassword(email: string) {
+    return this._http.post(`http://localhost:4000/api/forgot-password`, {
+      email: email,
+    });
+  }
+
+  resetPassword(password: string) {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    return this._http.post(
+      `http://localhost:4000/api/reset-password/${userId}/${token}`,
+      { password: password }
     );
   }
 }

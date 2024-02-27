@@ -176,6 +176,9 @@ export class StripeCheckoutComponent {
               showCancelButton: false,
               confirmButtonColor: 'green',
               confirmButtonText: 'Proceed!',
+              willClose: (dismiss: any) => {
+                this.router.navigate(['/dashboard']);
+              },
               showClass: {
                 popup: `
                   animate__animated
@@ -190,10 +193,6 @@ export class StripeCheckoutComponent {
                   animate__faster
                 `,
               },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                this.router.navigate(['/dashboard']);
-              }
             });
           }
         });

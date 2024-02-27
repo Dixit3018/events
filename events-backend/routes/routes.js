@@ -4,19 +4,34 @@ const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 const { ObjectId } = require("mongodb");
 
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const jwt_secret = process.env.JWT_SECRET;
 
 const router = express.Router();
 const User = require("../models/user");
 const Cities = require("../models/cities");
 const Event = require("../models/event");
 
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
+
+
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log({ file });
     cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
@@ -258,6 +273,31 @@ router.get("/get-events", async (req, res) => {
   }
 });
 
+//get single event
+router.post("/get-event", async (req, res) => {
+  const id = req.body.id;
+  console.log(id);
+  const event = await Event.findById(id);
+
+  const imagePath = path.join(__dirname, "..", event.cover_img);
+  const imageData = await fs.promises.readFile(imagePath, {
+    encoding: "base64",
+  });
+
+  const modifiedEvent = {
+    ...event._doc,
+    cover_img: `data:image/jpeg;base64,${imageData}`,
+  };
+
+  if (event) {
+    return res.status(200).json({ event: modifiedEvent });
+  } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
+
+//edit event
+router.post("/edit-event", async (req, res) => {});
 // payment intent
 router.post("/create-payment-intent", async (req, res) => {
   const amountInPaise = Math.round(parseInt(req.body.amount) * 100);
@@ -288,51 +328,168 @@ router.post("/create-payment-intent", async (req, res) => {
   );
 });
 
-router.post("/update-profile-img",upload.single('profile_picture'), async (req, res) => {
+//update profile image
+router.post(
+  "/update-profile-img",
+  upload.single("profile_picture"),
+  async (req, res) => {
+    try {
+      const organizerId = req.body._id;
+      const newProfilePicture = req.file.path;
+
+      const user = await User.findById(organizerId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const oldProfilePicture = user.profilePicture;
+
+      if (oldProfilePicture) {
+        fs.unlink(oldProfilePicture, (err) => {
+          if (err) {
+            console.error("error deleting profile picture:" + err);
+          } else {
+            console.log("Old Profile picture deleted");
+          }
+        });
+      }
+
+      user.profilePicture = newProfilePicture;
+
+      const updatedUser = await user.save();
+      const imagePath = path.join(__dirname, "../", user.profilePicture);
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const sanitizedUser = { ...updatedUser._doc };
+      delete sanitizedUser.password;
+
+      return res.status(200).json({
+        message: "Profile picture updated successfully",
+        user: sanitizedUser,
+        profileImg: imageBase64,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+//update user information
+router.post("/update-user", async (req, res) => {
   try {
-    const organizerId = req.body._id;
-    const newProfilePicture = req.file.path;
+    const userId = req.query._id;
+    const userData = req.body;
 
-    // console.log(newProfilePicture.path);
-    // return;
-    const user = await User.findById(organizerId);
-    if(!user){
-      return res.status(404).json({error: "User not found"});
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const oldProfilePicture = user.profilePicture;
-
-    if(oldProfilePicture){
-      fs.unlink(oldProfilePicture,(err) => {
-        if(err) {
-          console.error("error deleting profile picture: "+ err)
-        }
-        else
-        {
-          console.log("Old Profile picture deleted");
-        }
-      })
-    }
-
-    user.profilePicture = newProfilePicture;
+    user.firstname = userData.firstname;
+    user.lastname = userData.lastname;
+    user.username = userData.username;
+    user.age = userData.age;
+    user.email = userData.email;
+    user.address = userData.address;
+    user.state = userData.state;
+    user.city = userData.city;
 
     const updatedUser = await user.save();
-    const imagePath = path.join(__dirname, "../", user.profilePicture);
-    const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res
+    const sanitizedUser = { ...updatedUser._doc };
+    delete sanitizedUser.password;
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: sanitizedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ error: "user not exists" });
+    }
+
+    const secret = jwt_secret + user.password;
+    const token = jwt.sign({}, secret, { expiresIn: "15m" });
+    const link = `http://localhost:4200/reset-password/${user._id}/${token}`;
+
+    const sendmailOptions = {
+      from: {
+        name: "Dixit Suthar",
+        address: process.env.GMAIL_USER,
+      }, // sender address
+      to: ["suthardixit.ite@gmail.com"],
+      subject: "Reset Password testing!",
+      text: "Password Reset Link!",
+      html: `<a href='http://localhost:4200/reset-password/${user._id}/${token}'>Click Here to Reset Password<a>`,
+    };
+
+    const info = await transporter.sendMail(sendmailOptions)
+
+    return res.status(200).json({
+      link: link,
+      info: info.messageId,
+      userId: user._id,
+      token: token,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/reset-password/:id/:token", async (req, res) => {
+  try {
+    const { id, token } = req.params;
+    const { password } = req.body;
+
+    if(id === '' || token === ''){
+      return res.status(401).json({message: "Unauthorized"});
+    }
+
+    const user = await User.findOne({
+      _id: new ObjectId(id.replace(/"/g, "")),
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const secret = jwt_secret + user.password;
+    const decoded = jwt.verify(token.replace(/"/g, ""), secret);
+
+    user.password = password;
+    await user.save();
+
+    res
       .status(200)
       .json({
-        message: "Profile picture updated successfully",
-        user: updatedUser,
-        profileImg: imageBase64
+        message: "Password reset successfully",
+        user: decoded,
+        success: true,
       });
   } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 module.exports = router;

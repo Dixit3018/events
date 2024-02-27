@@ -39,24 +39,24 @@ export class EventListComponent implements OnInit {
 
   getStatus(start_date: Date, end_date: Date): string {
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
+  currentDate.setHours(0, 0, 0, 0);
 
-    const startDateMidnight = new Date(start_date);
-    startDateMidnight.setHours(0, 0, 0, 0);
+  const startDateMidnight = new Date(start_date);
+  startDateMidnight.setHours(0, 0, 0, 0);
 
-    const endDateMidnight = new Date(end_date);
-    endDateMidnight.setHours(0, 0, 0, 0);
+  const endDateMidnight = new Date(end_date);
+  endDateMidnight.setHours(0, 0, 0, 0);
 
-    if (startDateMidnight > currentDate) {
-      return 'Upcoming';
-    } else if (
-      endDateMidnight >= currentDate &&
-      startDateMidnight <= currentDate
-    ) {
-      return 'Ongoing';
-    } else {
-      return 'Completed';
-    }
+  if (startDateMidnight.getTime() > currentDate.getTime()) {
+    return 'Upcoming';
+  } else if (
+    endDateMidnight.getTime() >= currentDate.getTime() &&
+    startDateMidnight.getTime() <= currentDate.getTime()
+  ) {
+    return 'Ongoing';
+  } else {
+    return 'Completed';
+  }
   }
 
   changeSortOrder(event:any): void {

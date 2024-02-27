@@ -143,7 +143,7 @@
           <app-error
             [control]="eventForm"
             controlErr="dateRange"
-            errorMsg="Not a valid date range"
+            [errorMsg]="eventForm.getError('dateRange')"
           />
         </div>
         <div class="col-md-4">

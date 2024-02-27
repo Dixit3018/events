@@ -12,7 +12,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
 
-    const apis = ["/api/profile-picture","/api/create-event","/api/get-events"]
+    const apis = ["/api/profile-picture","/api/create-event","/api/get-events","/api/update-user"]
 
     if (apis.some(api => req.url.includes(api))) {
       const user = JSON.parse(localStorage.getItem('user'));

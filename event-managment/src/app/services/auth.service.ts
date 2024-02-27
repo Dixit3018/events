@@ -19,14 +19,16 @@ export interface User {
 export class AuthService {
   user = new BehaviorSubject<User>(null);
   userProfileImg = new BehaviorSubject<String>(null);
-  
+
   constructor(private _http: HttpClient) {}
-  
-  register(registerData:FormData) {
+
+  register(registerData: FormData) {
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
 
-    return this._http.post('http://localhost:4000/api/register', registerData, { headers });
+    return this._http.post('http://localhost:4000/api/register', registerData, {
+      headers,
+    });
   }
 
   login(email: string, password: string, role: 'volunteer' | 'organizer') {

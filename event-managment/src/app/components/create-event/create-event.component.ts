@@ -36,9 +36,10 @@ export class CreateEventComponent implements CanComponentDeactivate{
     private paymentService: PaymentService
   ) {
     const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
     this.minStartDate = currentDate.toISOString().split('T')[0];
     this.minEndDate = this.minStartDate;
-
+    
     const storedCities = sessionStorage.getItem('cities');
     if (storedCities) {
       this.list = JSON.parse(storedCities);
@@ -89,7 +90,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
 
       // Calculate the difference in days
       const diffInTime = end.getTime() - start.getTime();
-      this.days = Math.ceil(diffInTime / (1000 * 3600 * 24)) + 1;
+      this.days = Math.ceil(diffInTime / (1000 * 3600 * 24))+1;
 
       // Update the value in the form control
       this.eventForm.get('eventDays').setValue(this.days);
@@ -114,7 +115,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
     }
   }
   canDeactivate(): boolean {
-    if (this.eventForm.dirty) {
+    if (this.eventForm.dirty && (!this.eventForm.valid)) {
       return window.confirm('Do you really want to leave without creating event?');
     }
     return true;
@@ -148,7 +149,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
     formData.append('eventImage', this.selectedFile as File);
     this.eventFormData = formData;
 
-    const days = +this.days;
+    const days = +this.days ;
     const volunteers = +this.eventForm.get('eventNeededVolunteers').value;
     const pay = this.eventForm.get('eventPayPerDay').value;
     const amt = days * volunteers * pay;

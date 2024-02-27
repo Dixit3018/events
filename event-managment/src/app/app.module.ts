@@ -38,6 +38,8 @@ import { PaymentCardComponent } from './shared/payment-card/payment-card.compone
 import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 
 @NgModule({
@@ -66,7 +68,9 @@ import { EditEventComponent } from './components/edit-event/edit-event.component
     PaymentCardComponent,
     EventDetailsComponent,
     TruncatePipe,
-    EditEventComponent
+    EditEventComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
