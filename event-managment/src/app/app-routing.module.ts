@@ -19,6 +19,10 @@ import { EditEventComponent } from './components/edit-event/edit-event.component
 import { FormCanDeactivateGuard } from './guards/form-candeactivate.guard';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { VolunteerComponent } from './components/volunteer/volunteer.component';
+import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
+import { EventsComponent } from './components/events/events.component';
+import { EventIdComponent } from './components/event-id/event-id.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -27,7 +31,11 @@ const routes: Routes = [
   { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },
   { path: 'login', component: LoginComponent, canActivate: [homeGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [homeGuard] },
-  { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [homeGuard] },
+  {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
+    canActivate: [homeGuard],
+  },
   { path: 'terms-conditions', component: TermsConditionsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'reset-password/:id/:token', component: ResetPasswordComponent },
@@ -42,10 +50,17 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'applied-events',
+    component: AppliedEventsComponent,
+    canActivate: [authGuard],
+  },
+  { path: 'events', component: EventsComponent, canActivate: [authGuard] },
+  { path: 'events/:id', component: EventIdComponent, canActivate: [authGuard] },
+  {
     path: 'create-event',
     component: CreateEventComponent,
     canActivate: [authGuard],
-    canDeactivate: [FormCanDeactivateGuard]
+    canDeactivate: [FormCanDeactivateGuard],
   },
   {
     path: 'event-list',
@@ -56,6 +71,11 @@ const routes: Routes = [
   {
     path: 'edit-event/:id',
     component: EditEventComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'volunteer/:id',
+    component: VolunteerComponent,
     canActivate: [authGuard],
   },
   { path: '**', component: NotFoundComponent },

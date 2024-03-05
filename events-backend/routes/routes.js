@@ -6,6 +6,7 @@ const multer = require("multer");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
 
 const { ObjectId } = require("mongodb");
 
@@ -14,9 +15,12 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const jwt_secret = process.env.JWT_SECRET;
 
 const router = express.Router();
+
+// models
 const User = require("../models/user");
 const Cities = require("../models/cities");
 const Event = require("../models/event");
+const Application = require("../models/application");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -27,8 +31,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.GMAIL_PASS,
   },
 });
-
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -50,6 +52,19 @@ const storageEv = multer.diskStorage({
 const upload = multer({ storage: storage });
 const uploadEvent = multer({ storage: storageEv });
 
+//image path to base 64
+imagePathToBase64 = (imagePath) => {
+  const imgPath = path.join(__dirname, "../", imagePath);
+
+  if (fs.existsSync(imgPath)) {
+    const imageBase64 = fs.readFileSync(imgPath, { encoding: "base64" });
+    return imageBase64;
+  } else {
+    return new Error("Image not found");
+  }
+};
+
+//filter passsword
 function filterSensitiveData(user) {
   const filteredUser = { ...user };
 
@@ -70,9 +85,14 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({
       email: email,
-      password: password,
       role: role,
     });
+
+    const checkPassword = await bcrypt.compare(password, user.password);
+
+    if (!checkPassword) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     if (user) {
       return res.status(200).json({
@@ -105,10 +125,14 @@ router.post("/register", upload.single("image"), async (req, res) => {
       role,
     } = req.body;
 
-    const userExist = await User.findOne({ email: email });
+    const userEmailExist = await User.findOne({ email: email });
+    const userUnameExist = await User.findOne({ username: uname });
 
-    if (userExist) {
+    if (userEmailExist) {
       return res.status(400).json("Email Exists");
+    }
+    if (userUnameExist) {
+      return res.status(400).json("Username Exists");
     }
 
     // Check if a file was uploaded
@@ -120,12 +144,13 @@ router.post("/register", upload.single("image"), async (req, res) => {
       // If no file was uploaded, provide a default image path from the server
       profilePicture = "./default-image/default-profile.png"; // Adjust the path as needed
     }
+    const hashPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
       email: email,
       username: uname,
       firstname: fname,
       lastname: lname,
-      password: password,
+      password: hashPassword,
       age: age,
       address: address,
       city: city,
@@ -133,8 +158,8 @@ router.post("/register", upload.single("image"), async (req, res) => {
       role: role,
       profilePicture: profilePicture,
     });
-    const savedUser = await newUser.save();
 
+    const savedUser = await newUser.save();
     return res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -170,15 +195,8 @@ router.get("/profile-picture", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    const imagePath = path.join(__dirname, "../", user.profilePicture);
-
-    if (fs.existsSync(imagePath)) {
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
-      res.status(200).json({ image: imageBase64 });
-    } else {
-      res.status(400).json({ message: "Profile picture not found" });
-    }
+    const image = imagePathToBase64(user.profilePicture);
+    res.status(200).json({ image: image });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -253,16 +271,10 @@ router.get("/get-events", async (req, res) => {
 
     const modifiedRes = await Promise.all(
       events.map(async (event) => {
-        const imagePath = path.join(__dirname, "..", event.cover_img);
-
-        const imageData = await fs.promises.readFile(imagePath, {
-          encoding: "base64",
-        });
-
-        // Include base64-encoded image data in the response
+        const image = imagePathToBase64(event.cover_img);
         return {
           ...event._doc,
-          cover_img: `data:image/jpeg;base64,${imageData}`,
+          cover_img: `data:image/jpeg;base64,${image}`,
         };
       })
     );
@@ -276,17 +288,16 @@ router.get("/get-events", async (req, res) => {
 //get single event
 router.post("/get-event", async (req, res) => {
   const id = req.body.id;
-  console.log(id);
   const event = await Event.findById(id);
 
-  const imagePath = path.join(__dirname, "..", event.cover_img);
-  const imageData = await fs.promises.readFile(imagePath, {
-    encoding: "base64",
-  });
+  if(event === null){
+    throw new Error("No event found");
+    }
+  const image = imagePathToBase64(event.cover_img);
 
   const modifiedEvent = {
     ...event._doc,
-    cover_img: `data:image/jpeg;base64,${imageData}`,
+    cover_img: `data:image/jpeg;base64,${image}`,
   };
 
   if (event) {
@@ -298,6 +309,53 @@ router.post("/get-event", async (req, res) => {
 
 //edit event
 router.post("/edit-event", async (req, res) => {});
+
+//get all events
+router.get("/get-all-events", async (req, res) => {
+  const events = await Event.find();
+  const modifiedRes = events.map((event) => {
+    const image = imagePathToBase64(event.cover_img);
+    return {
+      ...event._doc,
+      cover_img: `data:image/jpeg;base64,${image}`,
+    };
+  });
+  res.status(200).json({ events: modifiedRes });
+});
+
+//get organizer details
+router.post("/get-organizer-data", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const organizer = await User.findOne({ _id: id });
+    organizer.profilePicture = imagePathToBase64(organizer.profilePicture);
+    res.status(200).json({ organizer: organizer });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get volunteers
+router.get("/get-volunteers", async (req, res) => {
+  const id = req.query.userId;
+  let volunteers = await User.find({ role: "volunteer" });
+
+  for (const user of volunteers) {
+    const imagePath = path.join(__dirname, "../", user.profilePicture);
+    if (fs.existsSync(imagePath)) {
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+      user.profilePicture = `data:image/jpeg;base64,${imageBase64}`;
+    }
+  }
+  volunteers = volunteers.map((user) => ({ ...user.toObject() }));
+
+  if (volunteers) {
+    return res.status(200).json({ volunteers: volunteers });
+  } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
+
 // payment intent
 router.post("/create-payment-intent", async (req, res) => {
   const amountInPaise = Math.round(parseInt(req.body.amount) * 100);
@@ -357,8 +415,8 @@ router.post(
       user.profilePicture = newProfilePicture;
 
       const updatedUser = await user.save();
-      const imagePath = path.join(__dirname, "../", user.profilePicture);
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+      const imageData = imagePathToBase64(user.profilePicture);
+
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -369,7 +427,7 @@ router.post(
       return res.status(200).json({
         message: "Profile picture updated successfully",
         user: sanitizedUser,
-        profileImg: imageBase64,
+        profileImg: imageData,
       });
     } catch (error) {
       console.error(error);
@@ -417,6 +475,7 @@ router.post("/update-user", async (req, res) => {
   }
 });
 
+// forgot password
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -440,7 +499,7 @@ router.post("/forgot-password", async (req, res) => {
       html: `<a href='http://localhost:4200/reset-password/${user._id}/${token}'>Click Here to Reset Password<a>`,
     };
 
-    const info = await transporter.sendMail(sendmailOptions)
+    const info = await transporter.sendMail(sendmailOptions);
 
     return res.status(200).json({
       link: link,
@@ -454,13 +513,14 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
+// reset password
 router.post("/reset-password/:id/:token", async (req, res) => {
   try {
     const { id, token } = req.params;
     const { password } = req.body;
 
-    if(id === '' || token === ''){
-      return res.status(401).json({message: "Unauthorized"});
+    if (id === "" || token === "") {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     const user = await User.findOne({
@@ -473,16 +533,15 @@ router.post("/reset-password/:id/:token", async (req, res) => {
     const secret = jwt_secret + user.password;
     const decoded = jwt.verify(token.replace(/"/g, ""), secret);
 
-    user.password = password;
+    const hashPassword = await bcrypt.hash(password, 12);
+    user.password = hashPassword;
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Password reset successfully",
-        user: decoded,
-        success: true,
-      });
+    res.status(200).json({
+      message: "Password reset successfully",
+      user: decoded,
+      success: true,
+    });
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({ error: "Invalid token" });
@@ -492,4 +551,52 @@ router.post("/reset-password/:id/:token", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//apply on event
+router.post("/apply-event", async (req, res) => {
+  try {
+    const { event_id, organizer_id, volunteer_id } = req.body;
+
+    const checkAlreadyApplied = await Application.find({
+      event_id: event_id,
+      organizer_id: organizer_id,
+      volunteer_id: volunteer_id,
+    });
+
+    if (checkAlreadyApplied.length > 0) {
+      return res.status(202).json({ message: "Already applied" });
+    }
+
+    const application = new Application({
+      event_id: event_id,
+      organizer_id: organizer_id,
+      volunteer_id: volunteer_id,
+    });
+
+    const apply = await application.save();
+    return res.status(200).json({ message: "success", application: apply });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "fail", error: error.message });
+  }
+});    
+
+
+// get applied events
+router.post("/get-applied-events", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const application = await Application.find({ volunteer_id: id });
+
+    if (application.length === 0) {
+      return res.status(202).json({ message: "No applications" });
+    }
+    return res.status(200).json({ application: application });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Error", error: error.message });
+  }
+});
+
 module.exports = router;

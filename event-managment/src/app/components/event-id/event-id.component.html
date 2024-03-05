@@ -1,0 +1,69 @@
+@if(loadedEvent !== undefined && organizer !== undefined){
+<div class="container-fluid pb-5">
+  <div class="text-center mb-4">
+    <img src="{{ loadedEvent.cover_img }}" class="w-75" height="500px" alt="" />
+  </div>
+  <h3 class="text-center fw-bold">{{ loadedEvent.name }}</h3>
+  <div class="desc w-75 mx-auto">
+    <hr />
+    <h3>Details about event</h3>
+    <p class="mt-1"><b>Description:</b> {{ loadedEvent.description }}</p>
+    <p class="mt-1">
+      <b>Budget:</b> &#8377; {{ loadedEvent.pay_per_volunteer }}/per day
+    </p>
+    <p class="mt-1">
+      <b>Venue:</b>
+      {{
+        loadedEvent.venue +
+          ", " +
+          loadedEvent.city +
+          ", " +
+          loadedEvent.state +
+          "."
+      }}
+    </p>
+    <p class="mt-1"><b>Number of Days:</b> {{ loadedEvent.days }}</p>
+    <p class="mt-1"><b>Starting Date:</b> {{ loadedEvent.start_date }}</p>
+    <p class="mt-1"><b>Ending Date:</b> {{ loadedEvent.end_date }}</p>
+    <hr />
+    <h3>Details about organizer</h3>
+    <img
+      src="{{ 'data:image/png;base64,' + organizer.profilePicture }}"
+      class="rounded-circle border border-2 p-1"
+      style="width: 100px"
+      alt=""
+    />
+    <p class="mt-1"><b>Username:</b> {{ organizer.username }}</p>
+    <p class="mt-1"><b>Email:</b> {{ organizer.email }}</p>
+    <p class="mt-1 d-flex align-items-center gap-2">
+      <b>Rating:</b>
+      @if (organizer.rating >0){
+      <ng-container>
+        <mat-icon
+          class="mat-18 text-warning"
+          *ngFor="let star of getStars(organizer.rating)"
+          >star</mat-icon
+        >
+        <mat-icon
+          class="mat-18 text-secondary"
+          *ngFor="let star of getEmptyStars(organizer.rating)"
+          >star</mat-icon
+        >
+      </ng-container>
+      } @else {
+      <span class="fw-light">(No reviews)</span>
+      }
+    </p>
+    <p class="mt-1">
+      <b>From:</b> {{ organizer.city + "," + organizer.state }}
+    </p>
+
+    <div class="d-flex gap-2 mt-5">
+      <button class="btn btn-danger px-5" type="button" (click)="onApply()">Apply now</button>
+      <a routerLink="/events" class="btn btn-default border px-5">Back</a>
+    </div>
+  </div>
+</div>
+} @else {
+<app-preloader></app-preloader>
+}

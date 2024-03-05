@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   loggedIn: boolean;
   userId: string = '';
   userImg: string = '/assets/images/profile/default-profile.png';
+  userRole: string;
 
   constructor(
     private _auth: AuthService,
@@ -23,6 +24,7 @@ export class HeaderComponent implements OnInit {
     this._auth.user.subscribe((user) => {
       if (!!user) {
         this.loggedIn = true;
+        this.userRole = user.role;
         this.getUserImg();
       } else {
         this.loggedIn = false;
@@ -37,8 +39,8 @@ export class HeaderComponent implements OnInit {
       
       this.loggedIn = true;
       this._auth.user.next(userData);
+      this.userRole = userData.role;
     }
-
     this.getUserImg()
 
     this._auth.userProfileImg.subscribe(newImgPath => {

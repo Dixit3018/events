@@ -1,0 +1,42 @@
+@if(appliedEvents.length > 0){
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Image</th>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Starting date</th>
+      <th scope="col">Ending Date</th>
+      <th scope="col">Venue</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (ev of appliedEvents; track $index) {
+        <tr>
+            <th scope="row">{{ (+$index+1) }}</th>
+            <td class="text-center"><img src="{{ev.cover_img}}" width="50px" alt="{{ev.name}}"></td>
+            <td>{{ev.name}}</td>
+            <td>{{ev.description}}</td>
+            <td>{{ev.start_date}}</td>
+            <td>{{ev.end_date}}</td>
+            <td>{{ev.venue}}</td>
+            <td>
+              @if(ev.status === 'applied'){
+                <div class="btn btn-sm btn-warning rounded-pill">{{ev.status}}</div>
+              }@else if(ev.status === 'accepted'){
+                <div class="btn btn-sm btn-success rounded-pill">{{ev.status}}</div>
+
+              }
+              @else if(ev.status ==='rejected'){
+                <div class="btn btn-sm btn-danger rounded-pill">{{ev.status}}</div>
+              }
+              </td>
+        </tr>
+    }
+  </tbody>
+</table>
+} @else {
+<app-preloader></app-preloader>
+}

@@ -34,6 +34,14 @@ export class ProfileComponent implements OnInit {
     });
 
     this.img = sessionStorage.getItem('profileImg');
+
+    
+    if(this.img === null || this.img === ''){
+      this._http.getUserProfileImg().subscribe((res:any) => {
+        this.img = `data:image/png;base64,${res.image}`;
+        sessionStorage.setItem('profileImg', this.img);
+      })
+    }
     const firstname = this.userData.firstname;
     const lastname = this.userData.lastname;
     const username = this.userData.username;

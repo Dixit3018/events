@@ -35,6 +35,21 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if(token === '' || token === undefined || token === null) {
+      Swal.fire({
+        title: 'Expired!',
+        text: 'The link is expired please try again!',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: 'green',
+        confirmButtonText: 'OK',
+        willClose: () => {
+          this.router.navigate(['/login'])
+        }
+      });
+    }
+
     this.route.paramMap.subscribe((params: any) => {
       this.id = params.id;
       this.token = params.token;

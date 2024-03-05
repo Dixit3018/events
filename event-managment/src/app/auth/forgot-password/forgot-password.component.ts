@@ -21,11 +21,20 @@ export class ForgotPasswordComponent implements OnInit {
 
   onSubmit() {
     const email = this.forgotPass.value.email;
+
     this._http.forgotPassword(email).subscribe(
-      (res:any) => {
-        console.log(res);
-        localStorage.setItem('token', JSON.stringify(res.token))
-        localStorage.setItem('userId', JSON.stringify(res.userId))
+      (res: any) => {
+        Swal.fire({
+          title: 'Sent!',
+          text: 'We have sent you link on email!',
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonColor: 'green',
+          confirmButtonText: 'OK',
+        });
+        this.forgotPass.reset();
+        localStorage.setItem('token', JSON.stringify(res.token));
+        localStorage.setItem('userId', JSON.stringify(res.userId));
       },
       (error) => {
         if (error.status === 404) {
@@ -51,6 +60,7 @@ export class ForgotPasswordComponent implements OnInit {
             `,
             },
           });
+          this.forgotPass.reset();
         }
       }
     );

@@ -20,7 +20,7 @@ import { PrivacyPolicyComponent } from './docs/privacy-policy/privacy-policy.com
 import { TermsConditionsComponent } from './docs/terms-conditions/terms-conditions.component';
 import { ContactComponent } from './contact/contact.component';
 import { NotFoundComponent } from './shared/not-found/not-found.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -40,6 +40,10 @@ import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { InnerFooterComponent } from './shared/inner-footer/inner-footer.component';
+import { EventsComponent } from './components/events/events.component';
+import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
+import { EventIdComponent } from './components/event-id/event-id.component';
 
 
 @NgModule({
@@ -70,11 +74,16 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     TruncatePipe,
     EditEventComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    InnerFooterComponent,
+    EventsComponent,
+    AppliedEventsComponent,
+    EventIdComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,

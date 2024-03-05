@@ -30,21 +30,36 @@
                   >Dashboard</a
                 >
               </li>
-              <li>
-                <a routerLinkActive="active" routerLink="/volunteer-list"
+              @if(userRole == "organizer"){
+
+                <li>
+                  <a routerLinkActive="active" routerLink="/volunteer-list"
                   >Volunteers</a
-                >
-              </li>
-              <li>
-                <a routerLinkActive="active" routerLink="/create-event"
+                  >
+                </li>
+                <li>
+                  <a routerLinkActive="active" routerLink="/create-event"
                   >Create Event</a
-                >
-              </li>
-              <li>
-                <a routerLinkActive="active" routerLink="/event-list"
+                  >
+                </li>
+                <li>
+                  <a routerLinkActive="active" routerLink="/event-list"
                   >Event List</a
-                >
-              </li>
+                  >
+                </li>
+              }
+              @if(userRole == "volunteer"){
+                <li>
+                  <a routerLinkActive="active" routerLink="/events"
+                  >Events</a
+                  >
+                </li>
+                <li>
+                  <a routerLinkActive="active" routerLink="/applied-events"
+                  >Applied Events</a
+                  >
+                </li>
+              }
               <li>
                 <a routerLinkActive="active" routerLink="/profile"
                   >Profile</a
@@ -73,12 +88,13 @@
             <ul class="d-flex align-items-center nav-right-list">
               @if (loggedIn) {
               <li class="nav-btn">
+                <a routerLink="/profile">
                 <img
                   class="rounded-circle"
                   style="width: 45px"
                   [src]="userImg"
                   alt=""
-                />
+                /></a>
                 <a class="ms-4 btn btn-danger" (click)="onLogout()">Logout</a>
               </li>
               } @else {
