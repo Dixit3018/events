@@ -356,6 +356,37 @@ router.get("/get-volunteers", async (req, res) => {
   }
 });
 
+router.get("/get-volunteer", async (req, res) => {
+  try {
+    const id = req.query.userId;
+
+    const volunteer = await User.findOne({ _id: id, role: "volunteer" }).select({
+      email: 1,
+      profilePicture: 1,
+      username: 1,
+      firstname: 1,
+      lastname: 1,
+      role: 1,
+      age: 1,
+      address: 1,
+      city: 1,
+      state: 1,
+      rating: 1,
+    });
+
+    if (volunteer) {
+
+      volunteer.profilePicture = await imagePathToBase64(
+        volunteer.profilePicture
+        );
+    }
+    res.status(200).json({ volunteer: volunteer });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+});
+
 // payment intent
 router.post("/create-payment-intent", async (req, res) => {
   const amountInPaise = Math.round(parseInt(req.body.amount) * 100);
@@ -663,7 +694,10 @@ router.post("/update-application-status", async (req, res) => {
       return res.status(404).json({ error: "Application not found" });
     }
     application.status = status;
-    event.hired = +event.hired + 1;
+
+    if (status === "accepted") {
+      event.hired = +event.hired + 1;
+    }
 
     const updatedApplication = await application.save();
     const updatedEvent = await event.save();

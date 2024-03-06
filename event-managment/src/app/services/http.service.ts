@@ -22,6 +22,12 @@ export class HttpService {
     return this._http.get(`http://localhost:4000/api/get-all-events`);
   }
 
+  getSingleVolunteer(userId: string) {
+    return this._http.get(
+      `http://localhost:4000/api/get-volunteer?userId=${userId}`
+    );
+  }
+
   getVolunteers(userId: string) {
     return this._http.get(
       `http://localhost:4000/api/get-volunteers?userId=${userId}`

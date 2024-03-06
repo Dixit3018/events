@@ -1,1 +1,61 @@
-<p>volunteer works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 text-center">
+      <img
+        src="/assets/images/user.jpg"
+        class="rounded-circle"
+        width="100%"
+        height="300px"
+        alt="User Image"
+      />
+      <div class="mt-1">
+        <h3>User name</h3>
+        <h5 class="text-secondary">fname lname</h5>
+        <h5 class="text-secondary">Age: 25</h5>
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+      <h3>About Volunteer</h3>
+      <p>
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit
+        nostrum ab quia tempora, deleniti eos perferendis deserunt dignissimos
+        numquam laboriosam unde iure! Sit alias natus temporibus voluptate quis
+        iste unde dolor, tempore deleniti obcaecati facilis cum vel cumque
+        dignissimos nostrum itaque, veritatis ullam velit iusto. In inventore
+        veritatis eum voluptates!
+      </p>
+      <h3>Rating</h3>
+      <mat-icon class="mat-18 text-warning" *ngFor="let star of getStars(3)"
+        >star</mat-icon
+      >
+      <mat-icon
+        class="mat-18 text-secondary"
+        *ngFor="let star of getEmptyStars(3)"
+        >star</mat-icon
+      >
+      <h4 class="mt-3">Personal Information</h4>
+      <div class="d-flex gap-4 mt-4">
+        <div class="dec-box-1 d-flex align-items-center justify-content-center text-center p-2">
+          <p class="text-danger mt-2">
+            {{ "Test@testmail.com" }}
+            <mat-icon class="mat-18 text-danger icon-style">mail</mat-icon>
+          </p>
+        </div>
+        <div class="dec-box-1 d-flex align-items-center justify-content-center text-center p-2">
+          <p class="text-danger mt-2">
+            {{ "9999-9999-99" }}
+            <mat-icon class="mat-18 text-danger icon-style">phone</mat-icon>
+          </p>
+        </div>
+        <div class="dec-box-1 d-flex align-items-center justify-content-center text-center p-2">
+          <p class="text-danger mt-2">
+            {{ "Instagram" }}
+            <mat-icon class="mat-18 text-danger icon-style">instagram</mat-icon>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

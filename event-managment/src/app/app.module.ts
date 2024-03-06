@@ -30,6 +30,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { EventListComponent } from './components/event-list/event-list.component';
 import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
 import { ErrorComponent } from './shared/error/error.component';
+import { VolunteerComponent } from './components/volunteer/volunteer.component';
 
 import { NgxStripeModule, StripeCardComponent } from 'ngx-stripe';
 import { environment } from '../environments/environment';
@@ -81,6 +82,7 @@ import { ApplicationListComponent } from './components/application-list/applicat
     AppliedEventsComponent,
     EventIdComponent,
     ApplicationListComponent,
+    VolunteerComponent
   ],
   imports: [
     BrowserModule,
