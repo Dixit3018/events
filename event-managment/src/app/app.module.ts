@@ -44,6 +44,7 @@ import { InnerFooterComponent } from './shared/inner-footer/inner-footer.compone
 import { EventsComponent } from './components/events/events.component';
 import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
+import { ApplicationListComponent } from './components/application-list/application-list.component';
 
 
 @NgModule({
@@ -79,6 +80,7 @@ import { EventIdComponent } from './components/event-id/event-id.component';
     EventsComponent,
     AppliedEventsComponent,
     EventIdComponent,
+    ApplicationListComponent,
   ],
   imports: [
     BrowserModule,

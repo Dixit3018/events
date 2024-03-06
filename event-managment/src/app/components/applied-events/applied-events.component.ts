@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 })
 export class AppliedEventsComponent implements OnInit {
   appliedEvents: any[] = [];
+  noData: boolean;
 
   constructor(private http: HttpService) {}
 
@@ -18,7 +19,11 @@ export class AppliedEventsComponent implements OnInit {
 
     this.http.getAppliedEvents({ id: userId }).subscribe((res: any) => {
       const applications = res.application;
-
+      if(applications === undefined){
+        this.noData = true;
+        return;
+      }
+      this.noData = false;
       applications.forEach((app) => {
         let status = app.status;
         this.http.singleEvent(app.event_id).subscribe((res: any) => {

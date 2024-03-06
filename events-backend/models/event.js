@@ -12,6 +12,7 @@ const eventSchema = new mongoose.Schema({
   days: { type: Number, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
+  hired: { type: Number, default:0 },
   cover_img: { type: String, required: true },
 });
 

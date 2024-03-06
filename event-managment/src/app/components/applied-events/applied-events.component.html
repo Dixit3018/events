@@ -1,4 +1,4 @@
-@if(appliedEvents.length > 0){
+@if(appliedEvents.length > 0 && !noData){
 <table class="table">
   <thead>
     <tr>
@@ -14,29 +14,43 @@
   </thead>
   <tbody>
     @for (ev of appliedEvents; track $index) {
-        <tr>
-            <th scope="row">{{ (+$index+1) }}</th>
-            <td class="text-center"><img src="{{ev.cover_img}}" width="50px" alt="{{ev.name}}"></td>
-            <td>{{ev.name}}</td>
-            <td>{{ev.description}}</td>
-            <td>{{ev.start_date}}</td>
-            <td>{{ev.end_date}}</td>
-            <td>{{ev.venue}}</td>
-            <td>
-              @if(ev.status === 'applied'){
-                <div class="btn btn-sm btn-warning rounded-pill">{{ev.status}}</div>
-              }@else if(ev.status === 'accepted'){
-                <div class="btn btn-sm btn-success rounded-pill">{{ev.status}}</div>
+    <tr>
+      <th scope="row">{{ +$index + 1 }}</th>
+      <td class="text-center">
+        <img src="{{ ev.cover_img }}" width="50px" alt="{{ ev.name }}" />
+      </td>
+      <td>{{ ev.name }}</td>
+      <td>{{ ev.description }}</td>
+      <td>{{ ev.start_date }}</td>
+      <td>{{ ev.end_date }}</td>
+      <td>{{ ev.venue }}</td>
+      <td>
+        @if(ev.status === 'applied'){
+        <div class="btn btn-sm btn-warning rounded-pill">
+          {{ ev.status | titlecase }}
+        </div>
+        }@else if(ev.status === 'accepted'){
+        <div class="btn btn-sm btn-success rounded-pill">
+          {{ ev.status | titlecase }}
+        </div>
 
-              }
-              @else if(ev.status ==='rejected'){
-                <div class="btn btn-sm btn-danger rounded-pill">{{ev.status}}</div>
-              }
-              </td>
-        </tr>
+        } @else if(ev.status ==='rejected'){
+        <div class="btn btn-sm btn-danger rounded-pill">
+          {{ ev.status | titlecase }}
+        </div>
+        }
+      </td>
+    </tr>
     }
   </tbody>
 </table>
+} @else if(noData){
+<div class="container">
+  <h2>No Data Found</h2>
+  <a class="btn btn-primary" routerLink="/events"
+    >Click here toi go on events</a
+  >
+</div>
 } @else {
 <app-preloader></app-preloader>
 }

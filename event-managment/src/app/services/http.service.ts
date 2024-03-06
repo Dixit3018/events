@@ -81,4 +81,12 @@ export class HttpService {
   getAppliedEvents(data: {id: string}) {
     return this._http.post(`http://localhost:4000/api/get-applied-events`, data);
   }
+  
+  getApplicationList(data: {id: string}) {
+    return this._http.post(`http://localhost:4000/api/application-list`, data);
+  }
+  
+  updateApplicationStatus(data: {id:string, status:string}) {
+    return this._http.post(`http://localhost:4000/api/update-application-status`, data);
+  }
 }

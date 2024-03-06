@@ -1,0 +1,72 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Profile</th>
+      <th scope="col">Username</th>
+      <th scope="col">Age</th>
+      <th scope="col">Address</th>
+      <th scope="col">Review</th>
+      <th scope="col">Event Name</th>
+      <th scope="col">Required</th>
+      <th scope="col">Hired</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (applicants of applications; track $index) {
+    <tr>
+      <th scope="row">{{ $index + 1 }}</th>
+      <td class="text-center">
+        <a routerLink="{{ '/volunteer/'+applicants.volunteer_id }}">
+        <img
+          src="{{ 'data:image/png;base64,' + applicants.profilePicture }}"
+          width="50px"
+          class="rounded-circle"
+          alt=""
+        />
+    </a>
+      </td>
+      <td>{{ applicants.username }}</td>
+      <td>{{ applicants.age }}</td>
+      <td>
+        {{
+          applicants.address + ", " + applicants.city + ", " + applicants.state
+        }}
+      </td>
+      <td>
+        @if (applicants.rating >0){
+        <ng-container>
+          <mat-icon
+            class="mat-18 text-warning"
+            *ngFor="let star of getStars(applicants.rating)"
+            >star</mat-icon
+          >
+          <mat-icon
+            class="mat-18 text-secondary"
+            *ngFor="let star of getEmptyStars(applicants.rating)"
+            >star</mat-icon
+          >
+        </ng-container>
+        } @else {
+        <span class="fw-light">(No reviews)</span>
+        }
+      </td>
+      <td>{{ applicants.eventDetails.name }}</td>
+      <td>{{ applicants.eventDetails.volunteers }}</td>
+      <td>{{ applicants.eventDetails.hired }}</td>
+      <td>
+        @if(applicants.status === 'applied'){
+            <button class="btn btn-success rounded-5 mx-1" (click)="onAction(applicants.application_id, 'accepted')">Accept</button>
+            <button class="btn btn-danger rounded-5 mx-1" (click)="onAction(applicants.application_id, 'rejected')">Reject</button>
+        }
+        @else{
+            <span
+            [ngClass]="applicants.status === 'accepted' ? 'text-bg-success' : 'text-bg-danger'"
+            class="badge px-2 py-1">{{applicants.status | titlecase}}</span>
+        }
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>

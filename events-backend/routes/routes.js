@@ -290,9 +290,9 @@ router.post("/get-event", async (req, res) => {
   const id = req.body.id;
   const event = await Event.findById(id);
 
-  if(event === null){
+  if (event === null) {
     throw new Error("No event found");
-    }
+  }
   const image = imagePathToBase64(event.cover_img);
 
   const modifiedEvent = {
@@ -579,8 +579,7 @@ router.post("/apply-event", async (req, res) => {
     console.log(error.message);
     return res.status(500).json({ message: "fail", error: error.message });
   }
-});    
-
+});
 
 // get applied events
 router.post("/get-applied-events", async (req, res) => {
@@ -596,6 +595,81 @@ router.post("/get-applied-events", async (req, res) => {
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Error", error: error.message });
+  }
+});
+
+router.post("/application-list", async (req, res) => {
+  try {
+    const { id } = req.body;
+    let applicantDetails = [];
+    const applications = await Application.find({ organizer_id: id });
+
+    if (applications.length === 0) {
+      return res.status(202).json({ message: "No applications" });
+    }
+
+    const getApplicantDetails = applications.map(async (app) => {
+      const applicant = await User.findById(app.volunteer_id).select({
+        email: 1,
+        username: 1,
+        firstname: 1,
+        lastname: 1,
+        age: 1,
+        address: 1,
+        city: 1,
+        state: 1,
+        rating: 1,
+        profilePicture: 1,
+      });
+
+      const eventDetails = await Event.findById(app.event_id).select({
+        name: 1,
+        volunteers: 1,
+        hired: 1,
+        start_date: 1,
+        end_date: 1,
+      });
+
+      applicant.profilePicture = await imagePathToBase64(
+        applicant.profilePicture
+      );
+
+      return {
+        application_id: app._id,
+        ...app.toObject(),
+        ...applicant.toObject(),
+        eventDetails,
+      };
+    });
+
+    applicantDetails = await Promise.all(getApplicantDetails);
+
+    res.status(200).json({ message: "success", data: applicantDetails });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/update-application-status", async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    const application = await Application.findById(id);
+    if (!application) {
+      return res.status(404).json({ error: "Application not found" });
+    }
+    application.status = status;
+    const updatedApplication = await application.save();
+    if (!updatedApplication) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Application updated successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 

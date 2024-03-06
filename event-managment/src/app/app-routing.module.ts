@@ -23,6 +23,7 @@ import { VolunteerComponent } from './components/volunteer/volunteer.component';
 import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
+import { ApplicationListComponent } from './components/application-list/application-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -56,6 +57,7 @@ const routes: Routes = [
   },
   { path: 'events', component: EventsComponent, canActivate: [authGuard] },
   { path: 'events/:id', component: EventIdComponent, canActivate: [authGuard] },
+  { path: 'application-list', component: ApplicationListComponent, canActivate: [authGuard] },
   {
     path: 'create-event',
     component: CreateEventComponent,
