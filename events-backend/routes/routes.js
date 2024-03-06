@@ -598,6 +598,7 @@ router.post("/get-applied-events", async (req, res) => {
   }
 });
 
+// get application list
 router.post("/application-list", async (req, res) => {
   try {
     const { id } = req.body;
@@ -651,16 +652,22 @@ router.post("/application-list", async (req, res) => {
   }
 });
 
+// update application status
 router.post("/update-application-status", async (req, res) => {
   try {
     const { id, status } = req.body;
 
     const application = await Application.findById(id);
+    const event = await Event.findById(application.event_id);
     if (!application) {
       return res.status(404).json({ error: "Application not found" });
     }
     application.status = status;
+    event.hired = +event.hired + 1;
+
     const updatedApplication = await application.save();
+    const updatedEvent = await event.save();
+
     if (!updatedApplication) {
       return res.status(404).json({ message: "Application not found" });
     }
