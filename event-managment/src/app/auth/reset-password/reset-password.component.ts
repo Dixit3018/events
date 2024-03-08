@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { passwordMatchValidator } from '../../shared/validators/password-match.validator';
 import { HttpService } from '../../services/http.service';
 import Swal from 'sweetalert2';
+import { random } from 'lodash-es';
 
 @Component({
   selector: 'app-reset-password',
@@ -35,25 +36,33 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if(token === '' || token === undefined || token === null) {
-      Swal.fire({
-        title: 'Expired!',
-        text: 'The link is expired please try again!',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: 'green',
-        confirmButtonText: 'OK',
-        willClose: () => {
-          this.router.navigate(['/login'])
-        }
-      });
-    }
-
-    this.route.paramMap.subscribe((params: any) => {
-      this.id = params.id;
-      this.token = params.token;
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id');
+      this.token = params.get('token');
     });
+
+    const data = { id: this.id, token: this.token };
+
+    this._http.verifyPasswordResetToken(data).subscribe((data:any) => {
+      console.log(data);
+      
+      if(data.verify === true) {
+        this.token = data.token;
+      }
+      else if(data.verify === false){
+        Swal.fire({
+          title: 'Expired!',
+          text: 'The link is expired please try again!',
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: 'green',
+          confirmButtonText: 'OK',
+          willClose: () => {
+            this.router.navigate(['/login'])
+          }
+        });      
+      }
+    })
 
     this.resetPass = this.fb.group(
       {
@@ -77,8 +86,6 @@ export class ResetPasswordComponent implements OnInit {
     this._http.resetPassword(password).subscribe((res:any) => {
       
       if(res.success) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
         Swal.fire({
           title: 'Success!',
           text: 'Password reset successfully!',
@@ -90,10 +97,7 @@ export class ResetPasswordComponent implements OnInit {
               this.router.navigate(['/login']);
           },
         });
-
       }
-      
-    
       
     }, (error) => {
       if(error.status === 401){

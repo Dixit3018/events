@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class ForgotPasswordComponent implements OnInit {
   forgotPass: FormGroup;
+  clickOnce: boolean = true;
 
   constructor(private fb: FormBuilder, private _http: HttpService) {}
 
@@ -20,6 +21,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   onSubmit() {
+    this.clickOnce = false;
     const email = this.forgotPass.value.email;
 
     this._http.forgotPassword(email).subscribe(

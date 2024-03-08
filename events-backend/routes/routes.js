@@ -21,6 +21,7 @@ const User = require("../models/user");
 const Cities = require("../models/cities");
 const Event = require("../models/event");
 const Application = require("../models/application");
+const ResetPassword = require("../models/passwordReset");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -360,25 +361,26 @@ router.get("/get-volunteer", async (req, res) => {
   try {
     const id = req.query.userId;
 
-    const volunteer = await User.findOne({ _id: id, role: "volunteer" }).select({
-      email: 1,
-      profilePicture: 1,
-      username: 1,
-      firstname: 1,
-      lastname: 1,
-      role: 1,
-      age: 1,
-      address: 1,
-      city: 1,
-      state: 1,
-      rating: 1,
-    });
+    const volunteer = await User.findOne({ _id: id, role: "volunteer" }).select(
+      {
+        email: 1,
+        profilePicture: 1,
+        username: 1,
+        firstname: 1,
+        lastname: 1,
+        role: 1,
+        age: 1,
+        address: 1,
+        city: 1,
+        state: 1,
+        rating: 1,
+      }
+    );
 
     if (volunteer) {
-
       volunteer.profilePicture = await imagePathToBase64(
         volunteer.profilePicture
-        );
+      );
     }
     res.status(200).json({ volunteer: volunteer });
   } catch (error) {
@@ -519,6 +521,11 @@ router.post("/forgot-password", async (req, res) => {
     const token = jwt.sign({}, secret, { expiresIn: "15m" });
     const link = `http://localhost:4200/reset-password/${user._id}/${token}`;
 
+    const resetPassword = await ResetPassword.create({
+      user_id: user._id,
+      token: token,
+    });
+
     const sendmailOptions = {
       from: {
         name: "Dixit Suthar",
@@ -530,7 +537,7 @@ router.post("/forgot-password", async (req, res) => {
       html: `<a href='http://localhost:4200/reset-password/${user._id}/${token}'>Click Here to Reset Password<a>`,
     };
 
-    const info = await transporter.sendMail(sendmailOptions);
+    const info = transporter.sendMail(sendmailOptions);
 
     return res.status(200).json({
       link: link,
@@ -547,8 +554,12 @@ router.post("/forgot-password", async (req, res) => {
 // reset password
 router.post("/reset-password/:id/:token", async (req, res) => {
   try {
-    const { id, token } = req.params;
+    let { id, token } = req.params;
     const { password } = req.body;
+    token = token.replace(/^"|"$/g, '');
+    id = id.replace(/^"|"$/g, '');
+
+    const resetPass = await ResetPassword.findOneAndDelete({ token: token });
 
     if (id === "" || token === "") {
       return res.status(401).json({ message: "Unauthorized" });
@@ -583,6 +594,16 @@ router.post("/reset-password/:id/:token", async (req, res) => {
   }
 });
 
+router.post("/verify-token", async (req, res) => {
+  const { token, id } = req.body;
+
+  const resetPass = await ResetPassword.findOne({ token: token, user_id: id });
+  if (resetPass.token && resetPass.token !== "") {
+    return res.status(200).json({ verify: true, token: resetPass.token });
+  } else {
+    return res.status(200).json({ verify: false, token: null });
+  }
+});
 //apply on event
 router.post("/apply-event", async (req, res) => {
   try {

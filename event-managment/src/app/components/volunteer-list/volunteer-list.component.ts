@@ -35,8 +35,10 @@ export class VolunteerListComponent implements OnInit {
     }
     if (term !== '') {
       console.log(term);
-      const newList = this.volunteersList.filter((volunteer) =>
-        volunteer.username.toLowerCase().includes(term)
+      const newList = this.volunteersList.filter((volunteer) =>{
+        const name = volunteer.firstname + volunteer.lastname;
+        return volunteer.username.toLowerCase().includes(term.trim()) || name.toLowerCase().includes(term.trim())
+      }
       );
 
       if (newList.length > 0) {

@@ -6,64 +6,62 @@ import { Injectable } from '@angular/core';
 })
 export class HttpService {
   constructor(private _http: HttpClient) {}
-
+  baseUrl = 'http://localhost:4000/api';
+  
   //get routes
   getUserProfileImg() {
-    return this._http.get(`http://localhost:4000/api/profile-picture`);
+    return this._http.get(`${this.baseUrl}/profile-picture`);
   }
   getCities() {
-    return this._http.get(`http://localhost:4000/api/cities`);
+    return this._http.get(`${this.baseUrl}/cities`);
   }
   getEvent() {
-    return this._http.get(`http://localhost:4000/api/get-events`);
+    return this._http.get(`${this.baseUrl}/get-events`);
   }
 
   getAllEvents() {
-    return this._http.get(`http://localhost:4000/api/get-all-events`);
+    return this._http.get(`${this.baseUrl}/get-all-events`);
   }
 
   getSingleVolunteer(userId: string) {
-    return this._http.get(
-      `http://localhost:4000/api/get-volunteer?userId=${userId}`
-    );
+    return this._http.get(`${this.baseUrl}/get-volunteer?userId=${userId}`);
   }
 
   getVolunteers(userId: string) {
-    return this._http.get(
-      `http://localhost:4000/api/get-volunteers?userId=${userId}`
-    );
+    return this._http.get(`${this.baseUrl}/get-volunteers?userId=${userId}`);
   }
 
   //post routes
   createEvent(eventData: any) {
-    return this._http.post(`http://localhost:4000/api/create-event`, eventData);
+    return this._http.post(`${this.baseUrl}/create-event`, eventData);
   }
 
   singleEvent(id: string) {
-    return this._http.post(`http://localhost:4000/api/get-event`, { id: id });
+    return this._http.post(`${this.baseUrl}/get-event`, { id: id });
   }
 
   getOrganizerData(id: string) {
-    return this._http.post(`http://localhost:4000/api/get-organizer-data`, {
+    return this._http.post(`${this.baseUrl}/get-organizer-data`, {
       id: id,
     });
   }
 
   updateUser(userData: any) {
-    return this._http.post(`http://localhost:4000/api/update-user`, userData);
+    return this._http.post(`${this.baseUrl}/update-user`, userData);
   }
 
   updateProfileImg(formData: any) {
-    return this._http.post(
-      `http://localhost:4000/api/update-profile-img`,
-      formData
-    );
+    return this._http.post(`${this.baseUrl}/update-profile-img`, formData);
   }
 
   forgotPassword(email: string) {
-    return this._http.post(`http://localhost:4000/api/forgot-password`, {
+    return this._http.post(`${this.baseUrl}/forgot-password`, {
       email: email,
     });
+  }
+
+  verifyPasswordResetToken(data: {id:string, token:string}) {
+    return this._http.post(`${this.baseUrl}/verify-token`,data);
   }
 
   resetPassword(password: string) {
@@ -71,7 +69,7 @@ export class HttpService {
     const userId = localStorage.getItem('userId');
 
     return this._http.post(
-      `http://localhost:4000/api/reset-password/${userId}/${token}`,
+      `${this.baseUrl}/reset-password/${userId}/${token}`,
       { password: password }
     );
   }
@@ -81,24 +79,18 @@ export class HttpService {
     organizer_id: string;
     volunteer_id: string;
   }) {
-    return this._http.post(`http://localhost:4000/api/apply-event`, data);
+    return this._http.post(`${this.baseUrl}/apply-event`, data);
   }
 
   getAppliedEvents(data: { id: string }) {
-    return this._http.post(
-      `http://localhost:4000/api/get-applied-events`,
-      data
-    );
+    return this._http.post(`${this.baseUrl}/get-applied-events`, data);
   }
 
   getApplicationList(data: { id: string }) {
-    return this._http.post(`http://localhost:4000/api/application-list`, data);
+    return this._http.post(`${this.baseUrl}/application-list`, data);
   }
 
   updateApplicationStatus(data: { id: string; status: string }) {
-    return this._http.post(
-      `http://localhost:4000/api/update-application-status`,
-      data
-    );
+    return this._http.post(`${this.baseUrl}/update-application-status`, data);
   }
 }

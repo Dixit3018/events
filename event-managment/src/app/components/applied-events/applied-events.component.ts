@@ -19,6 +19,7 @@ export class AppliedEventsComponent implements OnInit {
 
     this.http.getAppliedEvents({ id: userId }).subscribe((res: any) => {
       const applications = res.application;
+      
       if(applications === undefined){
         this.noData = true;
         return;

@@ -9,10 +9,13 @@ import { DatePipe } from '@angular/common';
 })
 export class EventsComponent implements OnInit {
   events: any[] = [];
+  noEvents: boolean = false;
+
   constructor(private http: HttpService) {}
 
   ngOnInit(): void {
     this.http.getAllEvents().subscribe((events: any) => {
+      this.noEvents = false;
       events.events.forEach((event: any) => {
         const datePipe = new DatePipe('en-US');
         const today = new Date();
@@ -42,7 +45,9 @@ export class EventsComponent implements OnInit {
           ev.remaining_days != 'Completed' && ev.remaining_days != 'OnGoing'
       );
 
-      console.log(this.events);
+      if(this.events.length === 0){
+        this.noEvents = true;
+      }
     });
   }
 }
