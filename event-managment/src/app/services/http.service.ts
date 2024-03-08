@@ -93,4 +93,8 @@ export class HttpService {
   updateApplicationStatus(data: { id: string; status: string }) {
     return this._http.post(`${this.baseUrl}/update-application-status`, data);
   }
+
+  storeContactForm(data:any) {
+    return this._http.post(`${this.baseUrl}/contact-form`,data);
+  }
 }

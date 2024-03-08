@@ -47,6 +47,7 @@ import { AppliedEventsComponent } from './components/applied-events/applied-even
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
 
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,8 @@ import { ApplicationListComponent } from './components/application-list/applicat
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialsModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
     StripeCardComponent,
     NgxStripeModule.forRoot(environment.stripe.publicKey)
   ],
@@ -106,6 +109,12 @@ import { ApplicationListComponent } from './components/application-list/applicat
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: {showError: true},
     },
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptcha.siteKey,
+      } as RecaptchaSettings,
+    }
   ],
   bootstrap: [AppComponent]
 })

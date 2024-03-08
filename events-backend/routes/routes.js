@@ -22,6 +22,7 @@ const Cities = require("../models/cities");
 const Event = require("../models/event");
 const Application = require("../models/application");
 const ResetPassword = require("../models/passwordReset");
+const Contact = require("../models/contactInfo");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -556,8 +557,8 @@ router.post("/reset-password/:id/:token", async (req, res) => {
   try {
     let { id, token } = req.params;
     const { password } = req.body;
-    token = token.replace(/^"|"$/g, '');
-    id = id.replace(/^"|"$/g, '');
+    token = token.replace(/^"|"$/g, "");
+    id = id.replace(/^"|"$/g, "");
 
     const resetPass = await ResetPassword.findOneAndDelete({ token: token });
 
@@ -732,6 +733,42 @@ router.post("/update-application-status", async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/contact-form", async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    const contact = await Contact.create({
+      name: name,
+      email: email,
+      subject: subject,
+      message: message,
+    });
+    const contactInfo = contact.save();
+
+    const sendmailOptions = {
+      from: {
+        name: name,
+        address: process.env.GMAIL_USER,
+      }, // sender address
+      to: ["suthardixit.ite@gmail.com"],
+      subject: subject,
+      text: "Conatct Info",
+      html: `<h3>Contact Us</h3>
+      <p><b>Name:</b> ${name}</p>
+      <p><b>email:</b> ${email}</p>
+      <p><b>subject:</b> ${subject}</p>
+      <p><b>message:</b> ${message}</p>`,
+    };
+
+    const info = transporter.sendMail(sendmailOptions);
+
+    return res.status(200).json({ message: "success", contactInfo });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "error", error });
   }
 });
 

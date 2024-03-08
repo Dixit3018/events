@@ -1,5 +1,5 @@
 <div class="breadcrumb-area">
-  <div class="container ">
+  <div class="container">
     <div class="row align-items-end">
       <div class="col-lg-12">
         <div class="breadcrumb-content">
@@ -38,7 +38,7 @@
           </div>
           <div class="contact-info">
             <h3 class="contact-title">Location</h3>
-            <a>Digital Agency Network 20 Eastbourne Terrace, London</a>
+            <a>Luxuria Bussiness Hub, Dumas Road, Vesu, Surat</a>
           </div>
         </div>
         <div class="contact-card">
@@ -53,8 +53,8 @@
           </div>
           <div class="contact-info">
             <h3 class="contact-title">Phone</h3>
-            <a href="tel:+0123456789102">+012 3456 789102</a>
-            <a href="tel:+0123456789102">+012 3456 789102</a>
+            <a href="tel:+919624059306">+91 96240 59306</a>
+            <a href="tel:+919624059306">+91 96240 59306</a>
           </div>
         </div>
         <div class="contact-card">
@@ -70,47 +70,65 @@
           <div class="contact-info">
             <h3 class="contact-title">Email</h3>
             <a
-              ><span
-                class="__cf_email__"
-                >{{'managment@eventlab.com'}}</span
-              >
+              ><span class="__cf_email__">{{ "managment@eventlab.com" }}</span>
             </a>
             <a
-              ><span
-                class="__cf_email__"
-                >{{'manager@eventlab.com'}}</span
-              >
+              ><span class="__cf_email__">{{ "manager@eventlab.com" }}</span>
             </a>
           </div>
         </div>
       </div>
       <div class="col-lg-6">
-        <form action="#" id="contact-form">
+        <form id="contact-form" [formGroup]="contactForm">
           <div class="contact-form-wrapper">
             <h4 class="contact-form-title">Write a Message</h4>
             <div class="primary-input-group">
-              <input type="text" id="name" placeholder="Your Name" />
+              <input
+                type="text"
+                formControlName="name"
+                id="name"
+                placeholder="Your Name"
+              />
             </div>
             <div class="primary-input-group">
-              <input type="email" id="email" placeholder="Your Email" />
+              <input
+                type="email"
+                formControlName="email"
+                id="email"
+                placeholder="Your Email"
+              />
             </div>
             <div class="primary-input-group">
-              <input type="tel" id="phone" placeholder="Your Phone" />
-            </div>
-            <div class="primary-input-group">
-              <input type="text" id="subject" placeholder="Subject" />
+              <input
+                type="text"
+                formControlName="subject"
+                id="subject"
+                placeholder="Subject"
+              />
             </div>
             <div class="primary-input-group">
               <textarea
-                name="massege"
+                name="messege"
                 id="message"
                 cols="30"
                 rows="7"
+                formControlName="message"
                 placeholder="Write Message"
               ></textarea>
             </div>
+            <div class="primary-input-group">
+              <re-captcha
+                formControlName="recaptchaReactive"
+                (resolved)="checkCaptcha($event)"
+                name="recaptchaReactive"
+                [siteKey]="siteKey"
+              >
+              </re-captcha>
+            </div>
             <div class="submit-btn">
-              <button type="submit" class="primary-submit">Submit Now</button>
+              <button type="submit" [disabled]="!contactForm.valid && !captchaResolved" (click)="onSubmit()" class="btn btn-danger">
+                Submit Now
+              </button>
             </div>
           </div>
         </form>
@@ -118,6 +136,4 @@
     </div>
   </div>
 </div>
-
 <app-footer></app-footer>
-
