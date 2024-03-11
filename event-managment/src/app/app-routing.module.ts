@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
@@ -24,9 +24,11 @@ import { AppliedEventsComponent } from './components/applied-events/applied-even
 import { EventsComponent } from './components/events/events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'chat', component: ChatComponent},
   { path: 'home', component: HomeComponent, canActivate: [homeGuard] },
   { path: 'about', component: AboutComponent, canActivate: [homeGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },

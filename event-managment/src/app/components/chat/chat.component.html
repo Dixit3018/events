@@ -1,0 +1,16 @@
+<div class="container">
+  <div [formGroup]="messageForm">
+    <h2>Chat</h2>
+    <div class="messageContainer">
+      <div *ngFor="let message of messages">
+        <div class="message right">Send</div>
+        <div class="message left">Recieve</div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <input class="msgInp form-control" formControlName="newMessage" placeholder="Type a message here..." />
+      <button class="btn btn-primary px-4" (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>

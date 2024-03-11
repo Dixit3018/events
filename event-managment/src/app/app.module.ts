@@ -46,8 +46,12 @@ import { EventsComponent } from './components/events/events.component';
 import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
+import { ChatComponent } from './components/chat/chat.component';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+
+const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
 @NgModule({
   declarations: [
@@ -83,7 +87,8 @@ import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSet
     AppliedEventsComponent,
     EventIdComponent,
     ApplicationListComponent,
-    VolunteerComponent
+    VolunteerComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +101,9 @@ import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSet
     RecaptchaModule,
     RecaptchaFormsModule,
     StripeCardComponent,
-    NgxStripeModule.forRoot(environment.stripe.publicKey)
+    NgxStripeModule.forRoot(environment.stripe.publicKey),
+    SocketIoModule.forRoot(config),
+
   ],
   providers: [
     provideAnimationsAsync(),
