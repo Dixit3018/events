@@ -28,7 +28,7 @@ import { ChatComponent } from './components/chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'chat', component: ChatComponent},
+  { path: 'chat/:recipent-id', component: ChatComponent},
   { path: 'home', component: HomeComponent, canActivate: [homeGuard] },
   { path: 'about', component: AboutComponent, canActivate: [homeGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },

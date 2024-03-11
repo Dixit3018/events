@@ -126,7 +126,7 @@
               </re-captcha>
             </div>
             <div class="submit-btn">
-              <button type="submit" [disabled]="!contactForm.valid && !captchaResolved" (click)="onSubmit()" class="btn btn-danger">
+              <button type="submit" [disabled]="!contactForm.valid" (click)="onSubmit()" class="btn btn-danger">
                 Submit Now
               </button>
             </div>
