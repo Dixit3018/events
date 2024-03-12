@@ -106,4 +106,8 @@ export class HttpService {
   getSingleUser(id:string) {
     return this._http.post(`${this.baseUrl}/get-single-user`, {id: id});
   }
+  getUsers(id:string) {
+    return this._http.post(`${this.baseUrl}/get-users`, {id: id});
+  }
+
 }

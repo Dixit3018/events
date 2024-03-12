@@ -52,6 +52,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
+import { ChatStartComponent } from './components/chat-start/chat-start.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
@@ -91,7 +92,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     ApplicationListComponent,
     VolunteerComponent,
     ChatComponent,
-    ChatScreenComponent
+    ChatScreenComponent,
+    ChatStartComponent
   ],
   imports: [
     BrowserModule,

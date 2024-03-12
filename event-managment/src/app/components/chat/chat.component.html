@@ -1,36 +1,56 @@
 <div class="container">
   <div class="chat-header bg-success gap-2 rounded-top">
-    <img class="volunteer-img" [src]="volunteer.profilePicture" alt="">
-    <div class="text-white">{{ volunteer.firstname + " "+ volunteer.lastname+" ("+ volunteer.username +")" | titlecase}}</div>
-  </div>
-  <div class="messageContainer rounded-bottom position-relative">
-    <div *ngFor="let message of messages">
-      @if(message.from === 'sender'){
-      <div class="message right">{{ message.message }}</div>
-      } @else {
-      <div class="message left">{{ message.message }}</div>
-      }
+    <img class="volunteer-img" [src]="volunteer.profilePicture" alt="" />
+    <div class="text-white">
+      {{
+        volunteer.firstname +
+          " " +
+          volunteer.lastname +
+          " (" +
+          volunteer.username +
+          ")" | titlecase
+      }}
     </div>
-
-    <form
-    class="d-flex gap-2 position-absolute bottom-0 w-100 p-2"
-    [formGroup]="messageForm"
-  >
-    <emoji-mart
-      *ngIf="showEmojiPicker"
-      [style]="{ position: 'absolute', bottom: '100px', left: '50px' }"
-      (emojiClick)="addEmoji($event)"
-      #emojiPicker
-    ></emoji-mart>
-    <button class="btn btn-light border border-2" type="button" (click)="toggleEmojiPicker()">😊</button>
-    <input
-      class="msgInp form-control rounded-3 border border-2"
-      formControlName="newMessage"
-      placeholder="Type a message here..."
-    />
-    <button class="btn btn-primary px-4" (click)="sendMessage()" type="submit">Send</button>
-  </form>
   </div>
-
-
+  <div class="bg-image">
+    <div class="messageContainer">
+      <div *ngFor="let message of messages">
+        @if(message.from === 'sender'){
+        <div class="message right">{{ message.message }}</div>
+        } @else {
+        <div class="message left">{{ message.message }}</div>
+        }
+      </div>
+    </div>
+    <form
+      class="d-flex gap-2"
+      [formGroup]="messageForm"
+    >
+      <emoji-mart
+        *ngIf="showEmojiPicker"
+        [style]="{ position: 'absolute', bottom: '90px', right: '550px' }"
+        (emojiClick)="addEmoji($event)"
+        #emojiPicker
+      ></emoji-mart>
+      <button
+        class="btn btn-light border border-2"
+        type="button"
+        (click)="toggleEmojiPicker()"
+      >
+        😊
+      </button>
+      <input
+        class="msgInp form-control rounded-3 border border-2"
+        formControlName="newMessage"
+        placeholder="Type a message here..."
+      />
+      <button
+        class="btn btn-primary px-4"
+        (click)="sendMessage()"
+        type="submit"
+      >
+        Send
+      </button>
+    </form>
+  </div>
 </div>

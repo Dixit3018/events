@@ -72,8 +72,10 @@ io.on("connection", async (socket) => {
       });
       await newChat.save();
     }
-  
     io.to(socket.id).emit("msg", { message: message, sender_id: sender_id });
+    if(recipent_id === sender_id){
+      return;  
+    }
     io.emit(recipent_id, { message: message, sender_id: sender_id });
   });
 

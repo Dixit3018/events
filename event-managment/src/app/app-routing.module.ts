@@ -26,10 +26,12 @@ import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
+import { ChatStartComponent } from './components/chat-start/chat-start.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'chat', component: ChatScreenComponent, children: [
+    { path: '', component: ChatStartComponent},
     { path: ':recipent-id', component: ChatComponent},
   ]},
   { path: 'home', component: HomeComponent, canActivate: [homeGuard] },
@@ -93,3 +95,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
+

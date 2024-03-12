@@ -746,7 +746,7 @@ router.post("/contact-form", async (req, res) => {
       subject: subject,
       message: message,
     });
-    const contactInfcreateServercreateServero = contact.save();
+    const contactSave = contact.save();
 
     const sendmailOptions = {
       from: {
@@ -809,4 +809,24 @@ router.post("/get-single-user", async (req, res) => {
   }
 });
 
+router.post("/get-users", async (req, res) => {
+  const { id } = req.body;
+  let users = await User.find({ _id: { $ne: id } });
+  // let users = await User.find();
+
+  for (const user of users) {
+    const imagePath = path.join(__dirname, "../", user.profilePicture);
+    if (fs.existsSync(imagePath)) {
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+      user.profilePicture = `data:image/jpeg;base64,${imageBase64}`;
+    }
+  }
+  users = users.map((user) => ({ ...user.toObject() }));
+
+  if (users) {
+    return res.status(200).json({ users: users });
+  } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
 module.exports = router;

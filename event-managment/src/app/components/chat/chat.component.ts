@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatMessage } from '../../shared/chat-message';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from '../../services/http.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -32,7 +33,8 @@ export class ChatComponent implements OnInit {
     private socketService: SocketService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private http: HttpService
+    private http: HttpService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -41,48 +43,55 @@ export class ChatComponent implements OnInit {
     });
 
     this.route.params.subscribe((params: any) => {
+      console.log("params");
+      
+      this.messages = [];
+      this.messageForm.reset();
+      this.volunteer = {};
+
       this.recipentId = params['recipent-id'];
-    });
+      this.chatService.setSelectedChatId(this.recipentId);
 
-    this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
-      
-      this.volunteer = {
-        profilePicture: `data:image/png;base64,${res.user.profilePicture}`,
-        lastname: res.user.lastname,
-        firstname: res.user.firstname,
-        username: res.user.username,
-      };
-      
-    });
-
-    this.http
-      .retriveChatHistory(this.userId, this.recipentId)
-      .subscribe((response: any) => {
-        if (response.chatHistory.length <= 0) return;
-
-        const msgArr = response.chatHistory[0]['messages'];
-
-        msgArr.forEach((el) => {
-          let key = {};
-          if (el.sender === this.userId) {
-            key = {
-              from: 'sender',
-              message: el.message,
-              sender_id: el.sender_id,
-            };
-            this.messages.push(key);
-          } else {
-            key = {
-              from: 'recipent',
-              message: el.message,
-              sender_id: el.sender_id,
-            };
-            this.messages.push(key);
-          }
-        });
+      this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
+        this.volunteer = {
+          profilePicture: `data:image/png;base64,${res.user.profilePicture}`,
+          lastname: res.user.lastname,
+          firstname: res.user.firstname,
+          username: res.user.username,
+        };
       });
 
+      this.http
+        .retriveChatHistory(this.userId, this.recipentId)
+        .subscribe((response: any) => {
+          if (response.chatHistory.length <= 0) return;
+
+          const msgArr = response.chatHistory[0]['messages'];
+
+          msgArr.forEach((el) => {
+            let key = {};
+            if (el.sender === this.userId) {
+              key = {
+                from: 'sender',
+                message: el.message,
+                sender_id: el.sender_id,
+              };
+              this.messages.push(key);
+            } else {
+              key = {
+                from: 'recipent',
+                message: el.message,
+                sender_id: el.sender_id,
+              };
+              this.messages.push(key);
+            }
+          });
+        });
+    });
+
     this.socketService.onMessageSelf().subscribe((data: any) => {
+      console.log(data);
+      
       const receive = {
         from: 'sender',
         message: data.message,
@@ -92,6 +101,8 @@ export class ChatComponent implements OnInit {
     });
 
     this.socketService.onMessageFrom().subscribe((data: any) => {
+      console.log(data);
+      
       const receive = {
         from: 'recipent',
         message: data.message,
