@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private _auth: AuthService,
     private router: Router,
-    private http: HttpService
+    private http: HttpService,
+    private socket: SocketService
   ) {}
 
   ngOnInit(): void {

@@ -23,6 +23,7 @@ const Event = require("../models/event");
 const Application = require("../models/application");
 const ResetPassword = require("../models/passwordReset");
 const Contact = require("../models/contactInfo");
+const ChatData = require("../models/chatData");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -339,7 +340,6 @@ router.post("/get-organizer-data", async (req, res) => {
 
 //get volunteers
 router.get("/get-volunteers", async (req, res) => {
-  const id = req.query.userId;
   let volunteers = await User.find({ role: "volunteer" });
 
   for (const user of volunteers) {
@@ -558,7 +558,7 @@ router.post("/reset-password/:id/:token", async (req, res) => {
     let { id, token } = req.params;
     const { password } = req.body;
     token = token.replace(/^"|"$/g, "");
-    id = id.replace(/^"|"$/g, "");
+    // id = id.replace(/^"|"$/g, "");
 
     const resetPass = await ResetPassword.findOneAndDelete({ token: token });
 
@@ -567,7 +567,7 @@ router.post("/reset-password/:id/:token", async (req, res) => {
     }
 
     const user = await User.findOne({
-      _id: new ObjectId(id.replace(/"/g, "")),
+      _id: id,
     });
 
     if (!user) {
@@ -769,6 +769,43 @@ router.post("/contact-form", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "error", error });
+  }
+});
+
+router.post("/chat-history", async (req, res) => {
+  const { sender_id, recipent_id } = req.body;
+
+  const chatHistory = await ChatData.find({
+    participants: { $all: [sender_id, recipent_id] },
+  });
+
+  return res.status(200).json({ chatHistory });
+});
+
+router.post("/get-single-user", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const user = await User.findOne({ _id: id }).select({
+      email: 1,
+      profilePicture: 1,
+      username: 1,
+      firstname: 1,
+      lastname: 1,
+      role: 1,
+      age: 1,
+      address: 1,
+      city: 1,
+      state: 1,
+      rating: 1,
+    });
+
+    if (user) {
+      user.profilePicture = await imagePathToBase64(user.profilePicture);
+    }
+    res.status(200).json({ user: user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
   }
 });
 

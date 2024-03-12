@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const ChatDataSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true, unique: true },
-    socketId: { type: String },
-    sender: { type: String },
+    participants: [String], // Array of user IDs
     messages: [
       {
+        sender: String,
+        recipient: String,
         message: String,
         isRead: { type: Boolean, default: false },
+        timestamp: { type: Date, default: Date.now },
       },
     ],
   },

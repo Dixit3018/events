@@ -1,13 +1,14 @@
 .messageContainer {
-    background-color:lightyellow;
+    background: url('/assets/images/backgrounds/chat-bg.jpg');
     width: 100%;
-    height: 65vh;
-    border: 2px solid black;
+    height: 75vh;
+    border: 1px solid black;
     margin-bottom: 20px;
+    overflow-y: auto;
 }
 
 .message {
-    width: 200px;
+    width: auto;
     height: auto;
     padding: 10px;
     margin: 3px;
@@ -17,11 +18,32 @@
 .right{
     background-color: lightgreen;
     float: right;
+    border: 1px solid #ccc;
     clear: both;
 }
 
 .left{
-    background-color: lightgray;
+    background-color: white;
     float: left;
+    border: 1px solid #ccc;
     clear: both;
+}
+
+.chat-header{
+    width: 100%;
+    min-height: 75px;
+    max-height: 75px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #000000;
+    border-bottom: 0px;
+}
+
+.volunteer-img {
+    width: 45px;
+    height: auto;
+    // margin-left: auto;
+    margin-left: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
 }

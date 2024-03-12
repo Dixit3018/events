@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class HttpService {
   constructor(private _http: HttpClient) {}
   baseUrl = 'http://localhost:4000/api';
-  
+
   //get routes
   getUserProfileImg() {
     return this._http.get(`${this.baseUrl}/profile-picture`);
@@ -27,8 +27,8 @@ export class HttpService {
     return this._http.get(`${this.baseUrl}/get-volunteer?userId=${userId}`);
   }
 
-  getVolunteers(userId: string) {
-    return this._http.get(`${this.baseUrl}/get-volunteers?userId=${userId}`);
+  getVolunteers() {
+    return this._http.get(`${this.baseUrl}/get-volunteers`);
   }
 
   //post routes
@@ -60,18 +60,16 @@ export class HttpService {
     });
   }
 
-  verifyPasswordResetToken(data: {id:string, token:string}) {
-    return this._http.post(`${this.baseUrl}/verify-token`,data);
+  verifyPasswordResetToken(data: { id: string; token: string }) {
+    return this._http.post(`${this.baseUrl}/verify-token`, data);
   }
 
-  resetPassword(password: string) {
+  resetPassword(id: string, password: string) {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
 
-    return this._http.post(
-      `${this.baseUrl}/reset-password/${userId}/${token}`,
-      { password: password }
-    );
+    return this._http.post(`${this.baseUrl}/reset-password/${id}/${token}`, {
+      password: password,
+    });
   }
 
   applyOnEvent(data: {
@@ -94,7 +92,18 @@ export class HttpService {
     return this._http.post(`${this.baseUrl}/update-application-status`, data);
   }
 
-  storeContactForm(data:any) {
-    return this._http.post(`${this.baseUrl}/contact-form`,data);
+  storeContactForm(data: any) {
+    return this._http.post(`${this.baseUrl}/contact-form`, data);
+  }
+
+  retriveChatHistory(sender_id: string, recipent_id: string) {
+    return this._http.post(`${this.baseUrl}/chat-history`, {
+      sender_id: sender_id,
+      recipent_id: recipent_id,
+    });
+  }
+
+  getSingleUser(id:string) {
+    return this._http.post(`${this.baseUrl}/get-single-user`, {id: id});
   }
 }

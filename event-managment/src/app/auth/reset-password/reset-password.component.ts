@@ -83,7 +83,7 @@ export class ResetPasswordComponent implements OnInit {
 
   onSubmit() {
     const password = this.resetPass.value.password;
-    this._http.resetPassword(password).subscribe((res:any) => {
+    this._http.resetPassword(this.id,password).subscribe((res:any) => {
       
       if(res.success) {
         Swal.fire({

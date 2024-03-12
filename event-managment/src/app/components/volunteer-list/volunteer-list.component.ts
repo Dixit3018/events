@@ -19,8 +19,8 @@ export class VolunteerListComponent implements OnInit {
   }
 
   getVolunteers() {
-    const currentUserId = JSON.parse(localStorage.getItem('user'))['_id'];
-    this.http.getVolunteers(currentUserId).subscribe((res: any) => {
+    // const currentUserId = JSON.parse(localStorage.getItem('user'))['_id'];
+    this.http.getVolunteers().subscribe((res: any) => {
       this.volunteersList = res.volunteers;
     });
   }

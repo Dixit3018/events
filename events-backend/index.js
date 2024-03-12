@@ -40,38 +40,45 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api", routes);
 
-const userSocketMap = {};
-
 io.on("connection", async (socket) => {
-  console.log("user connected with socket id: " + socket.id);
-
   socket.on("msg", async (obj) => {
     const { message, recipent_id, sender_id } = obj;
 
-    const dataExists = await ChatData.findOne({
-      recipent_id: recipent_id,
-      sender_id: sender_id,
-    });
-
-    if (dataExists) {
-      dataExists.messages = [...dataExists.messages, { message: message }];
-      await dataExists.save();
-    } else {
-      const chatData = new ChatData({
-        userId: recipent_id,
-        socketId: socket.id,
-        sender: sender_id,
-        messages: [{ message: message }],
-      });
-      await chatData.save();
+    if (!sender_id || !recipent_id) {
+      console.error("Invalid sender_id or recipent_id");
+      return; // Handle the case where sender_id or recipent_id is null or undefined
     }
-
+  
+    const participants = [sender_id, recipent_id];
+    participants.sort(); // Sort the IDs to ensure consistent order
+  
+    const chat = await ChatData.findOne({
+      participants: { $all: participants },
+    });
+  
+    if (chat) {
+      chat.messages.push({
+        sender: sender_id,
+        recipient: recipent_id,
+        message: message,
+      });
+      await chat.save();
+    } else {
+      const newChat = new ChatData({
+        participants: participants,
+        messages: [
+          { sender: sender_id, recipient: recipent_id, message: message },
+        ],
+      });
+      await newChat.save();
+    }
+  
     io.to(socket.id).emit("msg", { message: message, sender_id: sender_id });
-    //io.to(recipientSocketId).emit("msg", { message: message, sender_id: sender_id });
+    io.emit(recipent_id, { message: message, sender_id: sender_id });
   });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected with socket id: " + socket.id);
+    // console.log("user disconnected with socket id: " + socket.id);
   });
 });
 

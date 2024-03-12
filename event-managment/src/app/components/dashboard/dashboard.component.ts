@@ -4,14 +4,10 @@ import { SocketService } from '../../services/socket.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit{
-
-  constructor(private socket:SocketService) {}
+export class DashboardComponent implements OnInit {
+  constructor(private socket: SocketService) {}
   ngOnInit(): void {
-    
-    this.socket.connect();
-
   }
 }
