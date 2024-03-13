@@ -38,7 +38,6 @@ import { StripeCheckoutComponent } from './components/stripe-checkout/stripe-che
 import { PaymentCardComponent } from './shared/payment-card/payment-card.component';
 import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
-import { EditEventComponent } from './components/edit-event/edit-event.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { InnerFooterComponent } from './shared/inner-footer/inner-footer.component';
@@ -46,13 +45,14 @@ import { EventsComponent } from './components/events/events.component';
 import { AppliedEventsComponent } from './components/applied-events/applied-events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
-import { ChatComponent } from './components/chat/chat.component';
+import { ChatComponent } from './components/chat-screen/chat/chat.component';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
-import { ChatStartComponent } from './components/chat-start/chat-start.component';
+import { ChatStartComponent } from './components/chat-screen/chat-start/chat-start.component';
+import { CallComponent } from './components/chat-screen/chat/call/call.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
@@ -82,7 +82,6 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     PaymentCardComponent,
     EventDetailsComponent,
     TruncatePipe,
-    EditEventComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
     InnerFooterComponent,
@@ -93,7 +92,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     VolunteerComponent,
     ChatComponent,
     ChatScreenComponent,
-    ChatStartComponent
+    ChatStartComponent,
+    CallComponent
   ],
   imports: [
     BrowserModule,

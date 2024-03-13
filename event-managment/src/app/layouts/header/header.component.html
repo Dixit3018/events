@@ -92,6 +92,11 @@
           >
             <ul class="d-flex align-items-center nav-right-list">
               @if (loggedIn) {
+                <li class="nav-btn">
+                  <a routerLinkActive="active-chat" class="rounded-circle border border-secondary p-2 d-flex" routerLink="/chat">
+                    <mat-icon class="text-success">chat</mat-icon>
+                  </a>
+                </li>
               <li class="nav-btn">
                 <a routerLink="/profile">
                 <img

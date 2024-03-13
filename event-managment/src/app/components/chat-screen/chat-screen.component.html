@@ -1,27 +1,31 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-5">
-      <h2>Chat</h2>
+      <form [formGroup]="searchForm">
+        <div class="input-group mb-3 px-2">
+          <input type="text" class="form-control" formControlName="searchQuery" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          <span class="input-group-text" id="search-icon"> <mat-icon class="mat-18">search</mat-icon> </span>
+        </div>
+      </form>
       <ul class="list-group">
-          @for (user of users; track $index) {
-            <a
-            [routerLink]="['/chat', user.id]">
-        <li
-          class="list-group-item d-flex justi fy-content-between align-items-center"
-          [ngClass]="activeId === user.id ? 'active' : ''"
-        >
-          <div class="ms-2 me-auto">
-            <div class="fw-bold">
-              {{ user.firstname + " " + user.lastname }}
+        @for (user of filteredUsers; track $index) {
+        <a [routerLink]="['/chat', user.id]">
+          <li
+            class="list-group-item d-flex justi fy-content-between align-items-center"
+            [ngClass]="activeId === user.id ? 'active' : ''"
+          >
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">
+                {{ user.firstname + " " + user.lastname }}
+              </div>
+              ({{ user.username }})
             </div>
-            ({{ user.username }})
-          </div>
-          <img
-            class="list-image rounded-circle border border-1 border-dark"
-            src="{{ user.profilePicture }}"
-            alt=""
-          />
-        </li>
+            <img
+              class="list-image rounded-circle border border-1 border-dark"
+              src="{{ user.profilePicture }}"
+              alt=""
+            />
+          </li>
         </a>
         }
       </ul>

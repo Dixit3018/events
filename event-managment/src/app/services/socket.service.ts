@@ -26,8 +26,6 @@ export class SocketService {
     return this.socket.fromEvent('msg');
   }
   onMessageFrom(): Observable<any> {
-    console.log(this.sender_id);
-    
     return this.socket.fromEvent(this.sender_id);
   }
 }

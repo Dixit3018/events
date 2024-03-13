@@ -15,7 +15,6 @@ import { VolunteerListComponent } from './components/volunteer-list/volunteer-li
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { EventListComponent } from './components/event-list/event-list.component';
-import { EditEventComponent } from './components/edit-event/edit-event.component';
 import { FormCanDeactivateGuard } from './guards/form-candeactivate.guard';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
@@ -24,16 +23,21 @@ import { AppliedEventsComponent } from './components/applied-events/applied-even
 import { EventsComponent } from './components/events/events.component';
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
-import { ChatComponent } from './components/chat/chat.component';
+import { ChatComponent } from './components/chat-screen/chat/chat.component';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
-import { ChatStartComponent } from './components/chat-start/chat-start.component';
+import { ChatStartComponent } from './components/chat-screen/chat-start/chat-start.component';
+import { CallComponent } from './components/chat-screen/chat/call/call.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'chat', component: ChatScreenComponent, children: [
-    { path: '', component: ChatStartComponent},
-    { path: ':recipent-id', component: ChatComponent},
-  ]},
+  {
+    path: 'chat',
+    component: ChatScreenComponent,
+    children: [
+      { path: '', component: ChatStartComponent },
+      { path: ':recipent-id', component: ChatComponent },
+    ],
+  },
   { path: 'home', component: HomeComponent, canActivate: [homeGuard] },
   { path: 'about', component: AboutComponent, canActivate: [homeGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },
@@ -64,7 +68,11 @@ const routes: Routes = [
   },
   { path: 'events', component: EventsComponent, canActivate: [authGuard] },
   { path: 'events/:id', component: EventIdComponent, canActivate: [authGuard] },
-  { path: 'application-list', component: ApplicationListComponent, canActivate: [authGuard] },
+  {
+    path: 'application-list',
+    component: ApplicationListComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'create-event',
     component: CreateEventComponent,
@@ -78,13 +86,13 @@ const routes: Routes = [
   },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   {
-    path: 'edit-event/:id',
-    component: EditEventComponent,
+    path: 'volunteer/:id',
+    component: VolunteerComponent,
     canActivate: [authGuard],
   },
   {
-    path: 'volunteer/:id',
-    component: VolunteerComponent,
+    path: 'call/:roomId',
+    component: CallComponent,
     canActivate: [authGuard],
   },
   { path: '**', component: NotFoundComponent },
@@ -95,4 +103,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-
