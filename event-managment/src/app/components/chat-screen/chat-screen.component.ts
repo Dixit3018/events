@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
@@ -10,12 +10,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   templateUrl: './chat-screen.component.html',
   styleUrl: './chat-screen.component.scss',
 })
-export class ChatScreenComponent implements OnInit {
+export class ChatScreenComponent implements OnInit, OnDestroy {
   users: any[] = [];
   activeId: string = '';
   userId: string = '';
   filteredUsers: any[] = [];
   searchForm: FormGroup;
+
+  notifySound: HTMLAudioElement;
 
   constructor(
     private http: HttpService,
@@ -35,6 +37,30 @@ export class ChatScreenComponent implements OnInit {
     this.auth.user.subscribe((user: any) => {
       this.userId = user._id;
     });
+    this.chatService.unshiftUser.subscribe((id: string) => {
+      this.filteredUsers.forEach((user) => {
+        if (user.id === id) {
+          this.shiftUser(user);
+        }
+      });
+    });
+
+    this.chatService.unReadMsg.subscribe((data) => {
+      this.filteredUsers.forEach((user) => {
+        if (data.senderId === user.id) {
+          if (data.totalCount !== null && data.totalCount !== 0) {
+            user.unread = data.totalCount;
+            this.shiftUser(user);
+            this.notifySound = new Audio();
+            this.notifySound.src = '/assets/sounds/chat-notification.mp3'; // Update with the path to your sound file
+            this.notifySound.load();
+          } else {
+            user.unread = '';
+          }
+          this.storeUsers();
+        }
+      });
+    });
 
     this.http.getUsers(this.userId).subscribe((response: any) => {
       response.users.forEach((user: any) => {
@@ -44,28 +70,47 @@ export class ChatScreenComponent implements OnInit {
           lastname: user.lastname,
           username: user.username,
           profilePicture: user.profilePicture,
+          unread: 0,
         };
         this.users.push(data);
       });
     });
 
-    this.filteredUsers = this.users;
-    
+    const storedUsers = JSON.parse(localStorage.getItem('chatList'));
+
+    if (storedUsers != null) {
+      this.filteredUsers = storedUsers;
+    } else {
+      this.filteredUsers = this.users;
+    }
+
     // Subscribe to changes in the search query form control
     this.searchForm.get('searchQuery').valueChanges.subscribe(() => {
       this.filterUsers();
     });
-
   }
 
   filterUsers() {
-    console.log("filter called");
-    
     const searchQuery = this.searchForm.get('searchQuery').value.toLowerCase();
-    this.filteredUsers = this.users.filter(user =>
-      user.firstname.toLowerCase().includes(searchQuery) ||
-      user.lastname.toLowerCase().includes(searchQuery) ||
-      user.username.toLowerCase().includes(searchQuery)
+    this.filteredUsers = this.users.filter(
+      (user) =>
+        user.firstname.toLowerCase().includes(searchQuery) ||
+        user.lastname.toLowerCase().includes(searchQuery) ||
+        user.username.toLowerCase().includes(searchQuery)
     );
+  }
+
+  ngOnDestroy(): void {
+    this.storeUsers();
+  }
+
+  storeUsers() {
+    localStorage.setItem('chatList', JSON.stringify(this.filteredUsers));
+  }
+
+  shiftUser(user: any) {
+    const index = this.filteredUsers.indexOf(user);
+    this.filteredUsers.splice(index, 1);
+    this.filteredUsers.unshift(user);
   }
 }

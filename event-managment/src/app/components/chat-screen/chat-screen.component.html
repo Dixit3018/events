@@ -8,8 +8,8 @@
         </div>
       </form>
       <ul class="list-group">
-        @for (user of filteredUsers; track $index) {
-        <a [routerLink]="['/chat', user.id]">
+        @for (user of filteredUsers; track user.unread) {
+        <a [routerLink]="['/chat', user.id]" >
           <li
             class="list-group-item d-flex justi fy-content-between align-items-center"
             [ngClass]="activeId === user.id ? 'active' : ''"
@@ -17,6 +17,9 @@
             <div class="ms-2 me-auto">
               <div class="fw-bold">
                 {{ user.firstname + " " + user.lastname }}
+                @if(user.unread){
+                  <span style="font-size: 12px;" class="rounded-circle bg-danger text-white px-2 py-1">{{user.unread}}</span>
+                }
               </div>
               ({{ user.username }})
             </div>

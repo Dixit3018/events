@@ -81,6 +81,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       this.recipentId = params['recipent-id'];
       this.chatService.setSelectedChatId(this.recipentId);
+
+      this.chatService.unReadMsg.next({
+        senderId: this.recipentId,
+        totalCount: null,
+      });
+      localStorage.removeItem(this.recipentId);
+
       //mark read message
       this.markMsgRead();
 
@@ -110,10 +117,13 @@ export class ChatComponent implements OnInit, OnDestroy {
         message: data.message,
         sender_id: data.sender_id,
       };
+
       if (data.sender_id == this.recipentId) {
         this.messages.push(receive);
         this.recieveSound();
         this.markMsgRead();
+      } else {
+        this.chatService.setUnReadMsg(receive.sender_id, 1);
       }
     });
 
@@ -170,16 +180,21 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     const sender_id = this.userId;
     this.socketService.sendMessage(msg, sender_id, this.recipentId);
+    this.chatService.unshiftUser.next(this.recipentId);
     this.messageForm.reset();
   }
 
   addEmoji(event: any) {
     const selectedEmoji = event.emoji.native;
-    this.messageForm
-      .get('newMessage')
-      .setValue(
-        this.messageForm.get('newMessage').value.trim() + selectedEmoji.trim()
-      );
+    const msg = this.messageForm.get('newMessage').value;
+
+    if (msg === null) {
+      this.messageForm.get('newMessage').setValue(selectedEmoji);
+    } else {
+      this.messageForm
+        .get('newMessage')
+        .setValue(this.messageForm.get('newMessage').value + selectedEmoji);
+    }
   }
 
   toggleEmojiPicker() {
@@ -205,6 +220,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const url = this.router.createUrlTree([route]);
     const msg = `Please join meeting : <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="http://localhost:4200${url}" target='_blank'>http://localhost:4200${url}</a>`;
     this.socketService.sendMessage(msg, this.userId, this.recipentId);
+    // this.chatService.unshiftUser.next(this.recipentId);
     window.open(url.toString(), '_blank');
   }
 
