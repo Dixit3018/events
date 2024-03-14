@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const ChatDataSchema = new mongoose.Schema(
   {
-    participants: [String], // Array of user IDs
+    participants: [String],
     messages: [
       {
         sender: String,

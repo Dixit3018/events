@@ -79,6 +79,21 @@ io.on("connection", async (socket) => {
     io.emit(recipent_id, { message: message, sender_id: sender_id });
   });
 
+  socket.on("markRead", async (obj) => {
+    const chatHistory = await ChatData.findOne({
+      participants: { $all: [obj.senderId,obj.recipientId] }
+    });
+    if(!chatHistory) return;
+    chatHistory.messages.forEach( async (msgData)=> {
+        if(msgData.sender === obj.recipientId && msgData.isRead === false){
+          msgData.isRead = true;
+          await chatHistory.save();
+          io.emit(msgData.sender+'read')
+        }
+    });
+
+  });
+
   socket.on("disconnect", () => {
     // console.log("user disconnected with socket id: " + socket.id);
   });

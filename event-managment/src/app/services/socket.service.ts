@@ -28,4 +28,12 @@ export class SocketService {
   onMessageFrom(): Observable<any> {
     return this.socket.fromEvent(this.sender_id);
   }
+  
+  markRead(sender:string,recipient:string) {
+    this.socket.emit('markRead',{senderId:sender,recipientId:recipient});
+  }
+  
+  onReadRecipt() {
+    return this.socket.fromEvent(this.sender_id+'read');
+  }
 }

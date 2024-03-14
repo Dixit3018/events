@@ -69,8 +69,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       newMessage: ['', Validators.required],
     });
 
-    this.route.params.subscribe((params: any) => {
+    this.socketService.onReadRecipt().subscribe(() => {
+      this.retriveHistory();
+    });
 
+    this.route.params.subscribe((params: any) => {
       this.roomId = randomID(5);
       this.messages = [];
       this.messageForm.reset();
@@ -78,6 +81,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       this.recipentId = params['recipent-id'];
       this.chatService.setSelectedChatId(this.recipentId);
+      //mark read message
+      this.markMsgRead();
 
       this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
         this.volunteer = {
@@ -87,35 +92,6 @@ export class ChatComponent implements OnInit, OnDestroy {
           username: res.user.username,
         };
       });
-
-      this.http
-        .retriveChatHistory(this.userId, this.recipentId)
-        .subscribe((response: any) => {
-          
-          if (response.chatHistory.length <= 0) return;
-
-          const msgArr = response.chatHistory[0]['messages'];
-
-          msgArr.forEach((el) => {
-            let key = {};
-            if (el.sender === this.userId) {
-              key = {
-                from: 'sender',
-                message: el.message,
-                sender_id: el.sender_id,
-                isRead: el.isRead,
-              };
-              this.messages.push(key);
-            } else {
-              key = {
-                from: 'recipent',
-                message: el.message,
-                sender_id: el.sender_id,
-              };
-              this.messages.push(key);
-            }
-          });
-        });
     });
 
     this.socketService.onMessageSelf().subscribe((data: any) => {
@@ -129,22 +105,56 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.onMessageFrom().subscribe((data: any) => {
-      console.log(data);
-      
       const receive = {
         from: 'recipent',
         message: data.message,
         sender_id: data.sender_id,
       };
-      console.log(receive);
-      
-      this.messages.push(receive);
-      this.recieveSound();
+      if (data.sender_id == this.recipentId) {
+        this.messages.push(receive);
+        this.recieveSound();
+        this.markMsgRead();
+      }
     });
 
     this.socketService.connect();
   }
 
+  retriveHistory() {
+    this.messages = [];
+    this.http
+      .retriveChatHistory(this.userId, this.recipentId)
+      .subscribe((response: any) => {
+        if (response.chatHistory.length <= 0) return;
+
+        const msgArr = response.chatHistory[0]['messages'];
+
+        msgArr.forEach((el) => {
+          let key = {};
+          if (el.sender === this.userId) {
+            key = {
+              from: 'sender',
+              message: el.message,
+              sender_id: el.sender_id,
+              isRead: el.isRead,
+            };
+            this.messages.push(key);
+          } else {
+            key = {
+              from: 'recipent',
+              message: el.message,
+              sender_id: el.sender_id,
+            };
+            this.messages.push(key);
+          }
+        });
+      });
+  }
+
+  markMsgRead() {
+    this.socketService.markRead(this.userId, this.recipentId);
+    this.retriveHistory();
+  }
   sentSound(): void {
     this.sendAudio.play();
   }
