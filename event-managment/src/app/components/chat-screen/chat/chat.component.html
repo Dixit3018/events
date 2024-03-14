@@ -22,9 +22,15 @@
     <div class="messageContainer">
       <div *ngFor="let message of messages">
         @if(message.from === 'sender'){
-        <div class="message right" [innerHTML]="sanitizeHtml(message.message)"></div>
+        <div class="message right" >
+          <span [innerHTML]="sanitizeHtml(message.message)"></span>
+          <br>
+          <span class="read-tick"><mat-icon [ngClass]="message.isRead ? 'text-primary' : ''" class="fs-18px">done_all</mat-icon></span>
+        </div>
         } @else {
-        <div class="message left" [innerHTML]="sanitizeHtml(message.message)"></div>
+        <div class="message left">
+        <span [innerHTML]="sanitizeHtml(message.message)"> </span>
+        </div>
         }
       </div>
     </div>
@@ -48,11 +54,11 @@
         placeholder="Type a message here..."
       />
       <button
-        class="btn btn-primary px-4"
+        class="btn btn-success rounded-circle d-flex align-items-center"
         (click)="sendMessage()"
         type="submit"
       >
-        Send
+        <mat-icon class="mat-18">send</mat-icon>
       </button>
     </form>
   </div>

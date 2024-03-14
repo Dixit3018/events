@@ -70,7 +70,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.subscribe((params: any) => {
-      console.log('params called');
 
       this.roomId = randomID(5);
       this.messages = [];
@@ -92,6 +91,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.http
         .retriveChatHistory(this.userId, this.recipentId)
         .subscribe((response: any) => {
+          
           if (response.chatHistory.length <= 0) return;
 
           const msgArr = response.chatHistory[0]['messages'];
@@ -103,6 +103,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                 from: 'sender',
                 message: el.message,
                 sender_id: el.sender_id,
+                isRead: el.isRead,
               };
               this.messages.push(key);
             } else {
@@ -128,11 +129,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.onMessageFrom().subscribe((data: any) => {
+      console.log(data);
+      
       const receive = {
         from: 'recipent',
         message: data.message,
         sender_id: data.sender_id,
       };
+      console.log(receive);
+      
       this.messages.push(receive);
       this.recieveSound();
     });

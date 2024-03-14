@@ -8,8 +8,8 @@ import { BehaviorSubject } from "rxjs";
 export class ChatService {
     selectedId = new BehaviorSubject<string | null>(null);
 
-
     setSelectedChatId(chatId:string) {
         this.selectedId.next(chatId);
     }
+
 }
