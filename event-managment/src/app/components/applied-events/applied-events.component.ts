@@ -19,7 +19,7 @@ export class AppliedEventsComponent implements OnInit {
 
     this.http.getAppliedEvents({ id: userId }).subscribe((res: any) => {
       const applications = res.application;
-      
+        
       if(applications === undefined){
         this.noData = true;
         return;
@@ -28,11 +28,14 @@ export class AppliedEventsComponent implements OnInit {
       applications.forEach((app) => {
         let status = app.status;
         this.http.singleEvent(app.event_id).subscribe((res: any) => {
+          
           const resData = { ...res.event, status: status };
+          console.log(resData);
           const today = new Date();
-          if(!(new Date(resData.start_date) > today)){
-            return;
-          }
+          //condition to show only recent applications
+          // if(!(new Date(resData.start_date) > today)){
+          //   return;
+          // }
           
           resData.start_date = datePipe.transform(
             resData.start_date,

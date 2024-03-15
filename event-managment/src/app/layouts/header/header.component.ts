@@ -62,9 +62,12 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
+    this._auth.endTracking(this.userId);
+    this._auth.user.next(null);
+    
     localStorage.removeItem('user');
     sessionStorage.removeItem('profileImg');
-    this._auth.user.next(null);
+
     this.router.navigate(['/login']);
   }
 

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpService } from './http.service';
 
 export interface User {
   email: string;
@@ -19,8 +20,9 @@ export interface User {
 export class AuthService {
   user = new BehaviorSubject<User>(null);
   userProfileImg = new BehaviorSubject<String>(null);
+  startTime: number;
 
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient, private httpService: HttpService) {}
 
   register(registerData: FormData) {
     const headers = new HttpHeaders();
@@ -37,5 +39,39 @@ export class AuthService {
       password: password,
       role: role,
     });
+  }
+
+  startTracking() {
+    const storedStartTime = localStorage.getItem('startTime');
+    this.startTime = storedStartTime
+      ? parseInt(storedStartTime, 10)
+      : Date.now();
+
+    if (!storedStartTime) {
+      localStorage.setItem('startTime', this.startTime.toString());
+    }
+  }
+
+  endTracking(userId: string) {
+    const endTime = Date.now();
+    const startTime = +localStorage.getItem('startTime');
+    const timeSpentInMilliseconds = endTime - startTime;
+
+    const timeSpentInMinutes = Math.floor(
+      timeSpentInMilliseconds / (1000 * 60)
+    );
+
+    console.log(`Time spent in app: ${timeSpentInMinutes} minutes`);
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    // Construct the date string in the format yyyy-mm-dd
+    const todayDateString = `${year}-${month}-${day}`;
+
+    this.httpService.trackActivity(userId, timeSpentInMinutes, todayDateString).subscribe();
+    localStorage.removeItem('startTime');
   }
 }

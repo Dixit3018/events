@@ -1,0 +1,304 @@
+<!-- blue
+red
+green
+yellow -->
+<div class="container pb-5">
+  <div class="row bg-light rounded-3 boredr-bottom border-dark">
+    <div class="col">
+      <h4 class="m-0 p-2">Welcome , {{ username | titlecase }}</h4>
+    </div>
+  </div>
+  <hr />
+  <!-- cards -->
+  <div class="row p-4">
+    <div class="col-md-3">
+      <div
+        class="dashboard-card border border-secondary-subtle mx-2 bg-primary rounded-4 d-flex align-items-center justify-content-center"
+      >
+        <div class="card-content d-flex align-items-center flex-column p-2">
+          <div class="icon">
+            <mat-icon class="mat-18 text-white w-100 h-100 large-icon"
+              >payments</mat-icon
+            >
+          </div>
+          <span class="text-white fw-semibold fs-5">&#8377; 4000</span>
+          <span class="text-white fw-semibold">Total Earing</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div
+        class="dashboard-card border border-secondary-subtle mx-2 bg-danger rounded-4 d-flex align-items-center justify-content-center"
+      >
+        <div class="card-content d-flex align-items-center flex-column p-2">
+          <div class="icon">
+            <mat-icon class="mat-18 text-white w-100 h-100 large-icon"
+              >event_available</mat-icon
+            >
+          </div>
+          <span class="text-white fw-semibold fs-5">05</span>
+          <span class="text-white fw-semibold">Completed Events</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div
+        class="dashboard-card border border-secondary-subtle mx-2 bg-success rounded-4 d-flex align-items-center justify-content-center"
+      >
+        <div class="card-content d-flex align-items-center flex-column p-2">
+          <div class="icon">
+            <mat-icon class="mat-18 text-white w-100 h-100 large-icon"
+              >description</mat-icon
+            >
+          </div>
+          <span class="text-white fw-semibold fs-5">10</span>
+          <span class="text-white fw-semibold">Total Applied Events</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div
+        class="dashboard-card border border-secondary-subtle mx-2 bg-warning rounded-4 d-flex align-items-center justify-content-center"
+      >
+        <div class="card-content d-flex align-items-center flex-column p-2">
+          <div class="icon">
+            <mat-icon class="mat-18 text-white w-100 h-100 large-icon"
+              >event</mat-icon
+            >
+          </div>
+          <span class="text-white fw-semibold fs-5">05</span>
+          <span class="text-white fw-semibold">Upcoming Events</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row p-2 mb-4 justify-content-around">
+    <!-- timelog chart -->
+    <div class="col-md-5">
+      <div>Daily TimeLog</div>
+      <div>
+        <canvas id="canvas">{{ chart }}</canvas>
+      </div>
+    </div>
+
+    <!-- Task Maker -->
+    <div class="col-md-5">
+      <div class="task-wrapper bg-light p-2 rounded-3 border">
+        <div
+          class="w-100 fw-semibold rounded-top d-flex justify-content-between px-1 align-items-center"
+        >
+          Task Maker
+
+          <div class="add-task-btn m-2">
+            <div class="btn btn-success btn-sm">Add Task</div>
+          </div>
+        </div>
+        <div class="add-task-container border border-light p-1 rounded-bottom">
+          <ul class="list-group border-0 task-container">
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <input class="form-check-input px-2" type="checkbox" value="" />
+              <div class="ms-2 me-auto">
+                <div class="fw-semibold">Task 1</div>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <input class="form-check-input px-2" type="checkbox" value="" />
+              <div class="ms-2 me-auto">
+                <div class="fw-semibold">Task 1</div>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <input class="form-check-input px-2" type="checkbox" value="" />
+              <div class="ms-2 me-auto">
+                <div class="fw-semibold">Task 1</div>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <input class="form-check-input px-2" type="checkbox" value="" />
+              <div class="ms-2 me-auto">
+                <div class="fw-semibold">Task 1</div>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <input class="form-check-input px-2" type="checkbox" value="" />
+              <div class="ms-2 me-auto">
+                <div class="fw-semibold">Task 1</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-around">
+    <!-- calender -->
+    <div class="col-md-4">
+      <div class="mb-2 mt-2">Calender</div>
+      <article class="calendar-wrapper">
+        <igx-calendar selection="multi"></igx-calendar>
+      </article>
+    </div>
+
+    <!-- history -->
+    <div class="col-md-7">
+      <div class="history-wrapper px-3 py-2">
+        <div class="mb-2">History</div>
+        <div class="history-list">
+          <ul class="list-group">
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+
+            <li
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                  Event 1 <br /><span class="fw-light">
+                    this is a event description</span
+                  >
+                </div>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+                <mat-icon class="mat-18 text-warning">star</mat-icon>
+              </div>
+              <span class="badge text-bg-danger rounded-pill p-2"
+                >Hired: 14</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

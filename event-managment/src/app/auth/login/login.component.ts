@@ -12,7 +12,11 @@ import Swal from 'sweetalert2';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private _fb: FormBuilder, private _auth: AuthService, private router:Router) {}
+  constructor(
+    private _fb: FormBuilder,
+    private _auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this._fb.group({
@@ -26,22 +30,24 @@ export class LoginComponent implements OnInit {
     const loginData = this.loginForm.value;
     this._auth
       .login(loginData.email, loginData.password, loginData.role)
-      .subscribe((data: {message: string, user:any}) => {
-        
-        
-        if(data.user){
-          localStorage.setItem('user',JSON.stringify(data.user));
-          this._auth.user.next(data.user);
-          this.router.navigate(['/dashboard']);
+      .subscribe(
+        (data: { message: string; user: any }) => {
+          if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+            this._auth.user.next(data.user);
+            this._auth.startTracking();
+            this.router.navigate(['/dashboard']);
+          }
+        },
+        (error) => {
+          Swal.fire({
+            title: 'Error',
+            text: 'Invalid Credentials',
+            icon: 'error',
+            confirmButtonColor: 'green',
+            confirmButtonText: 'Proceed!',
+          });
         }
-      }, error => {
-        Swal.fire({
-          title: "Error",
-          text: "Invalid Credentials",
-          icon:'error',
-          confirmButtonColor: 'green',
-          confirmButtonText: 'Proceed!'
-        })
-      });
+      );
   }
 }

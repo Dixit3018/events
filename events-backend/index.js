@@ -48,14 +48,14 @@ io.on("connection", async (socket) => {
       console.error("Invalid sender_id or recipent_id");
       return; // Handle the case where sender_id or recipent_id is null or undefined
     }
-  
+
     const participants = [sender_id, recipent_id];
     participants.sort(); // Sort the IDs to ensure consistent order
-  
+
     const chat = await ChatData.findOne({
       participants: { $all: participants },
     });
-  
+
     if (chat) {
       chat.messages.push({
         sender: sender_id,
@@ -73,25 +73,25 @@ io.on("connection", async (socket) => {
       await newChat.save();
     }
     io.to(socket.id).emit("msg", { message: message, sender_id: sender_id });
-    if(recipent_id === sender_id){
-      return;  
+    if (recipent_id === sender_id) {
+      return;
     }
     io.emit(recipent_id, { message: message, sender_id: sender_id });
   });
 
   socket.on("markRead", async (obj) => {
     const chatHistory = await ChatData.findOne({
-      participants: { $all: [obj.senderId,obj.recipientId] }
-    });
-    if(!chatHistory) return;
-    chatHistory.messages.forEach( async (msgData)=> {
-        if(msgData.sender === obj.recipientId && msgData.isRead === false){
-          msgData.isRead = true;
-          await chatHistory.save();
-          io.emit(msgData.sender+'read')
-        }
+      participants: { $all: [obj.senderId, obj.recipientId] },
     });
 
+    if (!chatHistory) return;
+    for (const msgData of chatHistory.messages) {
+      if (msgData.sender === obj.recipientId && msgData.isRead === false) {
+        msgData.isRead = true;
+        await chatHistory.save();
+        io.emit(msgData.sender + "read");
+      }
+    }
   });
 
   socket.on("disconnect", () => {

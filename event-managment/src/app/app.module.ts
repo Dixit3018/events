@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,13 +46,19 @@ import { AppliedEventsComponent } from './components/applied-events/applied-even
 import { EventIdComponent } from './components/event-id/event-id.component';
 import { ApplicationListComponent } from './components/application-list/application-list.component';
 import { ChatComponent } from './components/chat-screen/chat/chat.component';
-
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
-import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
 import { ChatStartComponent } from './components/chat-screen/chat-start/chat-start.component';
 import { CallComponent } from './components/chat-screen/chat/call/call.component';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import {
+  RECAPTCHA_SETTINGS,
+  RecaptchaFormsModule,
+  RecaptchaModule,
+  RecaptchaSettings,
+} from 'ng-recaptcha';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { IgxCalendarModule } from 'igniteui-angular';
 
 const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
@@ -93,7 +99,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     ChatComponent,
     ChatScreenComponent,
     ChatStartComponent,
-    CallComponent
+    CallComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,9 +113,10 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     RecaptchaFormsModule,
     StripeCardComponent,
     PickerComponent,
+    HammerModule,
+    IgxCalendarModule,
     NgxStripeModule.forRoot(environment.stripe.publicKey),
     SocketIoModule.forRoot(config),
-
   ],
   providers: [
     provideAnimationsAsync(),
@@ -120,15 +127,15 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     },
     {
       provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {showError: true},
+      useValue: { showError: true },
     },
     {
       provide: RECAPTCHA_SETTINGS,
       useValue: {
         siteKey: environment.recaptcha.siteKey,
       } as RecaptchaSettings,
-    }
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

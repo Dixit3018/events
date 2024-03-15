@@ -24,6 +24,7 @@ const Application = require("../models/application");
 const ResetPassword = require("../models/passwordReset");
 const Contact = require("../models/contactInfo");
 const ChatData = require("../models/chatData");
+const Activity = require("../models/activity");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -746,7 +747,6 @@ router.post("/contact-form", async (req, res) => {
       subject: subject,
       message: message,
     });
-    const contactSave = contact.save();
 
     const sendmailOptions = {
       from: {
@@ -826,6 +826,28 @@ router.post("/get-users", async (req, res) => {
   if (users) {
     return res.status(200).json({ users: users });
   } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
+
+router.post("/track-user-activity", async (req, res) => {
+  try {
+    const { userId, timeSpent, date } = req.body;
+
+    const exist = await Activity.findOne({ user_id: userId, date: date });
+    if (exist) {
+      exist.timeSpent = timeSpent;
+      exist.save();
+    } else {
+      const activity = await Activity.create({
+        user_id: userId,
+        timeSpent: timeSpent,
+        date: date,
+      });
+    }
+
+    return res.status(200);
+  } catch (error) {
     return res.status(500).json({ err: "something went wrong" });
   }
 });

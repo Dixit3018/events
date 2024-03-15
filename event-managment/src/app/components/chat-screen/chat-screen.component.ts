@@ -29,8 +29,14 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       searchQuery: [''],
     });
   }
-
+  playNotifySound() {
+    this.notifySound.play();
+  }
   ngOnInit(): void {
+    this.notifySound = new Audio();
+    this.notifySound.src = '/assets/sounds/chat-notification.mp3';
+    this.notifySound.load();
+
     this.chatService.selectedId.subscribe((id: string) => {
       this.activeId = id;
     });
@@ -51,9 +57,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
           if (data.totalCount !== null && data.totalCount !== 0) {
             user.unread = data.totalCount;
             this.shiftUser(user);
-            this.notifySound = new Audio();
-            this.notifySound.src = '/assets/sounds/chat-notification.mp3'; // Update with the path to your sound file
-            this.notifySound.load();
+            this.playNotifySound();
           } else {
             user.unread = '';
           }
@@ -78,7 +82,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
 
     const storedUsers = JSON.parse(localStorage.getItem('chatList'));
 
-    if (storedUsers != null) {
+    if (storedUsers != null && storedUsers.length !== 0) {
       this.filteredUsers = storedUsers;
     } else {
       this.filteredUsers = this.users;

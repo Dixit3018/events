@@ -228,3 +228,4 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.setSelectedChatId(null);
   }
 }
+

@@ -109,5 +109,8 @@ export class HttpService {
   getUsers(id:string) {
     return this._http.post(`${this.baseUrl}/get-users`, {id: id});
   }
-
+  
+  trackActivity(userId: string, timeSpent:number, date:string) {
+    return this._http.post(`${this.baseUrl}/track-user-activity`, {userId: userId, timeSpent : timeSpent, date: date});
+  }
 }
