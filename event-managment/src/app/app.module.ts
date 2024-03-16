@@ -7,7 +7,7 @@ import { HeaderComponent } from './layouts/header/header.component';
 import { HomeComponent } from './home/home.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PreloaderComponent } from './layouts/preloader/preloader.component';
+import { PreloaderComponent } from './shared/preloader/preloader.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MaterialsModule } from './modules/materials/materials.module';
 import { AchievementBoxTwoComponent } from './shared/achievement-box-two/achievement-box-two.component';
@@ -59,6 +59,7 @@ import {
 } from 'ng-recaptcha';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { IgxCalendarModule } from 'igniteui-angular';
+import { AddTaskComponent } from './components/dashboard/add-task/add-task.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
@@ -100,6 +101,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     ChatScreenComponent,
     ChatStartComponent,
     CallComponent,
+    AddTaskComponent,
   ],
   imports: [
     BrowserModule,

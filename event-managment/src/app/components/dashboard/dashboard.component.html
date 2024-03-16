@@ -22,7 +22,7 @@ yellow -->
             >
           </div>
           <span class="text-white fw-semibold fs-5">&#8377; 4000</span>
-          <span class="text-white fw-semibold">Total Earing</span>
+          <span class="text-white fw-semibold">Total Earning</span>
         </div>
       </div>
     </div>
@@ -91,51 +91,33 @@ yellow -->
           Task Maker
 
           <div class="add-task-btn m-2">
-            <div class="btn btn-success btn-sm">Add Task</div>
+            <div
+              class="btn btn-success btn-sm"
+              (click)="addTask('500ms', '500ms')"
+            >
+              Add Task
+            </div>
           </div>
         </div>
         <div class="add-task-container border border-light p-1 rounded-bottom">
           <ul class="list-group border-0 task-container">
+            @if (tasks.length > 0) { @for (task of tasks; track task.name) {
+            @if(task.status === 'pending'){
+
             <li
               class="list-group-item d-flex justify-content-between align-items-start"
+              @fadeOut
             >
-              <input class="form-check-input px-2" type="checkbox" value="" />
+              <input
+                class="form-check-input px-2"
+                type="checkbox"
+                (click)="updateStatus(task._id, $index)"
+              />
               <div class="ms-2 me-auto">
-                <div class="fw-semibold">Task 1</div>
+                <div class="fw-semibold">{{ task.name | titlecase }}</div>
               </div>
             </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <input class="form-check-input px-2" type="checkbox" value="" />
-              <div class="ms-2 me-auto">
-                <div class="fw-semibold">Task 1</div>
-              </div>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <input class="form-check-input px-2" type="checkbox" value="" />
-              <div class="ms-2 me-auto">
-                <div class="fw-semibold">Task 1</div>
-              </div>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <input class="form-check-input px-2" type="checkbox" value="" />
-              <div class="ms-2 me-auto">
-                <div class="fw-semibold">Task 1</div>
-              </div>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <input class="form-check-input px-2" type="checkbox" value="" />
-              <div class="ms-2 me-auto">
-                <div class="fw-semibold">Task 1</div>
-              </div>
-            </li>
+            } } }
           </ul>
         </div>
       </div>

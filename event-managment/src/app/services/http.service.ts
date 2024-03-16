@@ -103,14 +103,33 @@ export class HttpService {
     });
   }
 
-  getSingleUser(id:string) {
-    return this._http.post(`${this.baseUrl}/get-single-user`, {id: id});
+  getSingleUser(id: string) {
+    return this._http.post(`${this.baseUrl}/get-single-user`, { id: id });
   }
-  getUsers(id:string) {
-    return this._http.post(`${this.baseUrl}/get-users`, {id: id});
+  getUsers(id: string) {
+    return this._http.post(`${this.baseUrl}/get-users`, { id: id });
   }
-  
-  trackActivity(userId: string, timeSpent:number, date:string) {
-    return this._http.post(`${this.baseUrl}/track-user-activity`, {userId: userId, timeSpent : timeSpent, date: date});
+
+  trackActivity(userId: string, timeSpent: number, date: string) {
+    return this._http.post(`${this.baseUrl}/track-user-activity`, {
+      userId: userId,
+      timeSpent: timeSpent,
+      date: date,
+    });
+  }
+
+  addTask(userId: string, task: string) {
+    return this._http.post(`${this.baseUrl}/add-task`, {
+      userId: userId,
+      task: task,
+    });
+  }
+
+  getTask(userId: string) {
+    return this._http.get(`${this.baseUrl}/get-task?id=${userId}`);
+  }
+
+  updateTaskStatus(userId: string, taskId: string) {
+    return this._http.post(`${this.baseUrl}/update-status`, { userId, taskId });
   }
 }

@@ -13,6 +13,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from '../../../services/http.service';
 import { ChatService } from '../../../services/chat.service';
+import { Subscription } from 'rxjs';
 
 function randomID(len: number) {
   let result = '';
@@ -29,7 +30,7 @@ function randomID(len: number) {
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss'],
+  styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messageForm: FormGroup;
@@ -45,6 +46,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   userId: string = JSON.parse(localStorage.getItem('user'))._id;
   recipentId: string = '';
+  sendMsgSubscription: Subscription;
+  selfSendMsgSubscription: Subscription;
+  fromMsgSubscription: Subscription;
 
   constructor(
     private socketService: SocketService,
@@ -74,7 +78,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.subscribe((params: any) => {
-      this.roomId = randomID(5);
+        this.roomId = randomID(5);
+        
       this.messages = [];
       this.messageForm.reset();
       this.volunteer = {};
@@ -92,6 +97,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.markMsgRead();
 
       this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
+        
         this.volunteer = {
           profilePicture: `data:image/png;base64,${res.user.profilePicture}`,
           lastname: res.user.lastname,
@@ -101,7 +107,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.socketService.onMessageSelf().subscribe((data: any) => {
+    this.selfSendMsgSubscription = this.socketService.onMessageSelf().subscribe((data: any) => {
       const sent = {
         from: 'sender',
         message: data.message,
@@ -111,7 +117,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.sentSound();
     });
 
-    this.socketService.onMessageFrom().subscribe((data: any) => {
+    this.fromMsgSubscription = this.socketService.onMessageFrom().subscribe((data: any) => {
       const receive = {
         from: 'recipent',
         message: data.message,
@@ -226,6 +232,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.chatService.setSelectedChatId(null);
+    this.fromMsgSubscription.unsubscribe();
+    this.selfSendMsgSubscription.unsubscribe();
   }
 }
 

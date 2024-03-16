@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
       this.loggedIn = true;
       this._auth.user.next(userData);
       this.userRole = userData.role;
-    }
+    } 
     this.getUserImg()
 
     this._auth.userProfileImg.subscribe(newImgPath => {

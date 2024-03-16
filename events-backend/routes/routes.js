@@ -25,6 +25,7 @@ const ResetPassword = require("../models/passwordReset");
 const Contact = require("../models/contactInfo");
 const ChatData = require("../models/chatData");
 const Activity = require("../models/activity");
+const Task = require("../models/tasks");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -80,6 +81,212 @@ function filterSensitiveData(user) {
 router.use(
   "/eventUploads",
   express.static(path.join(__dirname, "..", "public", "eventUploads"))
+);
+
+// Endpoint to retrieve profile picture by user ID
+router.get("/profile-picture", async (req, res) => {
+  try {
+    const userId = req.query._id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const image = imagePathToBase64(user.profilePicture);
+    res.status(200).json({ image: image });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// get cities
+router.get("/cities", async (req, res) => {
+  const data = await Cities.find().select("city admin_name").sort({ city: 1 });
+
+  const list = data.map((val) => [val.city, val.admin_name]);
+
+  return res.send({ data: list });
+});
+
+// Get Events
+router.get("/get-events", async (req, res) => {
+  try {
+    const organizer_id = req.query._id;
+
+    const events = await Event.find({ organizer_id: organizer_id });
+
+    if (events.length === 0) {
+      return res.status(200).json({ msg: "No events are there!" });
+    }
+
+    const modifiedRes = await Promise.all(
+      events.map(async (event) => {
+        const image = imagePathToBase64(event.cover_img);
+        return {
+          ...event._doc,
+          cover_img: `data:image/jpeg;base64,${image}`,
+        };
+      })
+    );
+
+    return res.status(200).json({ events: modifiedRes });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+});
+
+//get all events
+router.get("/get-all-events", async (req, res) => {
+  const events = await Event.find();
+  const modifiedRes = events.map((event) => {
+    const image = imagePathToBase64(event.cover_img);
+    return {
+      ...event._doc,
+      cover_img: `data:image/jpeg;base64,${image}`,
+    };
+  });
+  res.status(200).json({ events: modifiedRes });
+});
+
+//get volunteers
+router.get("/get-volunteers", async (req, res) => {
+  let volunteers = await User.find({ role: "volunteer" });
+
+  for (const user of volunteers) {
+    const imagePath = path.join(__dirname, "../", user.profilePicture);
+    if (fs.existsSync(imagePath)) {
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
+      user.profilePicture = `data:image/jpeg;base64,${imageBase64}`;
+    }
+  }
+  volunteers = volunteers.map((user) => ({ ...user.toObject() }));
+
+  if (volunteers) {
+    return res.status(200).json({ volunteers: volunteers });
+  } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
+
+router.get("/get-volunteer", async (req, res) => {
+  try {
+    const id = req.query.userId;
+
+    const volunteer = await User.findOne({ _id: id, role: "volunteer" }).select(
+      {
+        email: 1,
+        profilePicture: 1,
+        username: 1,
+        firstname: 1,
+        lastname: 1,
+        role: 1,
+        age: 1,
+        address: 1,
+        city: 1,
+        state: 1,
+        rating: 1,
+      }
+    );
+
+    if (volunteer) {
+      volunteer.profilePicture = await imagePathToBase64(
+        volunteer.profilePicture
+      );
+    }
+    res.status(200).json({ volunteer: volunteer });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+});
+// get task
+router.get("/get-task", async (req, res) => {
+  try {
+    const userId = req.query.id;
+
+    const tasks = await Task.findOne({ user_id: userId });
+
+    res.status(200).json({ message: "success", tasks: tasks.tasks });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+});
+
+// ------------------------ POST REQUESTS -------------------------
+
+// Update task list
+router.post("/update-status", async (req, res) => {
+  try {
+    const { userId, taskId } = req.body;
+
+    const taskList = await Task.findOne({ user_id: userId });
+
+    if(taskList){
+      taskList.tasks.forEach( async task => {
+        if(task._id == taskId){
+          task.status = 'completed';
+        }
+      })
+    }
+    taskList.save();
+
+    res.status(200).json({ message: "success"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+});
+
+//Create Event
+router.post(
+  "/create-event",
+  uploadEvent.single("eventImage"),
+  async (req, res) => {
+    try {
+      const organizerId = req.query._id;
+
+      const userExist = await User.findOne({ _id: new ObjectId(organizerId) });
+
+      if (!userExist) {
+        return res.status(200).json("User Not Exists");
+      }
+
+      const event = req.body;
+
+      const coverImg = req.file.path;
+
+      const newEvent = new Event({
+        organizer_id: organizerId,
+        name: event.eventName,
+        venue: event.eventVenue,
+        description: event.eventDescription,
+        volunteers: event.eventNeededVolunteers,
+        pay_per_volunteer: event.eventPayPerDay,
+        start_date: new Date(event.eventStartDate),
+        end_date: new Date(event.eventEndDate),
+        days: event.eventDays,
+        city: event.eventCity,
+        state: event.eventState,
+        cover_img: coverImg,
+      });
+
+      const savedEv = await newEvent.save();
+
+      return res.status(200).json({
+        message: "Event Registered Successfully",
+        event_details: savedEv,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error });
+    }
+  }
 );
 
 //login api
@@ -186,211 +393,6 @@ router.post("/register", upload.single("image"), async (req, res) => {
   }
 });
 
-// Endpoint to retrieve profile picture by user ID
-router.get("/profile-picture", async (req, res) => {
-  try {
-    const userId = req.query._id;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const image = imagePathToBase64(user.profilePicture);
-    res.status(200).json({ image: image });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-// get cities
-router.get("/cities", async (req, res) => {
-  const data = await Cities.find().select("city admin_name").sort({ city: 1 });
-
-  const list = data.map((val) => [val.city, val.admin_name]);
-
-  return res.send({ data: list });
-});
-
-//Create Event
-router.post(
-  "/create-event",
-  uploadEvent.single("eventImage"),
-  async (req, res) => {
-    try {
-      const organizerId = req.query._id;
-
-      const userExist = await User.findOne({ _id: new ObjectId(organizerId) });
-
-      if (!userExist) {
-        return res.status(200).json("User Not Exists");
-      }
-
-      const event = req.body;
-
-      const coverImg = req.file.path;
-
-      const newEvent = new Event({
-        organizer_id: organizerId,
-        name: event.eventName,
-        venue: event.eventVenue,
-        description: event.eventDescription,
-        volunteers: event.eventNeededVolunteers,
-        pay_per_volunteer: event.eventPayPerDay,
-        start_date: new Date(event.eventStartDate),
-        end_date: new Date(event.eventEndDate),
-        days: event.eventDays,
-        city: event.eventCity,
-        state: event.eventState,
-        cover_img: coverImg,
-      });
-
-      const savedEv = await newEvent.save();
-
-      return res.status(200).json({
-        message: "Event Registered Successfully",
-        event_details: savedEv,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: error });
-    }
-  }
-);
-
-// Get Events
-router.get("/get-events", async (req, res) => {
-  try {
-    const organizer_id = req.query._id;
-
-    const events = await Event.find({ organizer_id: organizer_id });
-
-    if (events.length === 0) {
-      return res.status(200).json({ msg: "No events are there!" });
-    }
-
-    const modifiedRes = await Promise.all(
-      events.map(async (event) => {
-        const image = imagePathToBase64(event.cover_img);
-        return {
-          ...event._doc,
-          cover_img: `data:image/jpeg;base64,${image}`,
-        };
-      })
-    );
-
-    return res.status(200).json({ events: modifiedRes });
-  } catch (error) {
-    return res.status(500).json({ error: error });
-  }
-});
-
-//get single event
-router.post("/get-event", async (req, res) => {
-  const id = req.body.id;
-  const event = await Event.findById(id);
-
-  if (event === null) {
-    throw new Error("No event found");
-  }
-  const image = imagePathToBase64(event.cover_img);
-
-  const modifiedEvent = {
-    ...event._doc,
-    cover_img: `data:image/jpeg;base64,${image}`,
-  };
-
-  if (event) {
-    return res.status(200).json({ event: modifiedEvent });
-  } else {
-    return res.status(500).json({ err: "something went wrong" });
-  }
-});
-
-//edit event
-router.post("/edit-event", async (req, res) => {});
-
-//get all events
-router.get("/get-all-events", async (req, res) => {
-  const events = await Event.find();
-  const modifiedRes = events.map((event) => {
-    const image = imagePathToBase64(event.cover_img);
-    return {
-      ...event._doc,
-      cover_img: `data:image/jpeg;base64,${image}`,
-    };
-  });
-  res.status(200).json({ events: modifiedRes });
-});
-
-//get organizer details
-router.post("/get-organizer-data", async (req, res) => {
-  try {
-    const { id } = req.body;
-    const organizer = await User.findOne({ _id: id });
-    organizer.profilePicture = imagePathToBase64(organizer.profilePicture);
-    res.status(200).json({ organizer: organizer });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get volunteers
-router.get("/get-volunteers", async (req, res) => {
-  let volunteers = await User.find({ role: "volunteer" });
-
-  for (const user of volunteers) {
-    const imagePath = path.join(__dirname, "../", user.profilePicture);
-    if (fs.existsSync(imagePath)) {
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: "base64" });
-      user.profilePicture = `data:image/jpeg;base64,${imageBase64}`;
-    }
-  }
-  volunteers = volunteers.map((user) => ({ ...user.toObject() }));
-
-  if (volunteers) {
-    return res.status(200).json({ volunteers: volunteers });
-  } else {
-    return res.status(500).json({ err: "something went wrong" });
-  }
-});
-
-router.get("/get-volunteer", async (req, res) => {
-  try {
-    const id = req.query.userId;
-
-    const volunteer = await User.findOne({ _id: id, role: "volunteer" }).select(
-      {
-        email: 1,
-        profilePicture: 1,
-        username: 1,
-        firstname: 1,
-        lastname: 1,
-        role: 1,
-        age: 1,
-        address: 1,
-        city: 1,
-        state: 1,
-        rating: 1,
-      }
-    );
-
-    if (volunteer) {
-      volunteer.profilePicture = await imagePathToBase64(
-        volunteer.profilePicture
-      );
-    }
-    res.status(200).json({ volunteer: volunteer });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error });
-  }
-});
-
 // payment intent
 router.post("/create-payment-intent", async (req, res) => {
   const amountInPaise = Math.round(parseInt(req.body.amount) * 100);
@@ -470,6 +472,40 @@ router.post(
     }
   }
 );
+
+//get organizer details
+router.post("/get-organizer-data", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const organizer = await User.findOne({ _id: id });
+    organizer.profilePicture = imagePathToBase64(organizer.profilePicture);
+    res.status(200).json({ organizer: organizer });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get single event
+router.post("/get-event", async (req, res) => {
+  const id = req.body.id;
+  const event = await Event.findById(id);
+
+  if (event === null) {
+    throw new Error("No event found");
+  }
+  const image = imagePathToBase64(event.cover_img);
+
+  const modifiedEvent = {
+    ...event._doc,
+    cover_img: `data:image/jpeg;base64,${image}`,
+  };
+
+  if (event) {
+    return res.status(200).json({ event: modifiedEvent });
+  } else {
+    return res.status(500).json({ err: "something went wrong" });
+  }
+});
 
 //update user information
 router.post("/update-user", async (req, res) => {
@@ -785,19 +821,7 @@ router.post("/chat-history", async (req, res) => {
 router.post("/get-single-user", async (req, res) => {
   try {
     const { id } = req.body;
-    const user = await User.findOne({ _id: id }).select({
-      email: 1,
-      profilePicture: 1,
-      username: 1,
-      firstname: 1,
-      lastname: 1,
-      role: 1,
-      age: 1,
-      address: 1,
-      city: 1,
-      state: 1,
-      rating: 1,
-    });
+    const user = await User.findOne({ _id: id });
 
     if (user) {
       user.profilePicture = await imagePathToBase64(user.profilePicture);
@@ -851,4 +875,32 @@ router.post("/track-user-activity", async (req, res) => {
     return res.status(500).json({ err: "something went wrong" });
   }
 });
+
+// Add task
+router.post("/add-task", async (req, res) => {
+  try {
+    const { userId, task } = req.body;
+    if (task === "" || task === null || task === undefined) {
+      return res.status(402).json({ message: "Invalid Data" });
+    }
+    const exist = await Task.findOne({ user_id: userId });
+    let savedTask;
+
+    if (exist) {
+      exist.tasks.push({ name: task });
+      savedTask = await exist.save();
+    } else {
+      savedTask = await Task.create({
+        user_id: userId,
+        tasks: [{ name: task }],
+      });
+    }
+    const response = savedTask.tasks.pop();
+    return res.status(200).json({ message: "success", task: response });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "fail", error: error });
+  }
+});
+
 module.exports = router;

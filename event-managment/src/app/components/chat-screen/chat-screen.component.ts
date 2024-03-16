@@ -38,7 +38,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     this.notifySound.load();
 
     this.chatService.selectedId.subscribe((id: string) => {
-      this.activeId = id;
+      Promise.resolve().then(() => this.activeId = id)
     });
     this.auth.user.subscribe((user: any) => {
       this.userId = user._id;
@@ -80,7 +80,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       });
     });
 
-    const storedUsers = JSON.parse(localStorage.getItem('chatList'));
+    const storedUsers = JSON.parse(sessionStorage.getItem('chatList'));
 
     if (storedUsers != null && storedUsers.length !== 0) {
       this.filteredUsers = storedUsers;
@@ -109,7 +109,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   }
 
   storeUsers() {
-    localStorage.setItem('chatList', JSON.stringify(this.filteredUsers));
+    sessionStorage.setItem('chatList', JSON.stringify(this.filteredUsers));
   }
 
   shiftUser(user: any) {
