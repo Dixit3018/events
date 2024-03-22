@@ -18,5 +18,7 @@ const ChatDataSchema = new mongoose.Schema(
   }
 );
 
+ChatDataSchema.index({ participants: 1 });
+
 const ChatData = mongoose.model("ChatData", ChatDataSchema);
 module.exports = ChatData;

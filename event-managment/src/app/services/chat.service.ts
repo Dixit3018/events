@@ -9,10 +9,8 @@ export class ChatService {
     selectedId = new BehaviorSubject<string | null>(null);
     unReadMsg = new BehaviorSubject<{senderId:string, totalCount:number} | null>(null);
     unshiftUser = new BehaviorSubject<string | null>(null);
-    
-    setSelectedChatId(chatId:string) {
-        this.selectedId.next(chatId);
-    }
+
+    selectedChatId:string = '';
 
     setUnReadMsg(senderId:string, count:number) {
         const previousCount = +localStorage.getItem(senderId);
@@ -28,6 +26,9 @@ export class ChatService {
             localStorage.setItem(senderId,totalCount+'');
 
         }
+    }
+    setSelectedChatId(id:string) {
+        this.selectedChatId = id;
     }
 
 }

@@ -38,10 +38,14 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     this.notifySound.load();
 
     this.chatService.selectedId.subscribe((id: string) => {
-      Promise.resolve().then(() => this.activeId = id)
+      Promise.resolve().then(() => (this.activeId = id));
     });
     this.auth.user.subscribe((user: any) => {
-      this.userId = user._id;
+      if (user !== null) {
+        this.userId = user._id;
+      } else {
+        return;
+      }
     });
     this.chatService.unshiftUser.subscribe((id: string) => {
       this.filteredUsers.forEach((user) => {
@@ -105,7 +109,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeUsers();
+    sessionStorage.removeItem('chatList');
   }
 
   storeUsers() {

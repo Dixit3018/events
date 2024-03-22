@@ -14,6 +14,7 @@ export class SocketService {
   }
 
   sendMessage(message: string, sender_id: string, recipent_id: string) {
+    
     this.sender_id = sender_id;
     this.socket.emit('msg', {
       message: message,

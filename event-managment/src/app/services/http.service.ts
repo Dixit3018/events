@@ -47,7 +47,7 @@ export class HttpService {
   }
 
   updateUser(userData: any) {
-    return this._http.post(`${this.baseUrl}/update-user`, userData);
+    return this._http.put(`${this.baseUrl}/update-user`, userData);
   }
 
   updateProfileImg(formData: any) {
@@ -104,18 +104,22 @@ export class HttpService {
   }
 
   getSingleUser(id: string) {
-    return this._http.post(`${this.baseUrl}/get-single-user`, { id: id });
+    return this._http.get(`${this.baseUrl}/get-single-user?id=${id}`);
   }
   getUsers(id: string) {
     return this._http.post(`${this.baseUrl}/get-users`, { id: id });
   }
-
+  
   trackActivity(userId: string, timeSpent: number, date: string) {
     return this._http.post(`${this.baseUrl}/track-user-activity`, {
       userId: userId,
       timeSpent: timeSpent,
       date: date,
     });
+  }
+  
+  getActivity(userId:string) {
+    return this._http.post(`${this.baseUrl}/get-activity`, { userId: userId });
   }
 
   addTask(userId: string, task: string) {
@@ -130,6 +134,6 @@ export class HttpService {
   }
 
   updateTaskStatus(userId: string, taskId: string) {
-    return this._http.post(`${this.baseUrl}/update-status`, { userId, taskId });
+    return this._http.put(`${this.baseUrl}/update-status`, { userId, taskId });
   }
 }

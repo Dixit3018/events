@@ -7,6 +7,11 @@ const routes = require("./routes/routes");
 const cors = require("cors");
 const path = require("path");
 
+// Middlewares
+const {
+  authenticateJWT,
+} = require("./middlewares/authenticateJWT.middleware");
+
 const ChatData = require("./models/chatData");
 
 const app = express();
@@ -38,6 +43,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(["/profile-picture"], authenticateJWT);
+
 app.use("/api", routes);
 
 io.on("connection", async (socket) => {

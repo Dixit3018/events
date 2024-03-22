@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { HttpService } from '../../services/http.service';
-import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-header',
@@ -15,82 +13,55 @@ export class HeaderComponent implements OnInit {
   userImg: string = '/assets/images/profile/default-profile.png';
   userRole: string;
 
-  constructor(
-    private _auth: AuthService,
-    private router: Router,
-    private http: HttpService,
-    private socket: SocketService
-  ) {}
+  constructor(private _auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this._auth.user.subscribe((user) => {
       if (!!user) {
+        this.userImg = user.profilePicture;
         this.loggedIn = true;
         this.userRole = user.role;
-        this.getUserImg();
       } else {
         this.loggedIn = false;
       }
     });
-
-    const userStored = localStorage.getItem('user');
-    
-    if (!!userStored) {
-      const userData = JSON.parse(userStored);
-      this.userId = userData['_id'];
-      
-      this.loggedIn = true;
-      this._auth.user.next(userData);
-      this.userRole = userData.role;
-    } 
-    this.getUserImg()
-
-    this._auth.userProfileImg.subscribe(newImgPath => {
-      this.getUserImg();
-    })
-  }
-  
-  getUserImg() {
-    const storedImg = sessionStorage.getItem('profileImg')
-    
-    if(!!storedImg){
-      this.userImg = storedImg;
-    }
-    else{
-      this.getProfileImg();
-    } 
+    this.autoLogin();
   }
 
   onLogout() {
     this._auth.endTracking(this.userId);
     this._auth.user.next(null);
-    
+
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiry');
     sessionStorage.removeItem('profileImg');
 
     this.router.navigate(['/login']);
   }
 
-  getProfileImg() {
-    if (this.loggedIn) {
-      this.http
-        .getUserProfileImg()
-        .subscribe((response: { image?: string }) => {
+  autoLogin() {
+    const token = localStorage.getItem('token');
+    const expiresIn = localStorage.getItem('expiry');
 
-          if(response.image){
+    if (token && expiresIn) {
+      const expirationTime = parseInt(expiresIn);
+      const currentTime = new Date().getTime();
 
-            sessionStorage.setItem('profileImg',`data:image/png;base64,${response.image}`)
-            this.userImg = `data:image/png;base64,${response.image}`;
-          }
-          else{
-            sessionStorage.setItem('profileImg',`/assets/images/profile/default-profile.png`)
-            this.userImg = `/assets/images/profile/default-profile.png`;
-          }
-        },
-        error => {
-          this.userImg = '/assets/images/profile/default-profile.png';
-          console.log(error);
-        });
+      if (expirationTime > currentTime) {
+        const timeoutDuration = expirationTime - currentTime;
+
+        setTimeout(() => {
+          this.onLogout();
+        }, timeoutDuration);
+      } else {
+        this.onLogout();
       }
+    }
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!!user) {
+      this._auth.user.next(user);
+    }
   }
 }

@@ -4,6 +4,7 @@ import { notSelectedValidator } from '../../shared/validators/select.validator';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
+import { LoginData } from '../login/login.component';
 
 @Component({
   selector: 'app-signup',
@@ -17,13 +18,13 @@ export class SignupComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   selectedFile: File | null = null;
   citiesAndStates: [];
-  state:string ='';
+  state: string = '';
 
   constructor(
     private _formBuilder: FormBuilder,
     private _auth: AuthService,
     private router: Router,
-    private _http:HttpService
+    private _http: HttpService
   ) {}
 
   passwordPattern =
@@ -75,7 +76,9 @@ export class SignupComponent implements OnInit {
   setState(event: any) {
     const selectedCity = event.target.value;
 
-    const selectedEntry = this.citiesAndStates.find((entry) => entry[0] === selectedCity);
+    const selectedEntry = this.citiesAndStates.find(
+      (entry) => entry[0] === selectedCity
+    );
     const selectedStatename = selectedEntry[1];
     this.state = selectedStatename;
     this.signupForm.get('generalInfo.state').setValue(selectedStatename);
@@ -112,15 +115,15 @@ export class SignupComponent implements OnInit {
     }
 
     // Register user method
-    this._auth
-      .register(formData)
-      .subscribe((data: { message: string; user: any }) => {
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-          this._auth.user.next(data.user);
-          this.router.navigate(['/dashboard'])
-        }
-      });
+    this._auth.register(formData).subscribe((data: LoginData) => {
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('expiry', JSON.stringify(data.expiresIn));
+        this._auth.user.next(data.user);
+        this.router.navigate(['/dashboard']);
+      }
+    });
   }
 
   getValidationImagePath(validate: string): string {

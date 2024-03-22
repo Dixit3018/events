@@ -23,7 +23,7 @@
         <td class="text-center">
           <a routerLink="{{ '/volunteer/' + applicants.volunteer_id }}">
             <img
-              src="{{ 'data:image/png;base64,' + applicants.profilePicture }}"
+              src="{{ applicants.profilePicture }}"
               width="50px"
               class="rounded-circle"
               alt=""

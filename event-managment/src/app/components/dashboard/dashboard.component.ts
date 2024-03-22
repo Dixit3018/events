@@ -8,6 +8,7 @@ import { DataService } from '../../services/data.service';
 import { HttpService } from '../../services/http.service';
 
 import { trigger, transition, style, animate } from '@angular/animations';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,8 +40,12 @@ export class DashboardComponent implements OnInit {
       this.tasks = tasks;
     });
     this.auth.user.subscribe((user: any) => {
-      this.username = user.username;
-      this.userId = user._id;
+      if(user !== null){
+
+        this.username = user.username;
+        this.userId = user._id;
+      }
+      return;
     });
     this.setTasks();
     // time log chart
@@ -113,7 +118,11 @@ export class DashboardComponent implements OnInit {
     this.http.updateTaskStatus(this.userId, taskId).subscribe((res:{message:string}) => {
       this.tasks.splice(index,1);
       if(res.message === 'success'){
-
+        Swal.fire({
+          title: 'Success',
+          text: 'Task updated!',
+          icon:'success',
+        })  
       }
     });
   }

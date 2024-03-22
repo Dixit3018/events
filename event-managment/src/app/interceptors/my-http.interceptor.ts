@@ -16,10 +16,14 @@ export class MyHttpInterceptor implements HttpInterceptor {
 
     if (apis.some(api => req.url.includes(api))) {
       const user = JSON.parse(localStorage.getItem('user'));
+      const token = JSON.parse(localStorage.getItem('token'));
 
       const modifiedRequest = req.clone({
         setParams: {
           _id: user['_id'],
+        },
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
         },
       });
 

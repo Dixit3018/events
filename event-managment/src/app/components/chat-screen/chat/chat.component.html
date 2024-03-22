@@ -13,26 +13,38 @@
     </div>
     <div
       class="ms-auto me-4 border border-1 border-dark p-1 rounded-circle d-flex bg-white cursor-pointer"
-      (click)="openInNewTab()" target="_blank"
+      (click)="openInNewTab()"
+      target="_blank"
     >
       <mat-icon class="mat-18 text-success">videocam</mat-icon>
     </div>
   </div>
   <div class="bg-image">
     <div class="messageContainer">
-      <div *ngFor="let message of messages">
+      @if(messages.length > 0){ @for (message of messages; track $index) {
+      <div>
         @if(message.from === 'sender'){
-        <div class="message right" >
+        <div class="message right">
           <span [innerHTML]="sanitizeHtml(message.message)"></span>
-          <br>
-          <span class="read-tick"><mat-icon [ngClass]="message.isRead ? 'text-primary' : ''" class="fs-18px">done_all</mat-icon></span>
+          <br />
+          <span class="read-tick"
+            ><mat-icon
+              [ngClass]="message.isRead ? 'text-primary' : ''"
+              class="fs-18px"
+              >done_all</mat-icon
+            ></span
+          >
         </div>
-        } @else {
+        } @else{
         <div class="message left">
-        <span [innerHTML]="sanitizeHtml(message.message)"> </span>
+          <span [innerHTML]="sanitizeHtml(message.message)"> </span>
         </div>
         }
       </div>
+      } }
+      @else {
+        <div>no messages</div>
+      }
     </div>
     <form class="d-flex gap-2" [formGroup]="messageForm">
       <emoji-mart

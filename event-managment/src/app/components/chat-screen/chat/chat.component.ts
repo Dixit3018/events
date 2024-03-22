@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -40,6 +41,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   roomId: string = '';
   sendAudio: HTMLAudioElement;
   recieveAudio: HTMLAudioElement;
+  dataLoaded: boolean = false;
 
   @ViewChild('emojiPicker') emojiPicker: ElementRef | undefined;
   @ViewChild('messageContainer') messageContainer: ElementRef;
@@ -57,16 +59,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: HttpService,
     private chatService: ChatService,
-    private sanitizer: DomSanitizer
-  ) {}
+    private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
+    
     this.sendAudio = new Audio();
-    this.sendAudio.src = '/assets/sounds/chat-send.mp3'; // Update with the path to your sound file
+    this.sendAudio.src = '/assets/sounds/chat-send.mp3';
     this.sendAudio.load();
 
     this.recieveAudio = new Audio();
-    this.recieveAudio.src = '/assets/sounds/chat-recieve.mp3'; // Update with the path to your sound file
+    this.recieveAudio.src = '/assets/sounds/chat-recieve.mp3';
     this.recieveAudio.load();
 
     this.messageForm = this.fb.group({
@@ -78,13 +80,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.subscribe((params: any) => {
-        this.roomId = randomID(5);
+      this.recipentId = params['recipent-id'];
+
+      this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
+        
+        this.volunteer = {
+          profilePicture: res.user.profilePicture,
+          lastname: res.user.lastname,
+          firstname: res.user.firstname,
+          username: res.user.username,
+        };
+      });
+      
+      //mark read message
+      this.markMsgRead();
+    });
+
+      this.roomId = randomID(5);
         
       this.messages = [];
       this.messageForm.reset();
       this.volunteer = {};
 
-      this.recipentId = params['recipent-id'];
       this.chatService.setSelectedChatId(this.recipentId);
 
       this.chatService.unReadMsg.next({
@@ -93,19 +110,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
       localStorage.removeItem(this.recipentId);
 
-      //mark read message
-      this.markMsgRead();
-
-      this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
-        
-        this.volunteer = {
-          profilePicture: `data:image/png;base64,${res.user.profilePicture}`,
-          lastname: res.user.lastname,
-          firstname: res.user.firstname,
-          username: res.user.username,
-        };
-      });
-    });
 
     this.selfSendMsgSubscription = this.socketService.onMessageSelf().subscribe((data: any) => {
       const sent = {
@@ -139,19 +143,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   retriveHistory() {
     this.messages = [];
     this.http
-      .retriveChatHistory(this.userId, this.recipentId)
-      .subscribe((response: any) => {
+      .retriveChatHistory(this.userId, this.recipentId).subscribe((response: any) => {
         if (response.chatHistory.length <= 0) return;
-
-        const msgArr = response.chatHistory[0]['messages'];
-
+        console.log(response.chatHistory.messages);
+        
+        const msgArr = response.chatHistory.messages;
+        console.log(msgArr);
+        
         msgArr.forEach((el) => {
+          
           let key = {};
           if (el.sender === this.userId) {
             key = {
               from: 'sender',
               message: el.message,
-              sender_id: el.sender_id,
+              sender_id: el.sender,
               isRead: el.isRead,
             };
             this.messages.push(key);
@@ -159,11 +165,13 @@ export class ChatComponent implements OnInit, OnDestroy {
             key = {
               from: 'recipent',
               message: el.message,
-              sender_id: el.sender_id,
+              sender_id: el.sender,
             };
             this.messages.push(key);
           }
         });
+        console.log(this.messages);
+        this.dataLoaded = true;
       });
   }
 
