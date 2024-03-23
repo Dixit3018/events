@@ -15,7 +15,7 @@ const getEvents = async (req, res) => {
 
     const modifiedRes = await Promise.all(
       events.map(async (event) => {
-        const image = imagePathToBase64(event.cover_img);
+        const image = await imagePathToBase64(event.cover_img);
         return {
           ...event._doc,
           cover_img: image,
@@ -32,8 +32,8 @@ const getEvents = async (req, res) => {
 // get all events
 const getAllEvents = async (req, res) => {
   const events = await Event.find();
-  const modifiedRes = events.map((event) => {
-    const image = imagePathToBase64(event.cover_img);
+  const modifiedRes = events.map(async (event) => {
+    const image = await imagePathToBase64(event.cover_img);
     return {
       ...event._doc,
       cover_img: image,
@@ -94,7 +94,7 @@ const getSingleEvent = async (req, res) => {
   if (event === null) {
     throw new Error("No event found");
   }
-  const image = imagePathToBase64(event.cover_img);
+  const image = await imagePathToBase64(event.cover_img);
 
   const modifiedEvent = {
     ...event._doc,

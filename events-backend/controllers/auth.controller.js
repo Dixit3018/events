@@ -62,7 +62,7 @@ const login = async (req, res) => {
       const currentTime = Date.now();
       const expiryTime = currentTime + 24 * 60 * 60 * 1000;
 
-      user.profilePicture = imagePathToBase64(user.profilePicture);
+      user.profilePicture = await imagePathToBase64(user.profilePicture);
 
       return res.status(200).json({
         status: "success",
@@ -131,7 +131,7 @@ const register = async (req, res) => {
     const currentTime = Date.now();
     const expiryTime = currentTime + 24 * 60 * 60 * 1000;
 
-    savedUser.profilePicture = imagePathToBase64(savedUser.profilePicture);
+    savedUser.profilePicture = await imagePathToBase64(savedUser.profilePicture);
     return res.status(201).json({
       message: "User registered successfully",
       user: filterSensitiveData(savedUser._doc),
