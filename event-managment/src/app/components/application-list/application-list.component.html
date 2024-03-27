@@ -47,7 +47,8 @@
             <mat-icon
               class="mat-18 text-warning"
               *ngFor="let star of getStars(applicants.rating)"
-              >star</mat-icon>
+              >star</mat-icon
+            >
             <mat-icon
               class="mat-18 text-secondary"
               *ngFor="let star of getEmptyStars(applicants.rating)"
@@ -65,13 +66,19 @@
           @if(applicants.status === 'applied'){
           <button
             class="btn btn-success rounded-5 mx-1"
-            (click)="onAction(applicants.application_id, 'accepted')"
+            (click)="
+              onAction(
+                'accepted',
+                applicants.application_id,
+                applicants.volunteer_id
+              )
+            "
           >
             Accept
           </button>
           <button
             class="btn btn-danger rounded-5 mx-1"
-            (click)="onAction(applicants.application_id, 'rejected')"
+            (click)="onAction('rejected',applicants.application_id, null)"
           >
             Reject
           </button>

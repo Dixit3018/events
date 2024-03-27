@@ -21,30 +21,30 @@
   </div>
   <div class="bg-image">
     <div class="messageContainer">
-      @if(messages.length > 0){ @for (message of messages; track $index) {
-      <div>
-        @if(message.from === 'sender'){
-        <div class="message right">
-          <span [innerHTML]="sanitizeHtml(message.message)"></span>
-          <br />
-          <span class="read-tick"
-            ><mat-icon
-              [ngClass]="message.isRead ? 'text-primary' : ''"
-              class="fs-18px"
-              >done_all</mat-icon
-            ></span
-          >
+      @for (message of messages; track $index) {
+        <div>
+          @if(message.from === 'sender'){
+          <div class="message right">
+              <span [innerHTML]="message.message"> </span>
+            <br />
+            <span class="read-tick"
+              ><mat-icon
+                [ngClass]="message.isRead ? 'text-primary' : ''"
+                class="fs-18px"
+                >done_all</mat-icon
+              ></span
+            >
+          </div>
+          } @else{
+          <div class="message left">
+              <span [innerHTML]="message.message"> </span>
+          </div>
+          }
         </div>
-        } @else{
-        <div class="message left">
-          <span [innerHTML]="sanitizeHtml(message.message)"> </span>
-        </div>
-        }
-      </div>
-      } }
-      @else {
-        <div>no messages</div>
-      }
+     
+     } @empty {
+       <div class="alert alert-warning w-50 mx-auto text-center">Start messageing now </div>
+     }
     </div>
     <form class="d-flex gap-2" [formGroup]="messageForm">
       <emoji-mart

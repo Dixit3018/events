@@ -1,20 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
+
 const multer = require("multer");
-
-const Stripe = require("stripe");
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
-//Utils
-const { imagePathToBase64 } = require("../utils/utils");
-
-// models
-const User = require("../models/user");
-
-const ChatData = require("../models/chatData");
-const Activity = require("../models/activity");
 
 //controllers
 const authController = require("../controllers/auth.controller");
@@ -25,6 +13,8 @@ const taskController = require("../controllers/task.controller");
 const homeController = require("../controllers/home.controller");
 const chatController = require("../controllers/chat.controller");
 const activityController = require("../controllers/activity.controller");
+
+const stripeController = require("../controllers/stripe.controller");
 
 const router = express.Router();
 
@@ -80,6 +70,10 @@ router.post("/reset-password/:id/:token", authController.resetPassword);
 //Verify Token
 router.post("/verify-token", authController.verifyToken);
 
+//============================ Payment Intent =============================
+
+router.post("/create-payment-intent", stripeController.paymentIntent);
+
 //============================ User Controller ============================
 
 //--------------- Common functions
@@ -88,12 +82,14 @@ router.post("/verify-token", authController.verifyToken);
 router.put("/update-user", userController.updateUser);
 
 //update profile image
-router.post(
+router.put(
   "/update-profile-img",
   upload.single("profile_picture"),
   userController.updateProfileImage
 );
 
+//dashboard data
+router.get("/dashboard-data", userController.getDashboardData);
 //--------------- Volunteer functions
 
 //get organizer details
@@ -103,10 +99,10 @@ router.post("/get-organizer-data", userController.getOrganizerData);
 router.post("/apply-event", userController.applyOnEvent);
 
 // get applied events
-router.post("/get-applied-events", userController.getAppliedEvents);
+router.get("/get-applied-events", userController.getAppliedEvents);
 
-// Retrieve profile picture by user ID
-router.get("/profile-picture", userController.getUserProfileImage);
+// get completed events
+router.get("/get-completed-events", userController.getCompletedEvents);
 
 //----------------- Organizer functions
 
@@ -117,10 +113,10 @@ router.get("/get-volunteers", userController.getVolunteers);
 router.get("/get-volunteer", userController.getVolunteerDetails);
 
 // get application list
-router.post("/application-list", userController.getApplications);
+router.get("/application-list", userController.getApplications);
 
 // update application status
-router.post("/update-application-status", userController.responseToApplication);
+router.put("/update-application-status", userController.responseToApplication);
 
 //============================ Event Controller ============================
 
@@ -157,12 +153,12 @@ router.post("/chat-history", chatController.getChatHistory);
 
 router.get("/get-single-user", chatController.getSingleUser);
 
-router.post("/get-users", chatController.getAllUsers);
+router.get("/get-users", chatController.getAllUsers);
 
 //============================ Activity Controller ============================
 
 router.post("/track-user-activity", activityController.trackUserActivity);
 
-router.post("/get-activity", activityController.getActivity);
+router.get("/get-activity", activityController.getActivity);
 
 module.exports = router;

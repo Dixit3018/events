@@ -29,7 +29,7 @@ const trackUserActivity = async (req, res) => {
     try {
       const userId = getUserIdFromToken(req);
   
-      const exist = await Activity.findOne({ user_id: userId });
+      const exist = await Activity.find({ user_id: userId });
       if (exist) {
         return res.status(200).json({ activity: exist });
       } else {

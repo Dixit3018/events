@@ -1,6 +1,7 @@
 const { getUserIdFromToken, imagePathToBase64 } = require("../utils/utils");
 
 const Event = require("../models/event");
+const User = require("../models/user");
 
 // get all generated events by organizer on his app
 const getEvents = async (req, res) => {
@@ -32,13 +33,15 @@ const getEvents = async (req, res) => {
 // get all events
 const getAllEvents = async (req, res) => {
   const events = await Event.find();
-  const modifiedRes = events.map(async (event) => {
-    const image = await imagePathToBase64(event.cover_img);
-    return {
-      ...event._doc,
-      cover_img: image,
-    };
-  });
+  const modifiedRes = await Promise.all(
+    events.map(async (event) => {
+      const image = await imagePathToBase64(event.cover_img);
+      return {
+        ...event._doc,
+        cover_img: image,
+      };
+    })
+  );
   res.status(200).json({ events: modifiedRes });
 };
 
@@ -46,19 +49,19 @@ const getAllEvents = async (req, res) => {
 const createEvent = async (req, res) => {
   try {
     const organizerId = getUserIdFromToken(req);
-
+    console.log(organizerId);
     const userExist = await User.findOne({
-      _id: new ObjectId(organizerId),
-      role: "organizer",
+      _id: organizerId,
     });
 
+    console.log(userExist);
     if (!userExist) {
       return res.status(404).json("User Not Found");
     }
     const event = req.body;
 
     const coverImg = req.file.path;
-
+    console.log(req.body);
     const newEvent = new Event({
       organizer_id: organizerId,
       name: event.eventName,
@@ -71,6 +74,7 @@ const createEvent = async (req, res) => {
       days: event.eventDays,
       city: event.eventCity,
       state: event.eventState,
+      hired: 0,
       cover_img: coverImg,
     });
 
@@ -82,14 +86,14 @@ const createEvent = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(402).json({ error: error });
+    return res.status(500).json({ error: error });
   }
 };
 
 // Get single event
 const getSingleEvent = async (req, res) => {
-  const id = req.body.id;
-  const event = await Event.findById(id);
+  const event_id = req.body.event_id;
+  const event = await Event.findById(event_id);
 
   if (event === null) {
     throw new Error("No event found");

@@ -1,0 +1,19 @@
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: center;
+    font-size: 2.5rem;
+}
+  
+  .star {
+    cursor: pointer;
+    color: #ccc;
+  }
+  
+  .star.full {
+    color: #ffc107;
+  }
+  
+  .feedback-btn {
+    height: 38px;
+  }

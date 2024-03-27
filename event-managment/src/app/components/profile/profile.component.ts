@@ -3,6 +3,7 @@ import { AuthService, User } from '../../services/auth.service';
 import { HttpService } from '../../services/http.service';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private _auth: AuthService,
     private _http: HttpService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
@@ -88,7 +90,6 @@ export class ProfileComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('profile_picture', file);
-    formData.append('_id', _id);
 
     this._http.updateProfileImg(formData).subscribe((res: any) => {
       if (res.user) {
@@ -98,11 +99,14 @@ export class ProfileComponent implements OnInit {
           icon: 'success',
         });
 
+        console.log(res.profileImg);
+
         localStorage.setItem('user', JSON.stringify(res.user));
+
+        this.dataService.userImageChange(res.profileImg);
 
         sessionStorage.setItem('profileImg', res.profileImg);
         this.img = res.profileImg;
-        this._auth.userProfileImg.next('change');
       }
     });
   }

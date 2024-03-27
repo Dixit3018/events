@@ -30,5 +30,4 @@ export class ChatService {
     setSelectedChatId(id:string) {
         this.selectedChatId = id;
     }
-
 }

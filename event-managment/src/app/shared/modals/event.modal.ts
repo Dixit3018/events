@@ -13,5 +13,6 @@ export class Event {
     public city: string,
     public state: string,
     public cover_img: string,
+    public hired_volunteers: string[]
   ) {}
 }

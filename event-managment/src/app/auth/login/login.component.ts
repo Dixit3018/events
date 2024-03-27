@@ -6,6 +6,7 @@ import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { User } from '../../models/user.model';
+import { CryptoService } from '../../services/crypto.service';
 
 export interface LoginData {
   message: string;
@@ -27,7 +28,8 @@ export class LoginComponent implements OnInit {
     private _fb: FormBuilder,
     private _auth: AuthService,
     private router: Router,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private cryptoService:CryptoService
   ) {}
 
   ngOnInit(): void {
@@ -40,13 +42,14 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     const loginData = this.loginForm.value;
+
     this._auth
       .login(loginData.email, loginData.password, loginData.role)
       .subscribe(
         (data: LoginData) => {
           if (data.user && data.token) {
             localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', JSON.stringify(data.token));
+            localStorage.setItem('token', this.cryptoService.encrypt(JSON.stringify(data.token)));
             localStorage.setItem('expiry', JSON.stringify(data.expiresIn));
 
             this._auth.user.next(data.user);
@@ -54,14 +57,6 @@ export class LoginComponent implements OnInit {
             this._auth.startTracking();
             this.router.navigate(['/dashboard']);
           }
-        },
-        (error) => {
-          this.alertService.showAlert(
-            'Error',
-            'Invalid Credentials',
-            'error',
-            'green'
-          );
         }
       );
   }

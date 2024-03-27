@@ -15,16 +15,15 @@ export class ApplicationListComponent implements OnInit {
   }
 
   getApplicationDetails() {
-    const id = JSON.parse(localStorage.getItem('user'))['_id'];
-    this.http.getApplicationList({ id: id }).subscribe((res: any) => {
+    this.http.getApplicationList().subscribe((res: any) => {
       this.applications = res.data;
       console.log(this.applications);
     });
   }
 
-  onAction(applicationId: string, action: string) {
+  onAction(action: string, applicationId: string,volunteerId:string) {
     this.http
-      .updateApplicationStatus({ id: applicationId, status: action })
+      .updateApplicationStatus({ application_id: applicationId, status: action, volunteer_id:volunteerId })
       .subscribe((res: any) => {
         this.getApplicationDetails();
       });

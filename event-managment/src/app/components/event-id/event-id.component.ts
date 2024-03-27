@@ -48,8 +48,7 @@ export class EventIdComponent implements OnInit {
 
     const data = {
       event_id: this.loadedEvent._id,
-      organizer_id: this.loadedEvent.organizer_id,
-      volunteer_id: userId,
+      organizer_id: this.loadedEvent.organizer_id
     };
     this.http.applyOnEvent(data).subscribe((res: any) => {
       if (res.message === 'success') {

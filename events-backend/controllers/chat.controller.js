@@ -3,7 +3,8 @@ const User = require("../models/user");
 const { getUserIdFromToken, imagePathToBase64 } = require("../utils/utils");
 
 const getChatHistory = async (req, res) => {
-    const { sender_id, recipent_id } = req.body;
+  const sender_id = getUserIdFromToken(req)  
+  const { recipent_id } = req.body;
   
     try {
       const chatHistory = await ChatData.findOne(

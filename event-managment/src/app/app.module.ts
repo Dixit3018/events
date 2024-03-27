@@ -60,6 +60,7 @@ import {
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { IgxCalendarModule } from 'igniteui-angular';
 import { AddTaskComponent } from './components/dashboard/add-task/add-task.component';
+import { CompletedEventsComponent } from './components/completed-events/completed-events.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
@@ -102,6 +103,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     ChatStartComponent,
     CallComponent,
     AddTaskComponent,
+    CompletedEventsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,16 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CryptoService } from './crypto.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient, private cryptoService:CryptoService) {}
   baseUrl = 'http://localhost:4000/api';
 
-  //get routes
-  getUserProfileImg() {
-    return this._http.get(`${this.baseUrl}/profile-picture`);
+  //==========================================
+  //============== Get Requests
+  //==========================================
+
+  getDashboardData() {
+    return this._http.get(`${this.baseUrl}/dashboard-data`);
   }
   getCities() {
     return this._http.get(`${this.baseUrl}/cities`);
@@ -31,27 +35,49 @@ export class HttpService {
     return this._http.get(`${this.baseUrl}/get-volunteers`);
   }
 
-  //post routes
+  getSingleUser(id: string) {
+    return this._http.get(`${this.baseUrl}/get-single-user?id=${id}`);
+  }
+
+  getTask() {
+    return this._http.get(`${this.baseUrl}/get-task`);
+  }
+
+  getAppliedEvents() {
+    return this._http.get(`${this.baseUrl}/get-applied-events`);
+  }
+
+  getApplicationList() {
+    return this._http.get(`${this.baseUrl}/application-list`);
+  }
+
+  getUsers() {
+    return this._http.get(`${this.baseUrl}/get-users`);
+  }
+
+  getActivity() {
+    return this._http.get(`${this.baseUrl}/get-activity`);
+  }
+  getCompletedEvents() {
+    return this._http.get(`${this.baseUrl}/get-completed-events`);
+  }
+
+  //=================================================================
+  //=============================== Post Requests
+  //=================================================================
+
   createEvent(eventData: any) {
     return this._http.post(`${this.baseUrl}/create-event`, eventData);
   }
 
-  singleEvent(id: string) {
-    return this._http.post(`${this.baseUrl}/get-event`, { id: id });
+  singleEvent(event_id: string) {
+    return this._http.post(`${this.baseUrl}/get-event`, { event_id: event_id });
   }
 
-  getOrganizerData(id: string) {
+  getOrganizerData(organizer_id: string) {
     return this._http.post(`${this.baseUrl}/get-organizer-data`, {
-      id: id,
+      organizer_id,
     });
-  }
-
-  updateUser(userData: any) {
-    return this._http.put(`${this.baseUrl}/update-user`, userData);
-  }
-
-  updateProfileImg(formData: any) {
-    return this._http.post(`${this.baseUrl}/update-profile-img`, formData);
   }
 
   forgotPassword(email: string) {
@@ -65,61 +91,32 @@ export class HttpService {
   }
 
   resetPassword(id: string, password: string) {
-    const token = localStorage.getItem('token');
+    const token = this.cryptoService.decrypt(localStorage.getItem('token'));
 
     return this._http.post(`${this.baseUrl}/reset-password/${id}/${token}`, {
       password: password,
     });
   }
 
-  applyOnEvent(data: {
-    event_id: string;
-    organizer_id: string;
-    volunteer_id: string;
-  }) {
+  applyOnEvent(data: { event_id: string; organizer_id: string }) {
     return this._http.post(`${this.baseUrl}/apply-event`, data);
-  }
-
-  getAppliedEvents(data: { id: string }) {
-    return this._http.post(`${this.baseUrl}/get-applied-events`, data);
-  }
-
-  getApplicationList(data: { id: string }) {
-    return this._http.post(`${this.baseUrl}/application-list`, data);
-  }
-
-  updateApplicationStatus(data: { id: string; status: string }) {
-    return this._http.post(`${this.baseUrl}/update-application-status`, data);
   }
 
   storeContactForm(data: any) {
     return this._http.post(`${this.baseUrl}/contact-form`, data);
   }
 
-  retriveChatHistory(sender_id: string, recipent_id: string) {
+  retriveChatHistory(recipent_id: string) {
     return this._http.post(`${this.baseUrl}/chat-history`, {
-      sender_id: sender_id,
       recipent_id: recipent_id,
     });
   }
 
-  getSingleUser(id: string) {
-    return this._http.get(`${this.baseUrl}/get-single-user?id=${id}`);
-  }
-  getUsers(id: string) {
-    return this._http.post(`${this.baseUrl}/get-users`, { id: id });
-  }
-  
-  trackActivity(userId: string, timeSpent: number, date: string) {
+  trackActivity(timeSpent: number, date: string) {
     return this._http.post(`${this.baseUrl}/track-user-activity`, {
-      userId: userId,
       timeSpent: timeSpent,
       date: date,
     });
-  }
-  
-  getActivity(userId:string) {
-    return this._http.post(`${this.baseUrl}/get-activity`, { userId: userId });
   }
 
   addTask(userId: string, task: string) {
@@ -129,11 +126,23 @@ export class HttpService {
     });
   }
 
-  getTask(userId: string) {
-    return this._http.get(`${this.baseUrl}/get-task?id=${userId}`);
+  //========================================
+  //=================== Put requests
+  //========================================
+
+  updateUser(userData: any) {
+    return this._http.put(`${this.baseUrl}/update-user`, userData);
   }
 
   updateTaskStatus(userId: string, taskId: string) {
     return this._http.put(`${this.baseUrl}/update-status`, { userId, taskId });
+  }
+
+  updateProfileImg(formData: any) {
+    return this._http.put(`${this.baseUrl}/update-profile-img`, formData);
+  }
+
+  updateApplicationStatus(data: { application_id: string; status: string, volunteer_id:string }) {
+    return this._http.put(`${this.baseUrl}/update-application-status`, data);
   }
 }

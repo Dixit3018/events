@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { CryptoService } from '../../services/crypto.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +15,13 @@ export class HeaderComponent implements OnInit {
   userImg: string = '/assets/images/profile/default-profile.png';
   userRole: string;
 
-  constructor(private _auth: AuthService, private router: Router) {}
+  constructor(private _auth: AuthService, private router: Router, private cryptoService:CryptoService, private dataService:DataService) {}
 
   ngOnInit(): void {
+    this.dataService.onUserImageChange.subscribe(img => {
+      this.userImg = img;
+    })
+
     this._auth.user.subscribe((user) => {
       if (!!user) {
         this.userImg = user.profilePicture;
@@ -41,7 +47,7 @@ export class HeaderComponent implements OnInit {
   }
 
   autoLogin() {
-    const token = localStorage.getItem('token');
+    const token = this.cryptoService.decrypt(localStorage.getItem('token'));
     const expiresIn = localStorage.getItem('expiry');
 
     if (token && expiresIn) {

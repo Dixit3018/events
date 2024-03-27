@@ -1,6 +1,6 @@
 require('dotenv').config();
 const Contact = require("../models/contactInfo");
-const nodemailer = require("../models/nodemailer");
+const nodemailer = require("nodemailer");
 
 
 const transporter = nodemailer.createTransport({

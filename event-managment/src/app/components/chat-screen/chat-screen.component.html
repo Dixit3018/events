@@ -8,9 +8,9 @@
         </div>
       </form>
       <ul class="list-group">
-        @for (user of filteredUsers; track user.unread) {
-        <a [routerLink]="['/chat', user.id]">
-          <li
+        @for (user of filteredUsers; track $index) {
+        <a (click)="markRead()" [routerLink]="['/chat', user.id]">
+          <li 
             class="list-group-item d-flex justi fy-content-between align-items-center"
             [ngClass]="activeId === user.id ? 'active' : ''"
           >

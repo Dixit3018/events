@@ -40,6 +40,7 @@ const login = async (req, res) => {
       role: role,
     });
 
+    console.log(user);
     if (!user) {
       return res
         .status(404)
@@ -53,7 +54,6 @@ const login = async (req, res) => {
         .status(401)
         .json({ status: "fail", message: "Invalid credentials" });
     }
-
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1d",

@@ -22,8 +22,8 @@
           <option value="default">Default</option>
           <option value="age">By Age (low to high)</option>
           <option value="age-rev">By Age (high to low)</option>
-          <option value="rating">by Rating ( high to low)</option>
-          <option value="rating-rev">by Rating ( low to high)</option>
+          <option value="rating">by Rating (high to low)</option>
+          <option value="rating-rev">by Rating (low to high)</option>
         </select>
       </div>
     </div>
@@ -55,7 +55,7 @@
         </div>
         <div class="card-body fs-6">
           <div class="fw-normal py-2">
-            <b>From: </b>{{ volunteer.city + " , " + volunteer.state }}
+            <b>From: </b>{{ volunteer.city + " , " + volunteer.state}}
           </div>
           <div class="fw-normal d-flex align-items-center py-2">
             <b>Review:&nbsp;</b>
@@ -77,9 +77,14 @@
             }
           </div>
           <a
-            class="w-100 btn btn-success rounded-2"
+            class="w-100 btn btn-success rounded-2 mb-2"
             routerLink="/volunteer/{{ volunteer._id }}"
             >View Profile</a
+          >
+          <a
+            class="w-100 btn btn-warning rounded-2"
+            routerLink="/chat/{{ volunteer._id }}"
+            >Message</a
           >
         </div>
       </div>

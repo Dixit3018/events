@@ -31,7 +31,7 @@ function randomID(len: number) {
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messageForm: FormGroup;
@@ -59,10 +59,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: HttpService,
     private chatService: ChatService,
-    private sanitizer: DomSanitizer) {}
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
-    
     this.sendAudio = new Audio();
     this.sendAudio.src = '/assets/sounds/chat-send.mp3';
     this.sendAudio.load();
@@ -83,7 +83,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.recipentId = params['recipent-id'];
 
       this.http.getSingleUser(this.recipentId).subscribe((res: any) => {
-        
         this.volunteer = {
           profilePicture: res.user.profilePicture,
           lastname: res.user.lastname,
@@ -91,88 +90,89 @@ export class ChatComponent implements OnInit, OnDestroy {
           username: res.user.username,
         };
       });
-      
+
       //mark read message
       this.markMsgRead();
     });
 
-      this.roomId = randomID(5);
-        
-      this.messages = [];
-      this.messageForm.reset();
-      this.volunteer = {};
+    this.roomId = randomID(5);
 
-      this.chatService.setSelectedChatId(this.recipentId);
+    this.messages = [];
+    this.messageForm.reset();
+    this.volunteer = {};
 
-      this.chatService.unReadMsg.next({
-        senderId: this.recipentId,
-        totalCount: null,
+    this.chatService.setSelectedChatId(this.recipentId);
+
+    this.chatService.unReadMsg.next({
+      senderId: this.recipentId,
+      totalCount: null,
+    });
+    localStorage.removeItem(this.recipentId);
+
+    this.selfSendMsgSubscription = this.socketService
+      .onMessageSelf()
+      .subscribe((data: any) => {
+        const sent = {
+          from: 'sender',
+          message: data.message,
+          sender_id: data.sender_id,
+        };
+        this.messages.push(sent);
+        this.sentSound();
       });
-      localStorage.removeItem(this.recipentId);
 
+    this.fromMsgSubscription = this.socketService
+      .onMessageFrom()
+      .subscribe((data: any) => {
+        const receive = {
+          from: 'recipent',
+          message: data.message,
+          sender_id: data.sender_id,
+        };
 
-    this.selfSendMsgSubscription = this.socketService.onMessageSelf().subscribe((data: any) => {
-      const sent = {
-        from: 'sender',
-        message: data.message,
-        sender_id: data.sender_id,
-      };
-      this.messages.push(sent);
-      this.sentSound();
-    });
-
-    this.fromMsgSubscription = this.socketService.onMessageFrom().subscribe((data: any) => {
-      const receive = {
-        from: 'recipent',
-        message: data.message,
-        sender_id: data.sender_id,
-      };
-
-      if (data.sender_id == this.recipentId) {
-        this.messages.push(receive);
-        this.recieveSound();
-        this.markMsgRead();
-      } else {
-        this.chatService.setUnReadMsg(receive.sender_id, 1);
-      }
-    });
+        if (data.sender_id == this.recipentId) {
+          this.messages.push(receive);
+          this.recieveSound();
+          this.markMsgRead();
+        } else {
+          this.chatService.setUnReadMsg(receive.sender_id, 1);
+        }
+      });
 
     this.socketService.connect();
   }
 
   retriveHistory() {
     this.messages = [];
-    this.http
-      .retriveChatHistory(this.userId, this.recipentId).subscribe((response: any) => {
-        if (response.chatHistory.length <= 0) return;
-        console.log(response.chatHistory.messages);
-        
-        const msgArr = response.chatHistory.messages;
-        console.log(msgArr);
-        
-        msgArr.forEach((el) => {
-          
-          let key = {};
-          if (el.sender === this.userId) {
-            key = {
-              from: 'sender',
-              message: el.message,
-              sender_id: el.sender,
-              isRead: el.isRead,
-            };
-            this.messages.push(key);
-          } else {
-            key = {
-              from: 'recipent',
-              message: el.message,
-              sender_id: el.sender,
-            };
-            this.messages.push(key);
-          }
-        });
-        console.log(this.messages);
-        this.dataLoaded = true;
+    this.http.retriveChatHistory(this.recipentId).subscribe((response: any) => {
+      if (response.chatHistory.length <= 0) return;
+      console.log(response.chatHistory.messages);
+
+      const msgArr = response.chatHistory.messages;
+      console.log(msgArr);
+
+      msgArr.forEach((el) => {
+        let key = {};
+        if (el.sender === this.userId) {
+          key = {
+            from: 'sender',
+            message: el.message,
+            sender_id: el.sender,
+            isRead: el.isRead,
+          };
+          this.messages.push(key);
+        } else {
+          key = {
+            from: 'recipent',
+            message: el.message,
+            sender_id: el.sender,
+          };
+          this.messages.push(key);
+        }
       });
+      console.log(this.messages);
+      this.dataLoaded = true;
+    });
   }
 
   markMsgRead() {
@@ -226,13 +226,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.showEmojiPicker = false;
   }
 
-  sanitizeHtml(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  }
+  // sanitizeHtml(html: string): any {
+  //   return this.sanitizer.bypassSecurityTrustHtml(html);
+  // }
   openInNewTab(): void {
     const route = 'call/' + this.roomId;
     const url = this.router.createUrlTree([route]);
-    const msg = `Please join meeting : <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="http://localhost:4200${url}" target='_blank'>http://localhost:4200${url}</a>`;
+    const msg = `<p>Please join meeting : <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="http://localhost:4200${url}" target='_blank'>http://localhost:4200${url}</a></p>`;
     this.socketService.sendMessage(msg, this.userId, this.recipentId);
     // this.chatService.unshiftUser.next(this.recipentId);
     window.open(url.toString(), '_blank');
@@ -244,4 +244,3 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selfSendMsgSubscription.unsubscribe();
   }
 }
-

@@ -15,9 +15,8 @@ export class AppliedEventsComponent implements OnInit {
 
   ngOnInit(): void {
     const datePipe = new DatePipe('en-US');
-    const userId = JSON.parse(localStorage.getItem('user'))['_id'];
 
-    this.http.getAppliedEvents({ id: userId }).subscribe((res: any) => {
+    this.http.getAppliedEvents().subscribe((res: any) => {
       const applications = res.application;
         
       if(applications === undefined){

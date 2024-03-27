@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const { ObjectId } = require("mongodb");
-
+const fs = require("fs");
 const User = require("../models/user");
+const Event = require("../models/event");
 
 const {
   imagePathToBase64,
@@ -10,28 +9,7 @@ const {
 } = require("../utils/utils");
 const Application = require("../models/application");
 
-//remove this after testing
-const getUserProfileImage = async (req, res) => {
-  try {
-    const userId = getUserIdFromToken(req);
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const image = await imagePathToBase64(user.profilePicture);
-    res.status(200).json({ image: image });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-//--------------------- Common 
+//--------------------- Common
 
 // update userProfile
 const updateUser = async (req, res) => {
@@ -96,6 +74,8 @@ const updateProfileImage = async (req, res) => {
 
     const updatedUser = await user.save();
     const imageData = await imagePathToBase64(user.profilePicture);
+    const userData = updatedUser;
+    userData.profilePicture = imageData;
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -103,7 +83,7 @@ const updateProfileImage = async (req, res) => {
 
     return res.status(200).json({
       message: "Profile picture updated successfully",
-      user: filterSensitiveData(updatedUser._doc),
+      user: filterSensitiveData(userData._doc),
       profileImg: imageData,
     });
   } catch (error) {
@@ -116,8 +96,8 @@ const updateProfileImage = async (req, res) => {
 
 const getOrganizerData = async (req, res) => {
   try {
-    const { id } = req.body;
-    const organizer = await User.findOne({ _id: id });
+    const { organizer_id } = req.body;
+    const organizer = await User.findOne({ _id: organizer_id });
     organizer.profilePicture = await imagePathToBase64(
       organizer.profilePicture
     );
@@ -174,6 +154,27 @@ const getAppliedEvents = async (req, res) => {
   }
 };
 
+const getCompletedEvents = async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    const completedEvents = await Event.find({
+      hired_volunteers: { $in: [userId] },
+      end_date: { $lt: new Date() },
+    });
+    if (completedEvents.length === 0) {
+      return res.status(202).json({ message: "No completed events" });
+    }
+
+    const promises = completedEvents.map(async (event) => {
+      event.cover_img = await imagePathToBase64(event.cover_img);
+    });
+    await Promise.all(promises);
+    return res.status(200).json({ completedEvents: completedEvents });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 //------------------------ User organizer-------------------------
 
 const getVolunteers = async (req, res) => {
@@ -204,7 +205,7 @@ const getVolunteerDetails = async (req, res) => {
         volunteer.profilePicture
       );
     }
-    res.status(200).json({ volunteer: filterSensitiveData(volunteer) });
+    res.status(200).json({ volunteer: filterSensitiveData(volunteer)._doc });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error });
@@ -268,9 +269,9 @@ const getApplications = async (req, res) => {
 // update (response) to application
 const responseToApplication = async (req, res) => {
   try {
-    const { id, status } = req.body;
+    const { application_id, status, volunteer_id } = req.body;
 
-    const application = await Application.findById(id);
+    const application = await Application.findById(application_id);
     const event = await Event.findById(application.event_id);
     if (!application) {
       return res.status(404).json({ error: "Application not found" });
@@ -278,7 +279,12 @@ const responseToApplication = async (req, res) => {
     application.status = status;
 
     if (status === "accepted") {
+      if (volunteer_id === null) {
+        return res.status(404).json({ error: "Volunteer not found" });
+      }
+
       event.hired = +event.hired + 1;
+      event.hired_volunteers.push(volunteer_id);
     }
 
     const updatedApplication = await application.save();
@@ -296,8 +302,31 @@ const responseToApplication = async (req, res) => {
   }
 };
 
+//----------------------------- Dashboard Data ---------------------------
+
+const getDashboardData = async (req, res) => {
+  user_id = getUserIdFromToken(req);
+
+  isUserOrganizer = await User.findOne({ _id: user_id, role: "organizer" });
+  isUserVolunteer = await User.findOne({ _id: user_id, role: "volunteer" });
+
+  if (isUserOrganizer) {
+    //organizer dashboard code
+    res
+      .status(200)
+      .json({ status: "success", message: "success to find the organizer" });
+  } else if (isUserVolunteer) {
+    //volunteer dashboard code
+    res
+      .status(200)
+      .json({ status: "success", message: "success to find the volunteer" });
+  } else {
+    //no user found
+    res.status(404).json({ status: "fail", message: "fail to find the user" });
+  }
+};
+
 module.exports = {
-  getUserProfileImage,
   updateUser,
   getVolunteers,
   getVolunteerDetails,
@@ -307,5 +336,6 @@ module.exports = {
   getAppliedEvents,
   getApplications,
   responseToApplication,
-  getUserDetails,
+  getDashboardData,
+  getCompletedEvents,
 };

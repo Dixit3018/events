@@ -19,7 +19,6 @@ export interface User {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
-  userProfileImg = new BehaviorSubject<String>(null);
   startTime: number;
 
   constructor(private _http: HttpClient, private httpService: HttpService) {}
@@ -71,7 +70,7 @@ export class AuthService {
     // Construct the date string in the format yyyy-mm-dd
     const todayDateString = `${year}-${month}-${day}`;
 
-    this.httpService.trackActivity(userId, timeSpentInMinutes, todayDateString).subscribe();
+    this.httpService.trackActivity(timeSpentInMinutes, todayDateString).subscribe();
     localStorage.removeItem('startTime');
   }
 }

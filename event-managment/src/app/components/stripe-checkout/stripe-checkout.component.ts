@@ -1,17 +1,16 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StripeCardNumberComponent, StripeService } from 'ngx-stripe';
-import Swal from 'sweetalert2';
 
 import {
   StripeElementsOptions,
   StripeCardElementOptions,
 } from '@stripe/stripe-js';
 import { PaymentService } from '../../services/payment.service';
-import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EventFormData } from '../../shared/modals/eventFormData.modal';
 import { HttpService } from '../../services/http.service';
+import { AlertService } from '../../services/alert.service';
 
 export interface StripeCheckoutData {
   formData: EventFormData;
@@ -65,7 +64,7 @@ export class StripeCheckoutComponent {
     private fb: FormBuilder,
     private paymentService: PaymentService,
     private stripe: StripeService,
-    private router: Router,
+    private alertService: AlertService,
     private dialogRef: MatDialogRef<StripeCheckoutComponent>,
     @Inject(MAT_DIALOG_DATA) public data: StripeCheckoutData,
     private _http: HttpService
@@ -117,28 +116,12 @@ export class StripeCheckoutComponent {
           if (result.error) {
             console.error(result.error.message);
             // error alert
-            Swal.fire({
-              title: 'Oops!',
-              text: 'something went wrong!',
-              icon: 'error',
-              showCancelButton: false,
-              confirmButtonColor: 'green',
-              confirmButtonText: 'OK',
-              showClass: {
-                popup: `
-                  animate__animated
-                  animate__fadeInUp
-                  animate__faster
-                `,
-              },
-              hideClass: {
-                popup: `
-                  animate__animated
-                  animate__fadeOutDown
-                  animate__faster
-                `,
-              },
-            });
+            this.alertService.showAlert(
+              'Oops!',
+              'something went wrong!',
+              'error',
+              'red'
+            );
           } else if (result.paymentIntent.status === 'succeeded') {
             const formdata = new FormData();
             formdata.append('eventName', this.data.formData.eventName);
@@ -168,32 +151,15 @@ export class StripeCheckoutComponent {
             this._http.createEvent(formdata).subscribe();
             this.dialogRef.close();
             this.paymentInProcess = false;
+
             // success alert
-            Swal.fire({
-              title: 'Payment Succesfull!',
-              text: 'click to proceed!',
-              icon: 'success',
-              showCancelButton: false,
-              confirmButtonColor: 'green',
-              confirmButtonText: 'Proceed!',
-              willClose: (dismiss: any) => {
-                this.router.navigate(['/dashboard']);
-              },
-              showClass: {
-                popup: `
-                  animate__animated
-                  animate__fadeInUp
-                  animate__faster
-                `,
-              },
-              hideClass: {
-                popup: `
-                  animate__animated
-                  animate__fadeOutDown
-                  animate__faster
-                `,
-              },
-            });
+            this.alertService.showAlertRedirect(
+              'Payment Succesfull!',
+              'click to proceed!',
+              'success',
+              'green',
+              '/dashboard'
+            );
           }
         });
     });

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -13,7 +12,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ChatScreenComponent implements OnInit, OnDestroy {
   users: any[] = [];
   activeId: string = '';
-  userId: string = '';
   filteredUsers: any[] = [];
   searchForm: FormGroup;
 
@@ -32,6 +30,11 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   playNotifySound() {
     this.notifySound.play();
   }
+
+  markRead() {
+    this.chatService.unReadMsg.next(null); 
+}
+
   ngOnInit(): void {
     this.notifySound = new Audio();
     this.notifySound.src = '/assets/sounds/chat-notification.mp3';
@@ -40,13 +43,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     this.chatService.selectedId.subscribe((id: string) => {
       Promise.resolve().then(() => (this.activeId = id));
     });
-    this.auth.user.subscribe((user: any) => {
-      if (user !== null) {
-        this.userId = user._id;
-      } else {
-        return;
-      }
-    });
+
     this.chatService.unshiftUser.subscribe((id: string) => {
       this.filteredUsers.forEach((user) => {
         if (user.id === id) {
@@ -57,6 +54,9 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
 
     this.chatService.unReadMsg.subscribe((data) => {
       this.filteredUsers.forEach((user) => {
+        console.log(data);
+        console.log(user.id);
+        
         if (data.senderId === user.id) {
           if (data.totalCount !== null && data.totalCount !== 0) {
             user.unread = data.totalCount;
@@ -70,7 +70,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.http.getUsers(this.userId).subscribe((response: any) => {
+    this.http.getUsers().subscribe((response: any) => {
       response.users.forEach((user: any) => {
         const data = {
           id: user._id,

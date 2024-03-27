@@ -27,73 +27,55 @@ import { ChatComponent } from './components/chat-screen/chat/chat.component';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
 import { ChatStartComponent } from './components/chat-screen/chat-start/chat-start.component';
 import { CallComponent } from './components/chat-screen/chat/call/call.component';
+import { CompletedEventsComponent } from './components/completed-events/completed-events.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
+
   {
-    path: 'chat',
-    component: ChatScreenComponent,
+    path: '', // Empty path for the parent route
+    canActivate: [homeGuard], // Apply guard to all child routes
     children: [
-      { path: '', component: ChatStartComponent },
-      { path: ':recipent-id', component: ChatComponent },
+      { path: 'home', component: HomeComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'contact', component: ContactComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'signup', component: SignupComponent },
+      { path: 'forgot-password', component: ForgotPasswordComponent },
     ],
-  },
-  { path: 'home', component: HomeComponent, canActivate: [homeGuard] },
-  { path: 'about', component: AboutComponent, canActivate: [homeGuard] },
-  { path: 'contact', component: ContactComponent, canActivate: [homeGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [homeGuard] },
-  { path: 'signup', component: SignupComponent, canActivate: [homeGuard] },
-  {
-    path: 'forgot-password',
-    component: ForgotPasswordComponent,
-    canActivate: [homeGuard],
   },
   { path: 'terms-conditions', component: TermsConditionsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'reset-password/:id/:token', component: ResetPasswordComponent },
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: '',
     canActivate: [authGuard],
-  },
-  {
-    path: 'volunteer-list',
-    component: VolunteerListComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'applied-events',
-    component: AppliedEventsComponent,
-    canActivate: [authGuard],
-  },
-  { path: 'events', component: EventsComponent, canActivate: [authGuard] },
-  { path: 'events/:id', component: EventIdComponent, canActivate: [authGuard] },
-  {
-    path: 'application-list',
-    component: ApplicationListComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'create-event',
-    component: CreateEventComponent,
-    canActivate: [authGuard],
-    canDeactivate: [FormCanDeactivateGuard],
-  },
-  {
-    path: 'event-list',
-    component: EventListComponent,
-    canActivate: [authGuard],
-  },
-  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-  {
-    path: 'volunteer/:id',
-    component: VolunteerComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'call/:roomId',
-    component: CallComponent,
-    canActivate: [authGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'volunteer-list', component: VolunteerListComponent },
+      { path: 'completed-events', component: CompletedEventsComponent },
+      { path: 'applied-events', component: AppliedEventsComponent },
+      { path: 'events', component: EventsComponent },
+      { path: 'events/:id', component: EventIdComponent },
+      { path: 'application-list', component: ApplicationListComponent },
+      {
+        path: 'create-event',
+        component: CreateEventComponent,
+        canDeactivate: [FormCanDeactivateGuard],
+      },
+      { path: 'event-list', component: EventListComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'volunteer/:id', component: VolunteerComponent },
+      { path: 'call/:roomId', component: CallComponent },
+      {
+        path: 'chat',
+        component: ChatScreenComponent,
+        children: [
+          { path: '', component: ChatStartComponent },
+          { path: ':recipent-id', component: ChatComponent },
+        ],
+      },
+    ],
   },
   { path: '**', component: NotFoundComponent },
 ];

@@ -23,6 +23,7 @@ function filterSensitiveData(user) {
 const getUserIdFromToken = (req) => {
   try {
     const token = req.headers.authorization;
+
     const decodedToken = jwt.verify(token.slice(7), process.env.JWT_SECRET);
     return decodedToken.id;
   } catch (error) {
