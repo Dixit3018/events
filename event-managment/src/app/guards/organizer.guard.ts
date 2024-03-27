@@ -1,8 +1,9 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
-export const roleGuard: CanActivateFn = (route, state) => {
+export const organizerGuard: CanActivateFn = (route, state) => {
   const user = localStorage.getItem('user');
+
   if (user) {
     if (JSON.parse(user).role === 'organizer') {
       return true;
