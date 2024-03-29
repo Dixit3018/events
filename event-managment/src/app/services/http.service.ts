@@ -68,6 +68,10 @@ export class HttpService {
   getEventFeedbacks(eventId:string) {
     return this._http.get(`${this.baseUrl}/get-event-feedbacks?eventId=${eventId}`);
   }
+  
+  getFeedback(eventId:string) {
+    return this._http.get(`${this.baseUrl}/get-feedback?eventId=${eventId}`);
+  }
 
   //=================================================================
   //=============================== Post Requests

@@ -31,6 +31,31 @@ export class DashboardComponent implements OnInit {
   userId: string = '';
   currentWeekDays: { day: string; timeSpent: number }[] = [];
   data: number[] = [];
+  role: 'orgaizer' | 'volunteer';
+  
+  volunteerData: {
+    appliedEvents: number;
+    completedEvents: number;
+    upcomingEvents: number;
+    totalEarning: number;
+  } = {
+    appliedEvents: 0,
+    completedEvents: 0,
+    upcomingEvents: 0,
+    totalEarning: 0,
+  };
+
+  organizerData: {
+    applications: number;
+    completedEvents: number;
+    upcomingEvents: number;
+    totalExpense: number;
+  } = {
+    applications: 0,
+    completedEvents: 0,
+    upcomingEvents: 0,
+    totalExpense: 0,
+  };
 
   constructor(
     private auth: AuthService,
@@ -128,8 +153,17 @@ export class DashboardComponent implements OnInit {
   }
 
   getDisplayData() {
-    this.http.getDashboardData().subscribe((data) => {
-      console.log(data);
+    this.http.getDashboardData().subscribe((data: any) => {
+      this.role = data.role;
+
+      if(data.role === 'volunteer'){
+        this.volunteerData = data.data;
+      }
+      else if(data.role === 'organizer'){
+        this.organizerData = data.data;
+        console.log(data.data);
+        
+      }
     });
   }
 
@@ -145,11 +179,6 @@ export class DashboardComponent implements OnInit {
       weekDates.push(format(currentDateInWeek, 'yyyy-MM-dd'));
       currentDateInWeek = addDays(currentDateInWeek, 1);
     }
-
-    // Format and display the dates
-    // weekDates.forEach(date => {
-    //   console.log(format(date, 'yyyy-MM-dd')); // Output in the format 'yyyy-MM-dd'
-    // });
     return weekDates;
   }
 

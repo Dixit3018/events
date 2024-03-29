@@ -1,5 +1,6 @@
 const Event = require("../models/event");
 const Feedback = require("../models/feedback");
+const { getUserIdFromToken } = require("../utils/utils");
 
 const giveFeedbackToVolunteer = async (req, res) => {
   try {
@@ -52,4 +53,14 @@ const getEventFeedbacks = async (req, res) => {
   res.status(200).json({ feedbacks: feedbacks });
 };
 
-module.exports = { giveFeedbackToVolunteer, getEventFeedbacks };
+const getEventFeedback = async (req,res) => {
+    const userId = getUserIdFromToken(req);
+    const { eventId } = req.query;
+
+    const feedback = await Feedback.findOne({ user_id: userId, event_id: eventId });
+    if (!feedback) {
+      return res.status(204).json({ message: "feedback not found", feedback:[] });
+    }
+    return res.status(200).json({ mesage: "success", feedback: feedback})
+}
+module.exports = { giveFeedbackToVolunteer, getEventFeedbacks, getEventFeedback };

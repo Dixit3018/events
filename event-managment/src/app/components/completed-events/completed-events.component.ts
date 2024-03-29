@@ -16,8 +16,20 @@ export class CompletedEventsComponent implements OnInit {
       .getCompletedEvents()
       .subscribe((data: { completedEvents: string[] }) => {
         this.completedEvents = data.completedEvents;
-        console.log(this.completedEvents);
-        
+
+        data.completedEvents.forEach((event: any) => {
+          this.http.getFeedback(event._id).subscribe((data: any) => {
+            event.review = data.feedback.review;
+          });
+        });
       });
+  }
+
+  getStars(value:number) {
+    let stars = [];
+    for (let i = 0; i < value; i++) {
+      stars.push(1);
+    } 
+    return stars
   }
 }

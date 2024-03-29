@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const path = require('path')
+const path = require("path");
 const fs = require("fs");
 
 // check if any value is nullified
@@ -44,4 +44,37 @@ imagePathToBase64 = (imagePath) => {
   }
 };
 
-module.exports = { isValueNull, filterSensitiveData, getUserIdFromToken, imagePathToBase64 };
+//calculate earnings
+const calculateEarnings = (event) => {
+  const startDate = new Date(event.start_date);
+  const endDate = new Date(event.end_date);
+
+  const timeDiff = endDate.getTime() - startDate.getTime();
+  const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  const earnings = days * event.pay_per_volunteer;
+
+  return earnings;
+};
+
+//calculate expense
+const calculateExpenses = (event) => {
+  const startDate = new Date(event.start_date);
+  const endDate = new Date(event.end_date);
+
+  const timeDiff = endDate.getTime() - startDate.getTime();
+  const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  const earnings = days * event.pay_per_volunteer * event.volunteers;
+
+  return earnings;
+};
+
+module.exports = {
+  isValueNull,
+  filterSensitiveData,
+  getUserIdFromToken,
+  imagePathToBase64,
+  calculateEarnings,
+  calculateExpenses,
+};

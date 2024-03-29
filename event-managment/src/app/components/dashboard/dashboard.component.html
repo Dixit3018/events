@@ -21,8 +21,18 @@ yellow -->
               >payments</mat-icon
             >
           </div>
-          <span class="text-white fw-semibold fs-5">&#8377; 4000</span>
+
+          @if (role === 'volunteer') {
+          <span class="text-white fw-semibold fs-5"
+            >&#8377; {{ volunteerData.totalEarning }}</span
+          >
           <span class="text-white fw-semibold">Total Earning</span>
+          } @else {
+          <span class="text-white fw-semibold fs-5"
+            >&#8377; {{ organizerData.totalExpense }}</span
+          >
+          <span class="text-white fw-semibold">Total Expense</span>
+          }
         </div>
       </div>
     </div>
@@ -36,8 +46,23 @@ yellow -->
               >event_available</mat-icon
             >
           </div>
-          <span class="text-white fw-semibold fs-5">05</span>
+
+          @if(role === 'volunteer'){
+
+          <span class="text-white fw-semibold fs-5">{{
+            volunteerData.completedEvents == 0
+              ? volunteerData.completedEvents
+              : (volunteerData.completedEvents | number : "2.0-0")
+          }}</span>
           <span class="text-white fw-semibold">Completed Events</span>
+          } @else {
+          <span class="text-white fw-semibold fs-5">{{
+            organizerData.completedEvents == 0
+              ? organizerData.completedEvents
+              : (organizerData.completedEvents | number : "2.0-0")
+          }}</span>
+          <span class="text-white fw-semibold">Completed Events</span>
+          }
         </div>
       </div>
     </div>
@@ -51,8 +76,22 @@ yellow -->
               >description</mat-icon
             >
           </div>
-          <span class="text-white fw-semibold fs-5">10</span>
+          @if(role === 'volunteer'){
+
+          <span class="text-white fw-semibold fs-5">{{
+            volunteerData.appliedEvents == 0
+              ? volunteerData.appliedEvents
+              : (volunteerData.appliedEvents | number : "2.0-0")
+          }}</span>
           <span class="text-white fw-semibold">Total Applied Events</span>
+          } @else {
+          <span class="text-white fw-semibold fs-5">{{
+            organizerData.applications == 0
+              ? organizerData.applications
+              : (organizerData.applications | number : "2.0-0")
+          }}</span>
+          <span class="text-white fw-semibold">Total Applications Received</span>
+        }
         </div>
       </div>
     </div>
@@ -66,8 +105,24 @@ yellow -->
               >event</mat-icon
             >
           </div>
-          <span class="text-white fw-semibold fs-5">05</span>
+          @if (role === 'volunteer') {
+
+            <span class="text-white fw-semibold fs-5">{{
+              volunteerData.upcomingEvents == 0
+              ? volunteerData.upcomingEvents
+              : (volunteerData.upcomingEvents | number : "2.0-0")
+            }}</span>
           <span class="text-white fw-semibold">Upcoming Events</span>
+        }
+        @else {
+
+          <span class="text-white fw-semibold fs-5">{{
+            organizerData.upcomingEvents == 0
+            ? organizerData.upcomingEvents
+            : (organizerData.upcomingEvents | number : "2.0-0")
+          }}</span>
+          <span class="text-white fw-semibold">Upcoming Events</span>
+        }
         </div>
       </div>
     </div>

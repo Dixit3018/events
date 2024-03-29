@@ -91,6 +91,7 @@ router.put(
 
 //dashboard data
 router.get("/dashboard-data", userController.getDashboardData);
+
 //--------------- Volunteer functions
 
 //get organizer details
@@ -127,6 +128,9 @@ router.post("/feedback-to-volunteer", feedbackController.giveFeedbackToVolunteer
 
 //get event feedbacks
 router.get("/get-event-feedbacks", feedbackController.getEventFeedbacks);
+
+//get feedback from organizer to single user
+router.get("/get-feedback", feedbackController.getEventFeedback)
 
 //============================ Event Controller ============================
 

@@ -1,14 +1,18 @@
 const fs = require("fs");
+
+//models
 const User = require("../models/user");
 const Event = require("../models/event");
+const Application = require("../models/application");
+const Feedback = require("../models/feedback");
 
 const {
   imagePathToBase64,
   getUserIdFromToken,
   filterSensitiveData,
+  calculateEarnings,
+  calculateExpenses,
 } = require("../utils/utils");
-const Application = require("../models/application");
-const Feedback = require("../models/feedback");
 
 //--------------------- Common
 
@@ -313,14 +317,102 @@ const getDashboardData = async (req, res) => {
 
   if (isUserOrganizer) {
     //organizer dashboard code
-    res
+    let applicationsCount = 0;
+    let completedEventsCount = 0;
+    let upcomingEventsCount = 0;
+    let totalExpenses = 0;
+
+    const today = new Date().toISOString();
+
+    const applications = await Application.find({ organizer_id: user_id });    
+    
+    const completedEvents = await Event.find({
+      organizer_id: user_id, 
+      end_date: { $lt: today }
+    });
+    
+    const upcomingEvents = await Event.find({
+      organizer_id: user_id,
+      start_date: { $gt: today }
+    });
+
+    const promises = completedEvents.map(event => {
+      totalExpenses += calculateExpenses(event)
+    });
+
+    Promise.all(promises)
+
+    if(applications.length > 0){
+      applicationsCount = applications.length;
+    }
+
+    if(completedEvents.length > 0){
+      completedEventsCount = completedEvents.length;
+    }
+
+    if(upcomingEvents.length > 0){
+      upcomingEventsCount = upcomingEvents.length;
+    }
+
+    
+    return res
       .status(200)
-      .json({ status: "success", message: "success to find the organizer" });
+      .json({ status: "success",role:'organizer', data: {
+        applications: applicationsCount,
+        completedEvents: completedEventsCount,
+        upcomingEvents: upcomingEventsCount,
+        totalExpense: totalExpenses,
+      } });
   } else if (isUserVolunteer) {
     //volunteer dashboard code
-    res
+    let appliedEventsCount = 0;
+    let completedEventsCount = 0;
+    let upcomingEventsCount = 0;
+    let totalEarning = 0;
+
+    const today = new Date().toISOString();
+
+    const applications = await Application.find({ volunteer_id: user_id });
+    const completedEvents = await Event.find({
+      hired_volunteers: {$in:user_id}, 
+      end_date: { $lt: today }
+    });
+    
+    const promises = completedEvents.map(event => {
+      totalEarning += calculateEarnings(event)
+    });
+    
+    await Promise.all(promises)
+    
+    const upcomingEvents = await Event.find({
+      hired_volunteers: {$in:user_id},
+      start_date: { $gt: today }
+    });
+
+    if (applications.length > 0) {
+      appliedEventsCount = applications.length;
+    }
+
+    if (completedEvents.length > 0) {
+      completedEventsCount = completedEvents.length;
+    }
+
+    if (upcomingEvents.length > 0) {
+      upcomingEventsCount = upcomingEvents.length;
+    }
+
+    return res
       .status(200)
-      .json({ status: "success", message: "success to find the volunteer" });
+      .json({
+        status: "success",
+        role: 'volunteer',
+        data:{
+          appliedEvents: appliedEventsCount,
+          completedEvents: completedEventsCount,
+          upcomingEvents: upcomingEventsCount,
+          totalEarning: totalEarning,
+        }
+      });
   } else {
     //no user found
     res.status(404).json({ status: "fail", message: "fail to find the user" });
@@ -338,5 +430,5 @@ module.exports = {
   getApplications,
   responseToApplication,
   getDashboardData,
-  getCompletedEvents
+  getCompletedEvents,
 };
