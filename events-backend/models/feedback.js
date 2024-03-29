@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 
 const feedbackSchema = new mongoose.Schema(
   {
-    role: { type: String },
     user_id: { type: String },
     event_id: { type: String },
+    role: { type: String },
     review: { type: Number, default: null },
-    status: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-const Feedback = mongoose.model("History", feedbackSchema);
+const Feedback = mongoose.model("Feedback", feedbackSchema);
 module.exports = Feedback;

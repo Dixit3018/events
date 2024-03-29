@@ -46,7 +46,16 @@
           >&#9733;</span
         >
       </div>
-      }
+      } @else { @for (feedback of feedBackHistory; track $index) {
+      @if(feedback.user_id === participant._id){
+
+      <div class="rating d-flex align-items-center">
+        {{ fillStars(feedback.review) }}
+        <span class="star" *ngFor="let star of stars" [class.full]="star.filled"
+          >&#9733;</span
+        >
+      </div>
+      } } }
     </div>
     @if (feedbackStatus) {
     <button

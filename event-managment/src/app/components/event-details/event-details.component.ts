@@ -4,6 +4,8 @@ import { Event } from '../../shared/modals/event.modal';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { User } from '../../models/user.model';
+import { Subject } from 'rxjs';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-event-details',
@@ -12,10 +14,14 @@ import { User } from '../../models/user.model';
 })
 export class EventDetailsComponent implements OnInit {
   eventData: Event;
+
   participants: { _id: string; username: string; profilePicture: string }[] =
     [];
-  feedbacks: { rate: number; userId: string }[] = [];
+  feedbacks: { rate: number; userId: string; eventId: string; role: string }[] =
+    [];
   feedbackStatus: boolean = false;
+
+  feedBackHistory = [];
 
   rating = 0;
   stars = [
@@ -28,14 +34,30 @@ export class EventDetailsComponent implements OnInit {
 
   constructor(
     private http: HttpService,
-    private router: Router,
+    private dataService: DataService,
+    private dialogRef: MatDialogRef<EventDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { eventData: Event }
-  ) {
-    this.fillStars(this.rating);
-    const volunteers = data.eventData.hired_volunteers;
+  ) {}
 
-    if (new Date(data.eventData.end_date) < new Date()) {
-      this.feedbackStatus = true;
+  ngOnInit(): void {
+    this.fillStars(this.rating);
+    const volunteers = this.data.eventData.hired_volunteers;
+
+    if (
+      new Date(this.data.eventData.end_date) < new Date() &&
+      this.data.eventData.feedbackStatus === false
+      ) {
+        this.feedbackStatus = true;
+      } else {
+        //get feedbacks to display
+        
+          this.feedbackStatus = false;
+          console.log(this.feedbackStatus);
+          this.http
+          .getEventFeedbacks(this.data.eventData._id)
+          .subscribe((res: any) => {
+            this.feedBackHistory = res.feedbacks;
+          });
     }
 
     volunteers.forEach((volunteerId) => {
@@ -47,13 +69,10 @@ export class EventDetailsComponent implements OnInit {
         });
       });
     });
-    this.eventData = data.eventData;
+    this.eventData = this.data.eventData;
   }
 
-  ngOnInit(): void {}
-
   rate(value: number, userId: string) {
-    // Update the rating and fill stars accordingly
     this.rating = value;
     this.fillStars(value);
 
@@ -64,7 +83,12 @@ export class EventDetailsComponent implements OnInit {
         }
       });
     } else {
-      this.feedbacks.push({ rate: value, userId: userId });
+      this.feedbacks.push({
+        rate: value,
+        userId: userId,
+        eventId: this.eventData._id,
+        role: 'volunteer',
+      });
     }
   }
 
@@ -76,6 +100,9 @@ export class EventDetailsComponent implements OnInit {
   }
 
   SubmitFeedback() {
-    console.log(this.feedbacks);
+    this.http.giveFeedbackToVolunteer(this.feedbacks).subscribe((res) => {
+      this.dataService.feedbackChanged.next(true);
+      this.dialogRef.close();
+    });
   }
 }

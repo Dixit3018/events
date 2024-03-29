@@ -8,6 +8,7 @@ const {
   filterSensitiveData,
 } = require("../utils/utils");
 const Application = require("../models/application");
+const Feedback = require("../models/feedback");
 
 //--------------------- Common
 
@@ -337,5 +338,5 @@ module.exports = {
   getApplications,
   responseToApplication,
   getDashboardData,
-  getCompletedEvents,
+  getCompletedEvents
 };

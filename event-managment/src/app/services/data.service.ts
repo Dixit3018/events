@@ -12,6 +12,8 @@ export class DataService {
   tasks = new BehaviorSubject<{ name: string; _id: string; status: string }[]>(
     []
   );
+  feedbackChanged = new Subject<boolean>();
+
   onUserImageChange = new Subject<string>();
 
   constructor(private http: HttpService) {}

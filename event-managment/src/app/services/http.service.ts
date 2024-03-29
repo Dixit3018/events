@@ -6,7 +6,10 @@ import { CryptoService } from './crypto.service';
   providedIn: 'root',
 })
 export class HttpService {
-  constructor(private _http: HttpClient, private cryptoService:CryptoService) {}
+  constructor(
+    private _http: HttpClient,
+    private cryptoService: CryptoService
+  ) {}
   baseUrl = 'http://localhost:4000/api';
 
   //==========================================
@@ -60,6 +63,10 @@ export class HttpService {
   }
   getCompletedEvents() {
     return this._http.get(`${this.baseUrl}/get-completed-events`);
+  }
+
+  getEventFeedbacks(eventId:string) {
+    return this._http.get(`${this.baseUrl}/get-event-feedbacks?eventId=${eventId}`);
   }
 
   //=================================================================
@@ -126,6 +133,14 @@ export class HttpService {
     });
   }
 
+  giveFeedbackToVolunteer(
+    feedback: { rate: number; userId: string; eventId: string; role: string }[]
+  ) {
+    return this._http.post(`${this.baseUrl}/feedback-to-volunteer`, {
+      feedback: feedback,
+    });
+  }
+
   //========================================
   //=================== Put requests
   //========================================
@@ -142,7 +157,11 @@ export class HttpService {
     return this._http.put(`${this.baseUrl}/update-profile-img`, formData);
   }
 
-  updateApplicationStatus(data: { application_id: string; status: string, volunteer_id:string }) {
+  updateApplicationStatus(data: {
+    application_id: string;
+    status: string;
+    volunteer_id: string;
+  }) {
     return this._http.put(`${this.baseUrl}/update-application-status`, data);
   }
 }

@@ -13,6 +13,7 @@ const taskController = require("../controllers/task.controller");
 const homeController = require("../controllers/home.controller");
 const chatController = require("../controllers/chat.controller");
 const activityController = require("../controllers/activity.controller");
+const feedbackController = require("../controllers/feedback.controller");
 
 const stripeController = require("../controllers/stripe.controller");
 
@@ -117,6 +118,15 @@ router.get("/application-list", userController.getApplications);
 
 // update application status
 router.put("/update-application-status", userController.responseToApplication);
+
+
+//============================ Feedback Controller ============================
+
+//feedback to volunteer
+router.post("/feedback-to-volunteer", feedbackController.giveFeedbackToVolunteer);
+
+//get event feedbacks
+router.get("/get-event-feedbacks", feedbackController.getEventFeedbacks);
 
 //============================ Event Controller ============================
 

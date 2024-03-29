@@ -15,6 +15,7 @@ const eventSchema = new mongoose.Schema({
   hired: { type: Number, default: 0 },
   hired_volunteers: { type: [], default: [] },
   cover_img: { type: String, required: true },
+  feedbackStatus: { type: Boolean, default: false },
 });
 
 const Event = mongoose.model("Event", eventSchema);

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDetailsComponent } from '../event-details/event-details.component';
-import { Router } from '@angular/router';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-event-list',
@@ -15,16 +15,22 @@ export class EventListComponent implements OnInit {
 
   constructor(
     private _http: HttpService,
-    private router: Router,
+    private daatService: DataService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.getEventData();
+    this.daatService.feedbackChanged.subscribe(change => {
+      this.getEventData();
+    })
+  }
+
+  getEventData() {
     this._http.getEvent().subscribe((res: any) => {
       this.eventsList = res.events;
     });
   }
-
   openDetails(
     eventData: any,
     enterAnimationDuration: string,
