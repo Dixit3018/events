@@ -3,9 +3,9 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { HttpService } from '../../../services/http.service';
 import { DataService } from '../../../services/data.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-add-task',
@@ -19,7 +19,8 @@ export class AddTaskComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private http: HttpService,
-    private dataService:DataService
+    private dataService: DataService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -32,57 +33,32 @@ export class AddTaskComponent implements OnInit {
     const task = this.taskForm.value.task;
     this.http
       .addTask(this.data.userId, task)
-      .subscribe((data: { message: string; error?: string; task?:{name:string, _id:string, status:string} }) => {
-        if (data.message === 'success') {
-          const oldTasks = this.dataService.tasks.getValue();
-          this.dataService.tasks.next([...oldTasks, data.task])
-          Swal.fire({
-            title: 'Success',
-            text: 'Task added!',
-            icon: 'success',
-            showCancelButton: false,
-            confirmButtonColor: 'green',
-            confirmButtonText: 'OK',
-            showClass: {
-              popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-            `,
-            },
-            hideClass: {
-              popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-            `,
-            },
-          });
-          this.dialogRef.close();
-        } else {
-          Swal.fire({
-            title: 'Oops!',
-            text: 'Something went wrong!',
-            icon: 'error',
-            showCancelButton: false,
-            confirmButtonColor: 'green',
-            confirmButtonText: 'OK',
-            showClass: {
-              popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-            `,
-            },
-            hideClass: {
-              popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-            `,
-            },
-          });
+      .subscribe(
+        (data: {
+          message: string;
+          error?: string;
+          task?: { name: string; _id: string; status: string };
+        }) => {
+          if (data.message === 'success') {
+            const oldTasks = this.dataService.tasks.getValue();
+            this.dataService.tasks.next([...oldTasks, data.task]);
+            this.alertService.showAlert(
+              'Success',
+              'Task added!',
+              'success',
+              'green'
+            );
+
+            this.dialogRef.close();
+          } else {
+            this.alertService.showAlert(
+              'Oops!',
+              'Something went wrong!',
+              'error',
+              'green'
+            );
+          }
         }
-      });
+      );
   }
 }

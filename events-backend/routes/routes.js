@@ -169,6 +169,8 @@ router.get("/get-single-user", chatController.getSingleUser);
 
 router.get("/get-users", chatController.getAllUsers);
 
+router.put("/create-message-instance", chatController.createMessageInstance)
+
 //============================ Activity Controller ============================
 
 router.post("/track-user-activity", activityController.trackUserActivity);

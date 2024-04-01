@@ -10,15 +10,14 @@ const path = require("path");
 // Middlewares
 const { authenticateJWT } = require("./middlewares/authenticateJWT.middleware");
 
-const socketManager = require("./socketManager");
-
+const socketManager = require("./socket/socketManager");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
@@ -49,24 +48,21 @@ const openApis = [
   "/api/login",
   "/api/register",
   "/api/forgot-password",
-  "/api/reset-password/:id/:token",
+  "/api/reset-password",
   "/api/verify-token",
 ];
 
 app.use((req, res, next) => {
-
   if (openApis.some((path) => req.path.startsWith(path))) {
-    console.log("login");
     next();
   } else {
-    authenticateJWT(req,res,next);
+    authenticateJWT(req, res, next);
   }
 });
 
 app.use("/api", routes);
 
 socketManager(server);
-
 
 // Start the server
 server.listen(PORT, () => {

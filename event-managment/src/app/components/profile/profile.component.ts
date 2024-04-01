@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, User } from '../../services/auth.service';
 import { HttpService } from '../../services/http.service';
-import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../../services/data.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +22,8 @@ export class ProfileComponent implements OnInit {
     private _auth: AuthService,
     private _http: HttpService,
     private fb: FormBuilder,
-    private dataService: DataService
+    private dataService: DataService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -93,13 +94,12 @@ export class ProfileComponent implements OnInit {
 
     this._http.updateProfileImg(formData).subscribe((res: any) => {
       if (res.user) {
-        Swal.fire({
-          title: 'Success',
-          text: 'Profile picture updated successfully!',
-          icon: 'success',
-        });
-
-        console.log(res.profileImg);
+        this.alertService.showAlert(
+          'Success',
+          'Profile picture updated successfully!',
+          'success',
+          'green'
+        );
 
         localStorage.setItem('user', JSON.stringify(res.user));
 

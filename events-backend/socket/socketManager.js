@@ -1,5 +1,5 @@
 const socketIO = require("socket.io");
-const ChatData = require("./models/chatData");
+const ChatData = require("../models/chatData");
 
 module.exports = (server) => {
   const io = socketIO(server, {

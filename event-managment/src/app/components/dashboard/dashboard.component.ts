@@ -8,8 +8,8 @@ import { DataService } from '../../services/data.service';
 import { HttpService } from '../../services/http.service';
 
 import { trigger, transition, style, animate } from '@angular/animations';
-import Swal from 'sweetalert2';
 import { startOfWeek, endOfWeek, addDays, format } from 'date-fns';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +32,7 @@ export class DashboardComponent implements OnInit {
   currentWeekDays: { day: string; timeSpent: number }[] = [];
   data: number[] = [];
   role: 'orgaizer' | 'volunteer';
+  history = [];
   
   volunteerData: {
     appliedEvents: number;
@@ -61,7 +62,8 @@ export class DashboardComponent implements OnInit {
     private auth: AuthService,
     public dialog: MatDialog,
     private dataService: DataService,
-    private http: HttpService
+    private http: HttpService,
+    private alertService: AlertService
   ) {}
   ngOnInit(): void {
     this.getDisplayData();
@@ -155,14 +157,15 @@ export class DashboardComponent implements OnInit {
   getDisplayData() {
     this.http.getDashboardData().subscribe((data: any) => {
       this.role = data.role;
-
+      this.history = data.data.history;
+      console.log(this.history);
+      
+      
       if(data.role === 'volunteer'){
         this.volunteerData = data.data;
       }
       else if(data.role === 'organizer'){
-        this.organizerData = data.data;
-        console.log(data.data);
-        
+        this.organizerData = data.data;        
       }
     });
   }
@@ -203,11 +206,7 @@ export class DashboardComponent implements OnInit {
       .subscribe((res: { message: string }) => {
         this.tasks.splice(index, 1);
         if (res.message === 'success') {
-          Swal.fire({
-            title: 'Success',
-            text: 'Task updated!',
-            icon: 'success',
-          });
+          this.alertService.showAlert('Success','Task Updated!','success','green')
         }
       });
   }

@@ -6,36 +6,44 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
 import { CryptoService } from '../services/crypto.service';
 
 @Injectable()
 export class MyHttpInterceptor implements HttpInterceptor {
-  constructor(private alertService: AlertService, private cryptoService: CryptoService) {}
+  private readonly paramsApis = ['/api/get-single-user', '/api/get-volunteer'];
+  private readonly authApis = [
+    '/login',
+    '/cities',
+    '/signup',
+    '/forgot-password',
+    '/reset-password/:id/:token',
+    '/verify-token',
+  ];
+
+  constructor(
+    private alertService: AlertService,
+    private cryptoService: CryptoService
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const paramsApis = ['/api/get-single-user','api/get-volunteer'];
+    const token = localStorage.getItem('token') ?? null;
 
-    const authApis = [
-      '/login',
-      '/cities',
-      '/signup',
-      '/forgot-password',
-      '/reset-password/:id/:token',
-      '/verify-token',
-    ];
+    // Allow requests to reset-password endpoint without token
+    if (req.url.includes('/reset-password/')) {
+      return next.handle(req);
+    }
 
-    const token = localStorage.getItem('token');
-        
     if (token) {
+      const jwtToken = JSON.parse(this.cryptoService.decrypt(token));
+
       let modifiedRequest = req;
 
-      const jwtToken = JSON.parse(this.cryptoService.decrypt(token))
-
-      if (paramsApis.some((api) => req.url.includes(api))) {
+      if (this.paramsApis.some((api) => req.url.includes(api))) {
         const user = JSON.parse(localStorage.getItem('user'));
         modifiedRequest = req.clone({
           setParams: { _id: user ? user._id : '' },
@@ -47,23 +55,35 @@ export class MyHttpInterceptor implements HttpInterceptor {
         });
       }
 
-      return next.handle(modifiedRequest);
+      return next.handle(modifiedRequest).pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            this.handleUnauthorized();
+          }
+          throw error;
+        })
+      );
     } else {
-      console.log(req.url);
-      
-      if (authApis.some((api) => req.url.includes(api))) {
+      if (this.isAuthApi(req.url)) {
         return next.handle(req);
       } else {
-        this.alertService.showAlertRedirect(
-          'Unauthorized',
-          'You are not authorized to access this resource.',
-          'error',
-          'green',
-          '/login'
-        );
-
+        this.handleUnauthorized();
         throw new Error('Unauthorized');
       }
     }
+  }
+
+  private isAuthApi(url: string): boolean {
+    return this.authApis.some((api) => url.includes(api));
+  }
+
+  private handleUnauthorized(): void {
+    this.alertService.showAlertRedirect(
+      'Unauthorized',
+      'You are not authorized to access this resource.',
+      'error',
+      'green',
+      '/login'
+    );
   }
 }

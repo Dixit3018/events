@@ -362,7 +362,10 @@ const getDashboardData = async (req, res) => {
         completedEvents: completedEventsCount,
         upcomingEvents: upcomingEventsCount,
         totalExpense: totalExpenses,
-      } });
+        history: completedEvents
+      },
+      completedEvents: completedEvents,
+    });
   } else if (isUserVolunteer) {
     //volunteer dashboard code
     let appliedEventsCount = 0;
@@ -411,6 +414,7 @@ const getDashboardData = async (req, res) => {
           completedEvents: completedEventsCount,
           upcomingEvents: upcomingEventsCount,
           totalEarning: totalEarning,
+          history: completedEvents,
         }
       });
   } else {

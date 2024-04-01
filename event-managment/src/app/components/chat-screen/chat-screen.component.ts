@@ -54,8 +54,8 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
 
     this.chatService.unReadMsg.subscribe((data) => {
       this.filteredUsers.forEach((user) => {
-        console.log(data);
-        console.log(user.id);
+        // console.log(data);
+        // console.log(user.id);
         
         if (data.senderId === user.id) {
           if (data.totalCount !== null && data.totalCount !== 0) {

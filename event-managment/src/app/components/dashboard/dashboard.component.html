@@ -90,8 +90,10 @@ yellow -->
               ? organizerData.applications
               : (organizerData.applications | number : "2.0-0")
           }}</span>
-          <span class="text-white fw-semibold">Total Applications Received</span>
-        }
+          <span class="text-white fw-semibold"
+            >Total Applications Received</span
+          >
+          }
         </div>
       </div>
     </div>
@@ -107,22 +109,21 @@ yellow -->
           </div>
           @if (role === 'volunteer') {
 
-            <span class="text-white fw-semibold fs-5">{{
-              volunteerData.upcomingEvents == 0
+          <span class="text-white fw-semibold fs-5">{{
+            volunteerData.upcomingEvents == 0
               ? volunteerData.upcomingEvents
               : (volunteerData.upcomingEvents | number : "2.0-0")
-            }}</span>
+          }}</span>
           <span class="text-white fw-semibold">Upcoming Events</span>
-        }
-        @else {
+          } @else {
 
           <span class="text-white fw-semibold fs-5">{{
             organizerData.upcomingEvents == 0
-            ? organizerData.upcomingEvents
-            : (organizerData.upcomingEvents | number : "2.0-0")
+              ? organizerData.upcomingEvents
+              : (organizerData.upcomingEvents | number : "2.0-0")
           }}</span>
           <span class="text-white fw-semibold">Upcoming Events</span>
-        }
+          }
         </div>
       </div>
     </div>
@@ -194,145 +195,27 @@ yellow -->
         <div class="mb-2">History</div>
         <div class="history-list">
           <ul class="list-group">
+            @for (data of history; track $index) {
             <li
-              class="list-group-item d-flex justify-content-between align-items-start"
+            routerLink="/events/{{ data._id}}"
+              class="list-group-item d-flex justify-content-between align-items-start cursor-pointer"
             >
               <div class="ms-2 me-auto">
                 <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
+                  {{data.name | titlecase}}<br /><span class="fw-light">
+                    {{data.description}}</span
                   >
                 </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
+                <div class="d-flex gap-3">
+                  <span class="fw-semibold">From: {{ data.start_date.slice(0,10) }} </span>
+                  <span class="fw-semibold">To: {{ data.end_date.slice(0,10) }}</span>
                 </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
               </div>
               <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
+                >Hired: {{ data.hired }}</span
               >
             </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
-                </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
-                </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
-                </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
-                </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
-
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-            >
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                  Event 1 <br /><span class="fw-light">
-                    this is a event description</span
-                  >
-                </div>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-                <mat-icon class="mat-18 text-warning">star</mat-icon>
-              </div>
-              <span class="badge text-bg-danger rounded-pill p-2"
-                >Hired: 14</span
-              >
-            </li>
+            }
           </ul>
         </div>
       </div>

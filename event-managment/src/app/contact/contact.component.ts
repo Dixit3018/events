@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../services/http.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
-import Swal from 'sweetalert2';
+import { AlertService } from '../services/alert.service';
 
 @Component({
   selector: 'app-contact',
@@ -16,7 +16,11 @@ export class ContactComponent implements OnInit {
 
   center = { lat: 37.7749, lng: -122.4194 };
 
-  constructor(private http: HttpService, private fb: FormBuilder) {
+  constructor(
+    private http: HttpService,
+    private fb: FormBuilder,
+    private alertService: AlertService
+  ) {
     this.contactForm = fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -42,14 +46,13 @@ export class ContactComponent implements OnInit {
 
     this.http.storeContactForm(data).subscribe((res: any) => {
       if (res.message === 'success') {
-        Swal.fire({
-          title: 'Success',
-          html: 'your message has been sent successfully',
-          icon: 'success',
-          willClose: (dismiss: any) => {
-            this.contactForm.reset();
-          },
-        });
+        this.alertService.showAlert(
+          'Success',
+          'your message has been sent successfully',
+          'success',
+          'green'
+        );
+        this.contactForm.reset();
       }
     });
   }

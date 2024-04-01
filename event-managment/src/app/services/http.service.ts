@@ -101,9 +101,8 @@ export class HttpService {
     return this._http.post(`${this.baseUrl}/verify-token`, data);
   }
 
-  resetPassword(id: string, password: string) {
-    const token = this.cryptoService.decrypt(localStorage.getItem('token'));
-
+    resetPassword(id: string, password: string) {
+    const token = this.cryptoService.decrypt(JSON.parse(localStorage.getItem('reset-password-token')));      
     return this._http.post(`${this.baseUrl}/reset-password/${id}/${token}`, {
       password: password,
     });
@@ -151,6 +150,10 @@ export class HttpService {
 
   updateUser(userData: any) {
     return this._http.put(`${this.baseUrl}/update-user`, userData);
+  }
+  
+  createMsgInstance(recieverId: string) {
+    return this._http.put(`${this.baseUrl}/create-message-instance`, {recieverId:recieverId});
   }
 
   updateTaskStatus(userId: string, taskId: string) {

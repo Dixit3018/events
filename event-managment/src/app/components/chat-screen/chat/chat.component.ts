@@ -119,6 +119,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         };
         this.messages.push(sent);
         this.sentSound();
+        this.chatService.setUnReadMsg(data.sender_id, 1);
       });
 
     this.fromMsgSubscription = this.socketService
@@ -135,6 +136,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.recieveSound();
           this.markMsgRead();
         } else {
+          console.log("msg incoming");
+          
           this.chatService.setUnReadMsg(receive.sender_id, 1);
         }
       });

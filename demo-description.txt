@@ -1,0 +1,10 @@
+Demo Description:
+
+Project Name: EventLab
+Description: Website that connects oranizers and volunteers of events
+
+In this website organizers can create (generate) events and volunteers can apply (participate) in events
+
+Problem: There is a little problem for finding volunteers for doing work physically also to manage data ledger
+Solution : we can go online on such portal to connect peoples and fullfill their requirements
+

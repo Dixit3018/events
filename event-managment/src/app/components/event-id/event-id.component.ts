@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-event-id',
@@ -16,8 +16,16 @@ export class EventIdComponent implements OnInit {
   constructor(
     private http: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertService: AlertService
   ) {}
+
+  isEndDateInPast(): boolean {
+    return (
+      new Date(this.loadedEvent.end_date) > new Date() &&
+      new Date(this.loadedEvent.start_date) > new Date()
+    );
+  }
 
   ngOnInit(): void {
     const datePipe = new DatePipe('en-US');
@@ -48,33 +56,32 @@ export class EventIdComponent implements OnInit {
 
     const data = {
       event_id: this.loadedEvent._id,
-      organizer_id: this.loadedEvent.organizer_id
+      organizer_id: this.loadedEvent.organizer_id,
     };
     this.http.applyOnEvent(data).subscribe((res: any) => {
       if (res.message === 'success') {
-        Swal.fire({
-          title: 'Success',
-          html: 'you have applied successfully',
-          icon: 'success',
-          willClose: (dismiss: any) => {
-            this.router.navigate(['/applied-events']);
-          },
-        });
+        this.alertService.showAlertRedirect(
+          'Success',
+          'you have applied successfully',
+          'success',
+          'green',
+          '/applied-events'
+        );
       } else if (res.message === 'Already applied') {
-        Swal.fire({
-          title: 'Already applied',
-          html: 'Already applied for this event',
-          icon: 'warning',
-          willClose: (dismiss: any) => {
-            this.router.navigate(['/applied-events']);
-          },
-        });
+        this.alertService.showAlertRedirect(
+          'Already applied',
+          'Already applied for this event',
+          'success',
+          'green',
+          '/applied-events'
+        );
       } else if (res.message === 'fail') {
-        Swal.fire({
-          title: 'Error',
-          html: 'Error something went wrong!',
-          icon: 'error',
-        });
+        this.alertService.showAlert(
+          'Error!',
+          'Something went wrong!',
+          'error',
+          'green'
+        );
       }
     });
   }

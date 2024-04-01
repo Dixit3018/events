@@ -41,17 +41,48 @@ const getSingleUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
     const id = getUserIdFromToken(req);
  
-    let users = await User.find({ _id: { $ne: id } });
+    const chatData = await ChatData.find({ participants: { $in: [id] } });
+    
+    const users = chatData
+    .filter(data => {
+      return data.participants.includes(id) && data.participants.length === 2;
+    })
+    .map(data => {
+      return data.participants.find(participantId => participantId !== id);
+    });
+    
+    let participatedUsers = await User.find({ _id: { $in: users.map(id => id)  } });
 
-    for (const user of users) {
+    for (const user of participatedUsers) {
         user.profilePicture = imagePathToBase64(user.profilePicture);
     }
-    users = users.map((user) => ({ ...user.toObject() }));
+    participatedUsers = participatedUsers.map((user) => ({ ...user.toObject() }));
   
-    if (users) {
-      return res.status(200).json({ users: users });
+    if (participatedUsers) {
+      return res.status(200).json({ users: participatedUsers });
     } else {
       return res.status(500).json({ err: "something went wrong" });
     }
   }
-  module.exports = { getChatHistory, getSingleUser, getAllUsers }
+
+const createMessageInstance = async (req,res) => {
+  senderId = await getUserIdFromToken(req);
+  const { recieverId } = req.body;
+
+  const participants = [senderId, recieverId]
+
+  const chat = await ChatData.findOne({
+    participants: { $all: participants },
+  });
+
+  console.log(chat);
+  if(!chat) {
+    await ChatData.create({
+      participants:participants 
+    })
+    return res.status(204).json({ status: 'success'})
+  }
+  return res.status(204).json({ status: 'exists'})
+
+}
+  module.exports = { getChatHistory, getSingleUser, getAllUsers, createMessageInstance }

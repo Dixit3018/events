@@ -57,15 +57,15 @@
       </div>
       } } }
     </div>
-    @if (feedbackStatus) {
-    <button
-      (click)="SubmitFeedback()"
-      type="button"
-      [disabled]="participants.length !== feedbacks.length"
-      class="btn btn-info feedback-btn mt-4"
-    >
-      Submit feedback
-    </button>
-    }
   </div>
+  @if (feedbackStatus) {
+  <button
+    (click)="SubmitFeedback()"
+    type="button"
+    [disabled]="participants.length !== feedbacks.length"
+    class="btn btn-info feedback-btn mt-4"
+  >
+    Submit feedback
+  </button>
+  }
 </mat-dialog-content>

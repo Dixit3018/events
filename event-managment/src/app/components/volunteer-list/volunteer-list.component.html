@@ -81,11 +81,11 @@
             routerLink="/volunteer/{{ volunteer._id }}"
             >View Profile</a
           >
-          <a
+          <button
+            type="button"
             class="w-100 btn btn-warning rounded-2"
-            routerLink="/chat/{{ volunteer._id }}"
-            >Message</a
-          >
+            (click)="createInstance(volunteer._id)"
+            >Message</button>
         </div>
       </div>
     </div>

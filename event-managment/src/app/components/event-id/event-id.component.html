@@ -35,30 +35,11 @@
     />
     <p class="mt-1"><b>Username:</b> {{ organizer.username }}</p>
     <p class="mt-1"><b>Email:</b> {{ organizer.email }}</p>
-    <p class="mt-1 d-flex align-items-center gap-2">
-      <b>Rating:</b>
-      @if (organizer.rating >0){
-      <ng-container>
-        <mat-icon
-          class="mat-18 text-warning"
-          *ngFor="let star of getStars(organizer.rating)"
-          >star</mat-icon
-        >
-        <mat-icon
-          class="mat-18 text-secondary"
-          *ngFor="let star of getEmptyStars(organizer.rating)"
-          >star</mat-icon
-        >
-      </ng-container>
-      } @else {
-      <span class="fw-light">(No reviews)</span>
-      }
-    </p>
     <p class="mt-1">
       <b>From:</b> {{ organizer.city + "," + organizer.state }}
     </p>
 
-    <div class="d-flex gap-2 mt-5">
+    <div class="d-flex gap-2 mt-5" *ngIf="isEndDateInPast()">
       <button class="btn btn-danger px-5" type="button" (click)="onApply()">Apply now</button>
       <a routerLink="/events" class="btn btn-default border px-5">Back</a>
     </div>

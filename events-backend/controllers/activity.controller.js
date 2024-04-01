@@ -9,7 +9,7 @@ const trackUserActivity = async (req, res) => {
   
       const exist = await Activity.findOne({ user_id: userId, date: date });
       if (exist) {
-        exist.timeSpent = timeSpent;
+        exist.timeSpent += timeSpent;
         exist.save();
       } else {
         const activity = await Activity.create({

@@ -7,7 +7,8 @@
           <span class="input-group-text" id="search-icon"> <mat-icon class="mat-18">search</mat-icon> </span>
         </div>
       </form>
-      <ul class="list-group">
+      @if(filteredUsers.length > 0){
+      <ul class="list-group" >
         @for (user of filteredUsers; track $index) {
         <a (click)="markRead()" [routerLink]="['/chat', user.id]">
           <li 
@@ -32,6 +33,13 @@
         </a>
         }
       </ul>
+    }
+    @else {
+      <div class="text-center list-group">
+        <span class="fs-2 text-secondary">No users to chat</span>
+      </div>
+    }
+
     </div>
     <div class="col-md-7">
       <router-outlet></router-outlet>

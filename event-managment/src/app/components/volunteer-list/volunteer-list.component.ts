@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from '../../services/http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-volunteer-list',
@@ -12,7 +13,7 @@ export class VolunteerListComponent implements OnInit {
   @ViewChild('selectedSortOption') selectedSortOption;
   noMatch = false;
 
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService, private router: Router) {}
 
   ngOnInit(): void {
     this.getVolunteers();
@@ -22,6 +23,14 @@ export class VolunteerListComponent implements OnInit {
     // const currentUserId = JSON.parse(localStorage.getItem('user'))['_id'];
     this.http.getVolunteers().subscribe((res: any) => {
       this.volunteersList = res.volunteers;
+    });
+  }
+
+  createInstance(recieverId: string) {
+    
+    this.http.createMsgInstance(recieverId).subscribe((res) => {
+      console.log(recieverId);
+      this.router.navigate(['/chat/' + recieverId]);
     });
   }
 
@@ -35,11 +44,13 @@ export class VolunteerListComponent implements OnInit {
     }
     if (term !== '') {
       console.log(term);
-      const newList = this.volunteersList.filter((volunteer) =>{
+      const newList = this.volunteersList.filter((volunteer) => {
         const name = volunteer.firstname + volunteer.lastname;
-        return volunteer.username.toLowerCase().includes(term.trim()) || name.toLowerCase().includes(term.trim())
-      }
-      );
+        return (
+          volunteer.username.toLowerCase().includes(term.trim()) ||
+          name.toLowerCase().includes(term.trim())
+        );
+      });
 
       if (newList.length > 0) {
         this.volunteersList = newList;
@@ -79,12 +90,12 @@ export class VolunteerListComponent implements OnInit {
     }
   }
 
-  defaultList(){
+  defaultList() {
     this.volunteersList = [];
     this.getVolunteers();
   }
 
-  sortByRating(reverse:boolean) {
+  sortByRating(reverse: boolean) {
     if (this.volunteersList.length > 0) {
       const sortedList = this.volunteersList
         .slice()
