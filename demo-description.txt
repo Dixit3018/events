@@ -8,3 +8,25 @@ In this website organizers can create (generate) events and volunteers can apply
 Problem: There is a little problem for finding volunteers for doing work physically also to manage data ledger
 Solution : we can go online on such portal to connect peoples and fullfill their requirements
 
+Users: organizers and volunteers
+
+Technologies Used: Angular and Nodejs
+
+Common Modules: 
+Authentication
+Forgot Password
+Dashboard
+Profile
+Chat message/meeting
+
+Organizer Modules:
+Create events
+View events
+Check Applications got on events (accept /reject volunteers)
+Review volunteers (after event Completion)
+
+Volunteers Module:
+View upcoming events
+Apply events
+Track application status
+
