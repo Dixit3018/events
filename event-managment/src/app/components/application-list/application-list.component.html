@@ -62,10 +62,11 @@
         <td>{{ applicants.eventDetails.name }}</td>
         <td>{{ applicants.eventDetails.volunteers }}</td>
         <td>{{ applicants.eventDetails.hired }}</td>
-        <td>
+        <td class="">
           @if(applicants.status === 'applied'){
+            <div class="d-flex mt-3">
           <button
-            class="btn btn-success rounded-5 mx-1"
+            class="btn btn-success btn-sm rounded-5 mx-1"
             (click)="
               onAction(
                 'accepted',
@@ -77,12 +78,13 @@
             Accept
           </button>
           <button
-            class="btn btn-danger rounded-5 mx-1"
+            class="btn btn-danger btn-sm rounded-5 mx-1"
             (click)="onAction('rejected',applicants.application_id, null)"
           >
             Reject
           </button>
-          } @else{
+        </div>  
+        } @else{
           <span
             [ngClass]="
               applicants.status === 'accepted'
@@ -98,7 +100,11 @@
       }
     </tbody>
   </table>
-  <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+  <app-pagination 
+      [currentPage]="currentPage"
+      [totalPages]="getTotalPages()"
+      (pageChange)="onPageChange($event)"
+      />
 </div>
 } @else {
 <div class="container">

@@ -98,9 +98,12 @@ export class EventDetailsComponent implements OnInit {
   }
 
   SubmitFeedback() {
-    this.http.giveFeedbackToVolunteer(this.feedbacks).subscribe((res) => {
+    this.http.giveFeedbackToVolunteer(this.feedbacks).subscribe(() => {
       this.dataService.feedbackChanged.next(true);
       this.dialogRef.close();
     });
+  }
+  closeDialog() {
+    this.dialogRef.close();
   }
 }

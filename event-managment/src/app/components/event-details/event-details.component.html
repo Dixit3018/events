@@ -1,4 +1,7 @@
-<span mat-dialog-title>Event details</span>
+<div mat-dialog-title>
+<span>Event details</span>
+  <span (click)="closeDialog()" class="float-end mt-1 me-2 cursor-pointer"><mat-icon style="stroke-width: 0.8;font-size: 30px;" class="mat-18me-2 mt-1 text-danger">close</mat-icon></span>
+</div>
 
 <mat-dialog-content class="mat-typography">
   <p class="fs-1 pt-2">{{ eventData.name | titlecase}}</p>
@@ -78,3 +81,6 @@
   </div>
   
 </mat-dialog-content>
+<mat-dialog-actions align="start">
+  <button class="btn btn-warning px-2 m-3">Edit Event</button>
+</mat-dialog-actions>

@@ -11,6 +11,26 @@ export class ApplicationListComponent implements OnInit {
   applications: any[] = [];
   constructor(private http: HttpService) {}
 
+  pageSize =  10;
+  currentPage = 1;
+
+  getTotalPages() {
+    return Math.ceil(this.applications.length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getCurrentPageApplications() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(
+      startIndex + this.pageSize - 1,
+      this.applications.length - 1
+    );
+    return this.applications.slice(startIndex, endIndex + 1);
+  }
+
   @ViewChild(MatPaginator) paginator:MatPaginator;
 
   ngOnInit(): void {
