@@ -9,6 +9,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 
+import { MatPaginatorModule } from '@angular/material/paginator'
+
 
 
 const materials = [
@@ -20,7 +22,8 @@ const materials = [
   MatFormFieldModule,
   MatDatepickerModule,
   MatDialogModule,
-  MatIconModule
+  MatIconModule,
+  MatPaginatorModule
 ]
 
 @NgModule({

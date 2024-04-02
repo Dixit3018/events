@@ -95,6 +95,8 @@ const getSingleEvent = async (req, res) => {
   const event_id = req.body.event_id;
   const event = await Event.findById(event_id);
 
+  const organizer = await User.findById(event.organizer_id);
+
   if (event === null) {
     throw new Error("No event found");
   }
@@ -103,6 +105,7 @@ const getSingleEvent = async (req, res) => {
   const modifiedEvent = {
     ...event._doc,
     cover_img: image,
+    organizer_name: organizer.firstname + " " + organizer.lastname ,
   };
 
   if (event) {

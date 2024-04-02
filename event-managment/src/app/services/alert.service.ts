@@ -16,7 +16,7 @@ export class AlertService {
           text: text,
           icon: icon,
           confirmButtonColor: confirmButtonColor,
-          confirmButtonText: 'Proceed!',
+          confirmButtonText: 'OK',
           showClass: {
             popup: `
               animate__animated

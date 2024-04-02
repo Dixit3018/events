@@ -42,6 +42,7 @@ export class HeaderComponent implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('expiry');
     sessionStorage.removeItem('profileImg');
+    sessionStorage.clear();
 
     this.router.navigate(['/login']);
   }

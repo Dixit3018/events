@@ -15,7 +15,6 @@ export class EventIdComponent implements OnInit {
 
   constructor(
     private http: HttpService,
-    private router: Router,
     private route: ActivatedRoute,
     private alertService: AlertService
   ) {}
@@ -71,7 +70,7 @@ export class EventIdComponent implements OnInit {
         this.alertService.showAlertRedirect(
           'Already applied',
           'Already applied for this event',
-          'success',
+          'warning',
           'green',
           '/applied-events'
         );

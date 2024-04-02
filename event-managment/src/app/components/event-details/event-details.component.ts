@@ -1,10 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Event } from '../../shared/modals/event.modal';
-import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { User } from '../../models/user.model';
-import { Subject } from 'rxjs';
 import { DataService } from '../../services/data.service';
 
 @Component({

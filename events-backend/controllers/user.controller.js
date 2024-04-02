@@ -67,7 +67,7 @@ const updateProfileImage = async (req, res) => {
 
     const oldProfilePicture = user.profilePicture;
 
-    if (oldProfilePicture) {
+    if (oldProfilePicture && oldProfilePicture !== 'default-profile.png') {
       fs.unlink(oldProfilePicture, (err) => {
         if (err) {
           console.error("error deleting profile picture:" + err);
@@ -314,6 +314,10 @@ const getDashboardData = async (req, res) => {
 
   isUserOrganizer = await User.findOne({ _id: user_id, role: "organizer" });
   isUserVolunteer = await User.findOne({ _id: user_id, role: "volunteer" });
+  
+  const today = new Date();
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
   if (isUserOrganizer) {
     //organizer dashboard code
@@ -322,18 +326,24 @@ const getDashboardData = async (req, res) => {
     let upcomingEventsCount = 0;
     let totalExpenses = 0;
 
-    const today = new Date().toISOString();
+    
 
     const applications = await Application.find({ organizer_id: user_id });    
     
     const completedEvents = await Event.find({
       organizer_id: user_id, 
-      end_date: { $lt: today }
+      end_date: { $lt: today.toISOString() }
+    });
+
+    const history = await Event.find({
+      organizer_id: user_id,
+      start_date: { $gte: startOfMonth, $lte: endOfMonth },
+      end_date: { $gte: startOfMonth, $lte: endOfMonth,  $lt: today }
     });
     
     const upcomingEvents = await Event.find({
       organizer_id: user_id,
-      start_date: { $gt: today }
+      start_date: { $gt: today.toISOString() }
     });
 
     const promises = completedEvents.map(event => {
@@ -362,7 +372,7 @@ const getDashboardData = async (req, res) => {
         completedEvents: completedEventsCount,
         upcomingEvents: upcomingEventsCount,
         totalExpense: totalExpenses,
-        history: completedEvents
+        history: history
       },
       completedEvents: completedEvents,
     });
@@ -373,13 +383,22 @@ const getDashboardData = async (req, res) => {
     let upcomingEventsCount = 0;
     let totalEarning = 0;
 
-    const today = new Date().toISOString();
+    const today = new Date();
 
     const applications = await Application.find({ volunteer_id: user_id });
     const completedEvents = await Event.find({
       hired_volunteers: {$in:user_id}, 
-      end_date: { $lt: today }
+      end_date: { $lt: today.toISOString() }
     });
+
+    const history = await Event.find({
+      organizer_id: user_id,
+      start_date: { $gte: startOfMonth, $lte: endOfMonth },
+      end_date: { $gte: startOfMonth, $lte: endOfMonth, $lt: today }
+    });
+    
+    console.log("History" + history);
+
     
     const promises = completedEvents.map(event => {
       totalEarning += calculateEarnings(event)
@@ -389,7 +408,7 @@ const getDashboardData = async (req, res) => {
     
     const upcomingEvents = await Event.find({
       hired_volunteers: {$in:user_id},
-      start_date: { $gt: today }
+      start_date: { $gt: today.toISOString() }
     });
 
     if (applications.length > 0) {
@@ -414,7 +433,7 @@ const getDashboardData = async (req, res) => {
           completedEvents: completedEventsCount,
           upcomingEvents: upcomingEventsCount,
           totalEarning: totalEarning,
-          history: completedEvents,
+          history: history,
         }
       });
   } else {

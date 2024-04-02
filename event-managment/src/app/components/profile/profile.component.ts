@@ -4,6 +4,8 @@ import { HttpService } from '../../services/http.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { AlertService } from '../../services/alert.service';
+import { ageRangeValidator } from '../../shared/validators/ageRangeValidator';
+import { limitCharacterValidator } from '../../shared/validators/limitCharacter.validator';
 
 @Component({
   selector: 'app-profile',
@@ -13,10 +15,13 @@ import { AlertService } from '../../services/alert.service';
 export class ProfileComponent implements OnInit {
   userData: User;
   img: string;
-  isEditMode: boolean = false;
   profileForm: FormGroup;
   citiesAndStates: string[] = [];
   state: string = '';
+  fileErr: string = '';
+
+  isEditMode: boolean = false;
+  fileSelected: boolean = false;
 
   constructor(
     private _auth: AuthService,
@@ -44,8 +49,8 @@ export class ProfileComponent implements OnInit {
       lastname: [lastname, Validators.required],
       username: [username, Validators.required],
       email: [email, [Validators.required, Validators.email]],
-      address: [address, Validators.required],
-      age: [age, Validators.required],
+      address: [address, [Validators.required, limitCharacterValidator(150)]],
+      age: [age, [Validators.required, ageRangeValidator],],
       state: [state, Validators.required],
       city: [city, Validators.required],
     });
@@ -65,6 +70,18 @@ export class ProfileComponent implements OnInit {
 
   toggleEdit() {
     if (this.profileForm.dirty) {
+      if (!this.profileForm.valid) {
+        console.log(this.profileForm.value);
+        
+        this.alertService.showAlert(
+          'Invalid Form',
+          'Please enter the details correctly',
+          'warning',
+          'green'
+        );
+        return;
+      }
+
       this._http.updateUser(this.profileForm.value).subscribe((res: any) => {
         this._auth.user.next(res.user);
         localStorage.setItem('user', JSON.stringify(res.user));
@@ -87,7 +104,26 @@ export class ProfileComponent implements OnInit {
   }
 
   uploadImage(file: File): void {
-    const _id = JSON.parse(localStorage.getItem('user'))['_id'];
+    if (file.type == '') {
+      this.fileErr = 'Please select a file';
+      return;
+    }
+
+    if (file) {
+      const allowedExtensions = ['jpg', 'jpeg', 'png'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      if (allowedExtensions.indexOf(fileExtension) === -1) {
+        this.fileErr =
+          'Invalid file format. Only JPG, JPEG, and PNG files are allowed.';
+        console.log(this.fileErr);
+
+        return;
+      }
+      this.fileSelected = true;
+      this.fileErr = '';
+    } else {
+      this.fileSelected = false;
+    }
 
     const formData = new FormData();
     formData.append('profile_picture', file);

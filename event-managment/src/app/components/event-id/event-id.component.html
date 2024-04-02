@@ -1,12 +1,12 @@
 @if(loadedEvent !== undefined && organizer !== undefined){
 <div class="container-fluid pb-5">
   <div class="text-center mb-4">
-    <img src="{{ loadedEvent.cover_img }}" class="w-75" height="500px" alt="" />
+    <img src="{{ loadedEvent.cover_img }}" class="event-details-cover-img" />
   </div>
-  <h3 class="text-center fw-bold">{{ loadedEvent.name }}</h3>
+  <h3 class="text-center fw-bold">{{ loadedEvent.name | titlecase }}</h3>
   <div class="desc w-75 mx-auto">
     <hr />
-    <h3>Details about event</h3>
+    <h4 class="mb-4 text-center">Details about event</h4>
     <p class="mt-1"><b>Description:</b> {{ loadedEvent.description }}</p>
     <p class="mt-1">
       <b>Budget:</b> &#8377; {{ loadedEvent.pay_per_volunteer }}/per day

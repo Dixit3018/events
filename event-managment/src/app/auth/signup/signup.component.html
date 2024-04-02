@@ -187,6 +187,17 @@
                       controlErr="required"
                       errorMsg="Age Required"
                     />
+                    <app-error
+                      *ngIf="
+                        !signupForm
+                          .get('generalInfo.age')
+                          .hasError('required') &&
+                        signupForm.get('generalInfo.age').touched
+                      "
+                      [control]="signupForm.get('generalInfo.age')"
+                      controlErr="invalidAge"
+                      errorMsg="Age must be between 16 to 60"
+                    />
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -199,17 +210,22 @@
                       placeholder="Address 103. Col , EP Soc Road"
                       required
                     />
-                    <span
+                    <app-error
+                      [control]="this.signupForm.get('generalInfo.address')"
+                      controlErr="required"
+                      errorMsg="Address is required"
+                    />
+                    <app-error
                       *ngIf="
-                        signupForm
+                        !this.signupForm
                           .get('generalInfo.address')
                           .hasError('required') &&
-                        signupForm.get('generalInfo.address').touched
+                        this.signupForm.get('generalInfo.address').touched
                       "
-                      class="text-danger"
-                    >
-                      Address Required
-                    </span>
+                      [control]="this.signupForm.get('generalInfo.address')"
+                      controlErr="exceedsLimit"
+                      errorMsg="Address is Too Long"
+                    />
                   </div>
                 </div>
 
@@ -221,9 +237,11 @@
                     formControlName="city"
                     id="city"
                   >
-                    <option selected value="Select City">Select City</option>
+                    <option selected value="Select City" disabled>Select City</option>
                     @for (data of citiesAndStates; track $index) {
-                    <option [value]="data[0]">{{ data[0] }}</option>
+                      @if(data[0] !== null){
+                        <option [value]="data[0]">{{ data[0] }}</option>
+                      }
                     }
                   </select>
                   <app-error

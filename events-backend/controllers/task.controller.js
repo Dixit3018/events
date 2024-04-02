@@ -5,7 +5,11 @@ const { getUserIdFromToken } = require("../utils/utils");
 const getTask = async (req, res) => {
   try {
     const userId = getUserIdFromToken(req);
-    const tasks = await Task.findOne({ user_id: userId });
+    const tasks = await Task.findOne({
+      user_id: userId,
+      "tasks.status": "pending",
+    });
+
     if (tasks !== null && tasks !== "") {
       return res.status(200).json({ message: "success", tasks: tasks.tasks });
     } else {

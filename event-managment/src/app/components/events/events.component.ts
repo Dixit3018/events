@@ -10,6 +10,26 @@ import { DatePipe } from '@angular/common';
 export class EventsComponent implements OnInit {
   events: any[] = [];
   noEvents: boolean = false;
+  
+  pageSize = 6;
+  currentPage = 1;
+
+  getTotalPages() {
+    return Math.ceil(this.events.length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getCurrentPageEvents() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(
+      startIndex + this.pageSize - 1,
+      this.events.length - 1
+    );
+    return this.events.slice(startIndex, endIndex + 1);
+  }
 
   constructor(private http: HttpService) {}
 

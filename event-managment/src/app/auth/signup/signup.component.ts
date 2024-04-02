@@ -5,6 +5,9 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { LoginData } from '../login/login.component';
+import { ageRangeValidator } from '../../shared/validators/ageRangeValidator';
+import { limitCharacterValidator } from '../../shared/validators/limitCharacter.validator';
+import { CryptoService } from '../../services/crypto.service';
 
 @Component({
   selector: 'app-signup',
@@ -24,7 +27,8 @@ export class SignupComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _auth: AuthService,
     private router: Router,
-    private _http: HttpService
+    private _http: HttpService,
+    private cryptoService: CryptoService
   ) {}
 
   passwordPattern =
@@ -61,13 +65,14 @@ export class SignupComponent implements OnInit {
       }),
       generalInfo: this._formBuilder.group({
         image: [null],
-        age: ['', Validators.required],
-        address: ['', Validators.required],
+        age: ['', [Validators.required, ageRangeValidator]],
+        address: ['', [Validators.required, limitCharacterValidator(150)]],
         city: ['Select City', [Validators.required, notSelectedValidator()]],
         state: ['', [Validators.required, notSelectedValidator()]],
         role: ['volunteer', Validators.required],
       }),
     });
+    
     this._http.getCities().subscribe((list: any[]) => {
       this.citiesAndStates = list['data'];
     });
@@ -118,7 +123,7 @@ export class SignupComponent implements OnInit {
     this._auth.register(formData).subscribe((data: LoginData) => {
       if (data.user) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('token', this.cryptoService.encrypt(JSON.stringify(data.token)));
         localStorage.setItem('expiry', JSON.stringify(data.expiresIn));
         this._auth.user.next(data.user);
         this.router.navigate(['/dashboard']);

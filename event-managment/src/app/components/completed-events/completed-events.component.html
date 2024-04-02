@@ -1,37 +1,54 @@
 <div class="container">
+  @if (completedEvents.length > 0) {
   <h3 class="mb-3">Completed Events</h3>
   <div class="row">
-    @for (event of completedEvents; track $index) {
-    <div class="col-md-6">
-      <div class="card mb-3">
-        <div class="row g-0">
-          <div class="col-md-4">
-            <img src="{{ event.cover_img }}" class="img-fluid rounded-start h-100" />
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="mt-0 mb-1">{{ event.name | titlecase }}</h5>
-
-              <div class="fw-light">
-                {{ event.description | truncate: 20}}
-              </div>
-              <div class="mt-2 d-flex align-items-center gap-1">
-                From Organizer:
-                @if(event.review > 0){
-
-                  @for (star of getStars(event.review); track $index) {
-                    <mat-icon class="mat-18 text-warning">star</mat-icon>
-                  } 
-                }
-                @else {
-                  <span>(no review)</span> 
-                }
+      @for (event of getCurrentPageCompletedEvents(); track $index) {
+      <!-- {{ event | json}} -->
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{ event.cover_img }}" class="img-fluid rounded-start h-100" />
             </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="mt-0 mb-1">{{ event.name | titlecase }}</h5>
+  
+                <div class="fw-light">
+                  {{ event.description | truncate: 5}}
+                </div>
+                <div class="mt-2 d-flex align-items-center gap-1">
+                  From Organizer:
+                  @if(event.review > 0){
+                    @for (star of getStars(event.review); track $index) {
+                      <mat-icon class="mat-18 text-warning">star</mat-icon>
+                    }
+                  } 
+                  @else {
+                    <span>(no review)</span> 
+                  }
+              </div>
+              <br>
+              <div>
+                Started:  <span class="fw-light">{{ event.start_date.slice(0,10) }}</span>
+                <br>
+                Ended: <span class="fw-light">{{ event.end_date.slice(0,10) }}</span>
+              </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      }
+
+      <app-pagination 
+      [currentPage]="currentPage"
+      [totalPages]="getTotalPages()"
+      (pageChange)="onPageChange($event)"
+      />
     </div>
-    }
-  </div>
+  }
+  @else {
+    <h3 class="text-secondary">No completed Events</h3>
+  }
 </div>

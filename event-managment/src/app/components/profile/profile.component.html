@@ -15,6 +15,10 @@
           accept="image/*"
         />
       </div>
+      <br />
+      @if(this.fileErr !== ''){
+      <div class="pt-2 text-danger">{{ fileErr }}</div>
+      }
     </div>
     <div></div>
   </div>
@@ -28,116 +32,165 @@
         <i class="fa fa-pen fa-xs edit"></i>
         <form [formGroup]="profileForm">
           <div class="row fs-6 gap-2 justify-content-around">
-          
-              <div class="col-md-5">
-                Firstname
-                <div>
-                  <input
-                    type="text"
-                    formControlName="firstname"
-                    [readonly]="!isEditMode"
-                  />
-                </div>
+            <div class="col-md-5">
+              Firstname
+              <div>
+                <input
+                  type="text"
+                  formControlName="firstname"
+                  [readonly]="!isEditMode"
+                />
               </div>
+              <app-error
+                [control]="this.profileForm.get('firstname')"
+                controlErr="required"
+                errorMsg="Firstname is Required"
+              />
+            </div>
 
-              <div class="col-md-5">
-                Lastname
-                <div>
-                  <input
+            <div class="col-md-5">
+              Lastname
+              <div>
+                <input
                   type="text"
                   formControlName="lastname"
                   [readonly]="!isEditMode"
                 />
-                </div>
+                <app-error
+                  [control]="this.profileForm.get('lastname')"
+                  controlErr="required"
+                  errorMsg="Lastname is Required"
+                />
               </div>
-       
-              <div class="col-md-5">
-                Username
-                <div>
-                  <input
+            </div>
+
+            <div class="col-md-5">
+              Username
+              <div>
+                <input
                   type="text"
                   formControlName="username"
                   [readonly]="!isEditMode"
                 />
-                </div>
+                <app-error
+                  [control]="this.profileForm.get('username')"
+                  controlErr="required"
+                  errorMsg="Username is Required"
+                />
               </div>
+            </div>
 
-              <div class="col-md-5">
-                Email
-                <div>
-                  <input
+            <div class="col-md-5">
+              Email
+              <div>
+                <input
                   type="email"
                   formControlName="email"
                   [readonly]="!isEditMode"
                 />
-                </div>
+                <app-error
+                  [control]="this.profileForm.get('email')"
+                  controlErr="required"
+                  errorMsg="Email is Required"
+                />
+                <app-error
+                  *ngIf="
+                    !this.profileForm.get('email').hasError('required') &&
+                    this.profileForm.get('email').touched
+                  "
+                  [control]="this.profileForm.get('email')"
+                  controlErr="email"
+                  errorMsg="Enter a valid email"
+                />
               </div>
+            </div>
 
-              <div class="col-md-5">
-                Address
-                <div>
-                  <textarea
+            <div class="col-md-5">
+              Address
+              <div>
+                <textarea
                   [readonly]="!isEditMode"
                   id="address"
                   formControlName="address"
                   class="form-control"
                   style="background-color: white"
                 ></textarea>
-                </div>
+                <app-error
+                [control]="this.profileForm.get('address')"
+                controlErr="required"
+                errorMsg="Address is required"
+                />
+                <app-error
+                *ngIf="!this.profileForm.get('address').hasError('required') && this.profileForm.get('address').touched"
+                [control]="this.profileForm.get('address')"
+                controlErr="exceedsLimit"
+                errorMsg="Address is Too Long"
+                />
               </div>
+            </div>
 
-              <div class="col-md-5">
-                Age
-                <div>
-                  <input
+            <div class="col-md-5">
+              Age
+              <div>
+                <input
                   type="number"
                   formControlName="age"
                   [readonly]="!isEditMode"
                 />
-                </div>
-              </div>
-
-              <div class="col-md-5">
-                <div>
-                <label for="city" class="form-label">City</label>
-                  <select
-                  style="background-color: white;"
-                    (change)="setState($event)"
-                    class="form-select form-select-sm"
-                    formControlName="city"
-                    id="city"
-                  >
-                    <option selected value="Select City">Select City</option>
-                    @for (data of citiesAndStates; track $index) {
-                    <option [value]="data[0]">{{ data[0] }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-md-5 mt-2">
-                State
-                <div>
-                  <input
-                  type="text"
-                  formControlName="state"
-                  readonly
+                <app-error
+                [control]="this.profileForm.get('age')"
+                controlErr="required"
+                errorMsg="Age is required"
                 />
-                </div>
+                <app-error
+                *ngIf="!this.profileForm.get('age').hasError('required') && this.profileForm.get('age').touched"
+                [control]="this.profileForm.get('age')"
+                controlErr="invalidAge"
+                errorMsg="Age must be between 16 to 60"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <div>
+                City
+                <select
+                  style="background-color: white"
+                  (change)="setState($event)"
+                  class="form-select form-select-sm"
+                  formControlName="city"
+                  id="city"
+                >
+                  <option selected value="Select City">Select City</option>
+                  @for (data of citiesAndStates; track $index) {
+                    @if(data[0] !== null){
+                      <option [value]="data[0]">{{ data[0] }}</option>
+                    }
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-5 mt-2">
+              State
+              <div>
+                <input type="text" formControlName="state" readonly />
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <mat-icon
+                [ngStyle]="!isEditMode ? { color: 'red' } : { color: 'green' }"
+                (click)="toggleEdit()"
+                >{{ !isEditMode ? "lock" : "lock_open" }}</mat-icon
+              >
+              <span class="fs-6 text-secondary"
+                >Click on the <b>Lock Icon</b> to toggle Edit.</span
+              >
+            </div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <mat-icon
-              [ngStyle]="!isEditMode ? { color: 'red' } : { color: 'green' }"
-              (click)="toggleEdit()"
-              >{{ !isEditMode ? "lock" : "lock_open" }}</mat-icon
-            >
-            <span class="fs-6 text-secondary"
-              >Click on the <b>Lock Icon</b> to toggle Edit.</span
-            >
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
+      <!-- End -->
     </div>
-    <!-- End -->
   </div>
 </div>

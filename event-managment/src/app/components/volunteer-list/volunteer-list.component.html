@@ -1,4 +1,4 @@
-<div class="container" style="padding-bottom: 100px">
+<div class="container pb-1">
   <div class="row justify-content-center mb-3">
     <div class="col-md-8">
       <label for="search" class="form-label">Search Volunteer</label>
@@ -30,7 +30,8 @@
   </div>
   @if (volunteersList.length > 0 && !noMatch) {
   <div class="row">
-    <div class="col-md-3 mb-3" *ngFor="let volunteer of volunteersList">
+      
+    <div class="col-md-3 mb-3" *ngFor="let volunteer of getVolunteersForPage()">
       <div class="card" style="width: 19rem">
         <div class="row px-2">
           <div class="col-md-6">
@@ -42,13 +43,13 @@
             />
           </div>
           <div class="col-md-6 my-auto">
-            <h5 class="card-title text-center">
+            <h5 class="card-title">
               {{ volunteer.username | titlecase }}
             </h5>
-            <div class="text-secondary text-center">
+            <div class="text-secondary">
               <div>{{ volunteer.firstname + " " + volunteer.lastname }}</div>
             </div>
-            <div class="text-secondary text-center">
+            <div class="text-secondary">
               <div>Age: {{ volunteer.age }}</div>
             </div>
           </div>
@@ -89,9 +90,17 @@
         </div>
       </div>
     </div>
+
+    <app-pagination
+    [currentPage]="currentPage" 
+    [totalPages]="getTotalPages()" 
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+  
+
   </div>
   } @else if(volunteersList.length > 0 && noMatch){
-  <h2>No match found</h2>
+  <h2>No User Found</h2>
   } @else {
   <div>Loading...</div>
   }

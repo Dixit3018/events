@@ -11,17 +11,38 @@ import { DataService } from '../../services/data.service';
 })
 export class EventListComponent implements OnInit {
   eventsList = [];
-  sortOrder: string = 'asc';
+  displayEvents = [];
+  sortOrder: string = 'desc';
+  pageSize = 6;
+  currentPage = 1;
+
+  getTotalPages() {
+    return Math.ceil(this.displayEvents.length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getEventsForPage(): any[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(
+      startIndex + this.pageSize - 1,
+      this.displayEvents.length - 1
+    );
+    return this.displayEvents.slice(startIndex, endIndex + 1);
+  }
+
 
   constructor(
     private _http: HttpService,
-    private daatService: DataService,
+    private dataService: DataService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.getEventData();
-    this.daatService.feedbackChanged.subscribe(change => {
+    this.dataService.feedbackChanged.subscribe(change => {
       this.getEventData();
     })
   }
@@ -29,6 +50,8 @@ export class EventListComponent implements OnInit {
   getEventData() {
     this._http.getEvent().subscribe((res: any) => {
       this.eventsList = res.events;
+      this.displayEvents = this.eventsList;
+      this.sortEvents('start_date');
     });
   }
   openDetails(
@@ -78,7 +101,7 @@ export class EventListComponent implements OnInit {
   }
 
   sortEvents(property: string): void {
-    this.eventsList.sort((a, b) => {
+    this.displayEvents.sort((a, b) => {
       const aValue = new Date(a[property]).getTime();
       const bValue = new Date(b[property]).getTime();
 
@@ -90,5 +113,27 @@ export class EventListComponent implements OnInit {
         return 0;
       }
     });
+  }
+
+  filterEvents(event:any) {
+    const filterOn = event.target.value;
+    switch (filterOn) {
+      case 'all':        
+      this.displayEvents = this.eventsList;
+        break;
+      case 'upcoming':        
+      this.displayEvents = this.eventsList.filter(event => new Date(event.start_date) > new Date());
+        break;
+    
+      case 'ongoing':
+        const currentDate = new Date();
+        this.displayEvents = this.eventsList.filter(event => new Date(event.start_date) <= currentDate && new Date(event.end_date) >= currentDate);
+        break;
+    
+      case 'completed':
+        this.displayEvents = this.eventsList.filter(event => new Date(event.end_date) < new Date());
+        break;
+    }
+    
   }
 }

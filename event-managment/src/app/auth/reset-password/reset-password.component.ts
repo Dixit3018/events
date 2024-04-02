@@ -98,7 +98,7 @@ export class ResetPasswordComponent implements OnInit {
           this.alertService.showAlertRedirect(
             'Expired!',
             'The link is expired please try again!',
-            'warning',
+            'error',
             'green',
             '/login'
           );

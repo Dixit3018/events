@@ -13,6 +13,26 @@ export class VolunteerListComponent implements OnInit {
   @ViewChild('selectedSortOption') selectedSortOption;
   noMatch = false;
 
+  currentPage: number = 1;
+  pageSize: number = 8;
+
+  getVolunteersForPage(): any[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(
+      startIndex + this.pageSize - 1,
+      this.volunteersList.length - 1
+    );
+    return this.volunteersList.slice(startIndex, endIndex + 1);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(this.volunteersList.length / this.pageSize);
+  }
+
   constructor(private http: HttpService, private router: Router) {}
 
   ngOnInit(): void {
@@ -20,14 +40,12 @@ export class VolunteerListComponent implements OnInit {
   }
 
   getVolunteers() {
-    // const currentUserId = JSON.parse(localStorage.getItem('user'))['_id'];
     this.http.getVolunteers().subscribe((res: any) => {
       this.volunteersList = res.volunteers;
     });
   }
 
   createInstance(recieverId: string) {
-    
     this.http.createMsgInstance(recieverId).subscribe((res) => {
       console.log(recieverId);
       this.router.navigate(['/chat/' + recieverId]);

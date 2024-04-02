@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from '../../services/http.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-application-list',
@@ -9,6 +10,8 @@ import { HttpService } from '../../services/http.service';
 export class ApplicationListComponent implements OnInit {
   applications: any[] = [];
   constructor(private http: HttpService) {}
+
+  @ViewChild(MatPaginator) paginator:MatPaginator;
 
   ngOnInit(): void {
     this.getApplicationDetails();

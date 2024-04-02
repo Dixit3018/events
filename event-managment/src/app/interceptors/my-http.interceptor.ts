@@ -16,7 +16,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
   private readonly authApis = [
     '/login',
     '/cities',
-    '/signup',
+    '/register',
     '/forgot-password',
     '/reset-password/:id/:token',
     '/verify-token',
@@ -37,7 +37,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
     if (req.url.includes('/reset-password/')) {
       return next.handle(req);
     }
-
+    
     if (token) {
       const jwtToken = JSON.parse(this.cryptoService.decrypt(token));
 

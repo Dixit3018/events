@@ -11,6 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EventFormData } from '../../shared/modals/eventFormData.modal';
 import { HttpService } from '../../services/http.service';
 import { AlertService } from '../../services/alert.service';
+import { noNumbersValidator } from '../../shared/validators/onlyCharacters.validator';
 
 export interface StripeCheckoutData {
   formData: EventFormData;
@@ -72,7 +73,7 @@ export class StripeCheckoutComponent {
 
   ngOnInit() {
     this.paymentForm = this.fb.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, noNumbersValidator]],
     });
     this.paymentService.paymentAmt.subscribe((amt) => {
       this.amount = +amt;
@@ -114,14 +115,14 @@ export class StripeCheckoutComponent {
         })
         .subscribe((result: any) => {
           if (result.error) {
-            console.error(result.error.message);
             // error alert
             this.alertService.showAlert(
               'Oops!',
-              'something went wrong!',
+              result.error.message,
               'error',
               'red'
             );
+            this.dialogRef.close();
           } else if (result.paymentIntent.status === 'succeeded') {
             const formdata = new FormData();
             formdata.append('eventName', this.data.formData.eventName);

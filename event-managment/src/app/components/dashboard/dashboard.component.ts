@@ -78,6 +78,7 @@ export class DashboardComponent implements OnInit {
         this.tasks = res;
       }
     });
+
     this.auth.user.subscribe((user: any) => {
       if (user !== null) {
         this.username = user.username;
@@ -88,6 +89,7 @@ export class DashboardComponent implements OnInit {
 
     // get activity of user
     this.http.getActivity().subscribe((res: any) => {
+      
       res.activity.forEach((element: { date: string; timeSpent: number }) => {
         this.currentWeekDays.forEach((day) => {
           if (day.day === format(element.date, 'dd MMMM')) {
@@ -95,7 +97,7 @@ export class DashboardComponent implements OnInit {
           }
         });
       });
-
+      
       // time log chart
       this.chart = new Chart('canvas', {
         type: 'bar',
@@ -103,8 +105,7 @@ export class DashboardComponent implements OnInit {
           labels: this.getLabels(),
           datasets: [
             {
-              label: 'Minutes',
-              data: this.getData(),
+              data: this.getData().length > 0 ? this.getData() : [],
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
@@ -125,7 +126,7 @@ export class DashboardComponent implements OnInit {
                 'rgb(201, 203, 207)',
                 'rgba(157, 203, 207)',
               ],
-              borderWidth: 1,
+              borderWidth: 2,
             },
           ],
         },
@@ -133,8 +134,13 @@ export class DashboardComponent implements OnInit {
           scales: {
             y: {
               beginAtZero: true,
-            },
+            }
           },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          }
         },
       });
     });
@@ -156,10 +162,9 @@ export class DashboardComponent implements OnInit {
 
   getDisplayData() {
     this.http.getDashboardData().subscribe((data: any) => {
-      this.role = data.role;
-      this.history = data.data.history;
-      console.log(this.history);
       
+      this.role = data.role;
+      this.history = data.data.history;      
       
       if(data.role === 'volunteer'){
         this.volunteerData = data.data;

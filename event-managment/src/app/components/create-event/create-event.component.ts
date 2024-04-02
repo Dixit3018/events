@@ -9,6 +9,7 @@ import { StripeCheckoutComponent } from '../stripe-checkout/stripe-checkout.comp
 import { PaymentService } from '../../services/payment.service';
 import { EventFormData } from '../../shared/modals/eventFormData.modal';
 import { CanComponentDeactivate } from '../../guards/form-candeactivate.guard';
+import { limitNumberValidator } from '../../shared/validators/limitNumber.validator';
 
 @Component({
   selector: 'app-create-event',
@@ -25,9 +26,11 @@ export class CreateEventComponent implements CanComponentDeactivate{
   days: number = 0;
   selectedFile: File;
   eventFormData: FormData;
-
+  
   list: any[] = [];
   state: string = '';
+  
+  fileSelected:boolean = false;
 
   constructor(
     private http: HttpService,
@@ -55,10 +58,10 @@ export class CreateEventComponent implements CanComponentDeactivate{
         eventName: ['', Validators.required],
         eventVenue: ['', Validators.required],
         eventDescription: ['', Validators.required],
-        eventNeededVolunteers: ['', [Validators.required, atLeastOneValidator]],
+        eventNeededVolunteers: ['', [Validators.required, atLeastOneValidator, limitNumberValidator(0, 500) ]],
         eventPayPerDay: [
           '',
-          [Validators.required, atLeastOneValidator, minAmountValidator],
+          [Validators.required, atLeastOneValidator, minAmountValidator, limitNumberValidator(0, 500000)],
         ],
         eventStartDate: ['', Validators.required],
         eventEndDate: ['', Validators.required],
@@ -66,6 +69,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
         eventCity: ['', Validators.required],
         eventState: [''],
         eventImage: ['', Validators.required],
+        check: ['', Validators.required],
       },
       { validators: [dateRangeValidator] }
     );
@@ -101,7 +105,9 @@ export class CreateEventComponent implements CanComponentDeactivate{
     const file = event.target.files[0] as File;
 
     if (file) {
+      this.fileSelected = true
       const fileType = file.type.toLowerCase();
+      
       if (fileType === 'image/jpeg' || fileType === 'image/png') {
         this.imageFormatErr = '';
         this._previewImage(file);
@@ -111,6 +117,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
       } else {
         this.imageFormatErr =
           'Invalid file type. Please upload a valid image (jpeg, png).';
+          this.fileSelected = false;
       }
     }
   }

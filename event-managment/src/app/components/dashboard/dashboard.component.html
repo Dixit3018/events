@@ -11,7 +11,7 @@ yellow -->
   <hr />
   <!-- cards -->
   <div class="row p-4">
-    <div class="col-md-3">
+    <div class="col-md-3 ">
       <div
         class="dashboard-card border border-secondary-subtle mx-2 bg-primary rounded-4 d-flex align-items-center justify-content-center"
       >
@@ -129,9 +129,9 @@ yellow -->
     </div>
   </div>
 
-  <div class="row p-2 mb-4 justify-content-around">
+  <div class="row mb-4 justify-content-around">
     <!-- timelog chart -->
-    <div class="col-md-5">
+    <div class="col-md-6 px-4">
       <div>Daily TimeLog</div>
       <div>
         <canvas id="canvas">{{ chart }}</canvas>
@@ -139,12 +139,13 @@ yellow -->
     </div>
 
     <!-- Task Maker -->
-    <div class="col-md-5">
+    <div class="col-md-6 px-5">
       <div class="task-wrapper bg-light p-2 rounded-3 border">
         <div
           class="w-100 fw-semibold rounded-top d-flex justify-content-between px-1 align-items-center"
         >
-          Task Maker
+        
+          <span> @if (tasks.length > 0) { Pending Tasks } @else { No Pending Tasks } </span>
 
           <div class="add-task-btn m-2">
             <div
@@ -160,17 +161,15 @@ yellow -->
             @if (tasks.length > 0) { @for (task of tasks; track task.name) {
             @if(task.status === 'pending'){
 
-            <li
-              class="list-group-item d-flex justify-content-between align-items-start"
-              @fadeOut
-            >
-              <input
-                class="form-check-input px-2"
-                type="checkbox"
-                (click)="updateStatus(task._id, $index)"
-              />
-              <div class="ms-2 me-auto">
+            <li class="list-group-item" @fadeOut>
+              <div class="d-flex align-items-center justify-content-between">
                 <div class="fw-semibold">{{ task.name | titlecase }}</div>
+
+                <mat-icon
+                (click)="updateStatus(task._id, $index)"
+                  class="mat-18 rounded-circle bg-success text-white cursor-pointer"
+                  >check</mat-icon
+                >
               </div>
             </li>
             } } }
@@ -192,23 +191,28 @@ yellow -->
     <!-- history -->
     <div class="col-md-7">
       <div class="history-wrapper px-3 py-2">
-        <div class="mb-2">History</div>
+        <div class="mb-2">Monthly Completed Events</div>
         <div class="history-list">
           <ul class="list-group">
+            @if( history.length > 0){
             @for (data of history; track $index) {
             <li
-            routerLink="/events/{{ data._id}}"
+              routerLink="/events/{{ data._id }}"
               class="list-group-item d-flex justify-content-between align-items-start cursor-pointer"
             >
               <div class="ms-2 me-auto">
                 <div class="fw-bold">
-                  {{data.name | titlecase}}<br /><span class="fw-light">
-                    {{data.description}}</span
+                  {{ data.name | titlecase }}<br /><span class="fw-light">
+                    {{ data.description }}</span
                   >
                 </div>
                 <div class="d-flex gap-3">
-                  <span class="fw-semibold">From: {{ data.start_date.slice(0,10) }} </span>
-                  <span class="fw-semibold">To: {{ data.end_date.slice(0,10) }}</span>
+                  <span class="fw-semibold"
+                    >From: {{ data.start_date.slice(0, 10) }}
+                  </span>
+                  <span class="fw-semibold"
+                    >To: {{ data.end_date.slice(0, 10) }}</span
+                  >
                 </div>
               </div>
               <span class="badge text-bg-danger rounded-pill p-2"
@@ -216,6 +220,12 @@ yellow -->
               >
             </li>
             }
+          }
+          @else {
+            <div class="border border-0 border-secondary-subtle p-2 h-100">
+              <span class="text-secondary fs-3">No events done on this month</span>
+            </div>
+          }
           </ul>
         </div>
       </div>

@@ -1,71 +1,80 @@
-<h2 mat-dialog-title>{{ eventData.name }}</h2>
+<span mat-dialog-title>Event details</span>
 
 <mat-dialog-content class="mat-typography">
-  <div class="text-center">
-    <img [src]="eventData.cover_img" width="500px" height="300px" />
-  </div>
-  <h4>Description:</h4>
-  <p>{{ eventData.description }}</p>
-  <p>
-    Start Date:
-    <span>{{ eventData.start_date | date : "d MMMM y (EEEE)" }}</span>
-  </p>
-  <p>
-    End Date: <span>{{ eventData.end_date | date : "d MMMM y (EEEE)" }}</span>
-  </p>
-  <p>
-    Required Volunteers: <span>{{ eventData.volunteers }}</span>
-  </p>
-  <p>
-    Pay Per Volunteer:
-    <span>{{ "&#x20b9; " + eventData.pay_per_volunteer }}</span>
-  </p>
+  <p class="fs-1 pt-2">{{ eventData.name | titlecase}}</p>
+  <div class="row pt-0 mt-0"> 
+    <div class="col-md-7">
 
-  <p>
-    Address: <span>{{ eventData.city + "," + eventData.state }}</span>
-  </p>
-
-  <h4 *ngIf="participants.length > 0">Participants</h4>
-  <div *ngFor="let participant of participants" class="mt-3">
-    <div class="d-flex gap-3 align-items-center">
-      <img
-        src="{{ participant.profilePicture }}"
-        class="rounded-circle"
-        width="100px"
-        height="100px"
-      />
-      <p class="fw-bold">{{ participant.username }}</p>
+      <p> <span class="fw-bold">Description: </span>{{ eventData.description }}</p>
+      <p>
+        Start Date:
+        <span>{{ eventData.start_date | date : "d MMMM y (EEEE)" }}</span>
+      </p>
+      <p>
+        End Date: <span>{{ eventData.end_date | date : "d MMMM y (EEEE)" }}</span>
+      </p>
+      <p>
+        Required Volunteers: <span>{{ eventData.volunteers }}</span>
+      </p>
+      <p>
+        Pay Per Volunteer:
+        <span>{{ "&#x20b9; " + eventData.pay_per_volunteer }}</span>
+      </p>
+    
+      <p>
+        Address: <span>{{ eventData.city + "," + eventData.state }}</span>
+      </p>
+    
+      <h4 *ngIf="participants.length > 0">Participants</h4>
+      <div *ngFor="let participant of participants" class="mt-3">
+        <div class="d-flex gap-3 align-items-center">
+          <img
+            src="{{ participant.profilePicture }}"
+            class="rounded-circle"
+            width="100px"
+            height="100px"
+          />
+          <p class="fw-bold">{{ participant.username }}</p>
+          @if (feedbackStatus) {
+    
+          <div class="rating d-flex align-items-center">
+            <span
+              class="star"
+              *ngFor="let star of stars"
+              [class.full]="star.filled"
+              (click)="rate(star.value, participant._id)"
+              >&#9733;</span
+            >
+          </div>
+          } @else { @for (feedback of feedBackHistory; track $index) {
+          @if(feedback.user_id === participant._id){
+    
+          <div class="rating d-flex align-items-center">
+            {{ fillStars(feedback.review) }}
+            <span class="star" *ngFor="let star of stars" [class.full]="star.filled"
+              >&#9733;</span
+            >
+          </div>
+          } } }
+        </div>
+      </div>
       @if (feedbackStatus) {
+      <button
+        (click)="SubmitFeedback()"
+        type="button"
+        [disabled]="participants.length !== feedbacks.length"
+        class="btn btn-info feedback-btn mt-4"
+      >
+        Submit feedback
+      </button>
+      }
 
-      <div class="rating d-flex align-items-center">
-        <span
-          class="star"
-          *ngFor="let star of stars"
-          [class.full]="star.filled"
-          (click)="rate(star.value, participant._id)"
-          >&#9733;</span
-        >
+    </div>
+    <div class="col-md-5 d-flex">
+      <div class="text-center">
+        <img [src]="eventData.cover_img" width="100%" height="auto" />
       </div>
-      } @else { @for (feedback of feedBackHistory; track $index) {
-      @if(feedback.user_id === participant._id){
-
-      <div class="rating d-flex align-items-center">
-        {{ fillStars(feedback.review) }}
-        <span class="star" *ngFor="let star of stars" [class.full]="star.filled"
-          >&#9733;</span
-        >
-      </div>
-      } } }
     </div>
   </div>
-  @if (feedbackStatus) {
-  <button
-    (click)="SubmitFeedback()"
-    type="button"
-    [disabled]="participants.length !== feedbacks.length"
-    class="btn btn-info feedback-btn mt-4"
-  >
-    Submit feedback
-  </button>
-  }
+  
 </mat-dialog-content>
