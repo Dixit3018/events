@@ -136,8 +136,6 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.recieveSound();
           this.markMsgRead();
         } else {
-          console.log("msg incoming");
-          
           this.chatService.setUnReadMsg(receive.sender_id, 1);
         }
       });
@@ -149,10 +147,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.messages = [];
     this.http.retriveChatHistory(this.recipentId).subscribe((response: any) => {
       if (response.chatHistory.length <= 0) return;
-      console.log(response.chatHistory.messages);
 
       const msgArr = response.chatHistory.messages;
-      console.log(msgArr);
 
       msgArr.forEach((el) => {
         let key = {};
@@ -173,7 +169,6 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.messages.push(key);
         }
       });
-      console.log(this.messages);
       this.dataLoaded = true;
     });
   }

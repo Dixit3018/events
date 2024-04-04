@@ -53,4 +53,11 @@ export class CompletedEventsComponent implements OnInit {
     } 
     return stars
   }
+  getEmptyStars(value:number){
+    let stars = [];
+    for (let i = 5; i > value; i--) {
+      stars.push(1);
+    } 
+    return stars
+  }
 }

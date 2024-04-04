@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
       username: [username, Validators.required],
       email: [email, [Validators.required, Validators.email]],
       address: [address, [Validators.required, limitCharacterValidator(150)]],
-      age: [age, [Validators.required, ageRangeValidator],],
+      age: [age, [Validators.required, ageRangeValidator]],
       state: [state, Validators.required],
       city: [city, Validators.required],
     });
@@ -71,8 +71,7 @@ export class ProfileComponent implements OnInit {
   toggleEdit() {
     if (this.profileForm.dirty) {
       if (!this.profileForm.valid) {
-        console.log(this.profileForm.value);
-        
+
         this.alertService.showAlert(
           'Invalid Form',
           'Please enter the details correctly',
@@ -115,7 +114,6 @@ export class ProfileComponent implements OnInit {
       if (allowedExtensions.indexOf(fileExtension) === -1) {
         this.fileErr =
           'Invalid file format. Only JPG, JPEG, and PNG files are allowed.';
-        console.log(this.fileErr);
 
         return;
       }
@@ -136,12 +134,15 @@ export class ProfileComponent implements OnInit {
           'success',
           'green'
         );
+        const user = res.user;
+        user.profileImg = res.profileImg;
 
-        localStorage.setItem('user', JSON.stringify(res.user));
+        this._auth.user.next(user);
+
+        localStorage.setItem('user', JSON.stringify(user));
 
         this.dataService.userImageChange(res.profileImg);
 
-        sessionStorage.setItem('profileImg', res.profileImg);
         this.img = res.profileImg;
       }
     });

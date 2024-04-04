@@ -81,6 +81,8 @@
   </div>
   
 </mat-dialog-content>
+@if (eventData.end_date > currentDate && eventData.start_date > currentDate) {
 <mat-dialog-actions align="start">
-  <button class="btn btn-warning px-2 m-3">Edit Event</button>
+  <button class="btn btn-warning px-2 m-3" (click)="navigateToEdit(eventData._id)">Edit Event</button>
 </mat-dialog-actions>
+}

@@ -50,6 +50,7 @@ const openApis = [
   "/api/forgot-password",
   "/api/reset-password",
   "/api/verify-token",
+  "/api/homepage-details",
 ];
 
 app.use((req, res, next) => {

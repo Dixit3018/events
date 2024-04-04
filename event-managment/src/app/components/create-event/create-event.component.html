@@ -191,7 +191,9 @@
           >
             <option selected value>Choose...</option>
             @for (data of list; track $index) {
-            <option [value]="data[0]">{{ data[0] }}</option>
+              @if(data[0] !== null){
+                <option [value]="data[0]">{{ data[0] }}</option>
+              }
             }
           </select>
           <app-error
@@ -248,7 +250,7 @@
         <div class="col-md-12">
           <div class="form-check">
             <input
-              class="form-check-input p-0"
+              class="form-check-input p-0 border border-2 border-dark"
               id="confirm-check"
               type="checkbox"
               value="confirm"
@@ -258,7 +260,7 @@
               class="form-check-label text-secondary fw-semibold fs-6"
               for="confirm-check"
             >
-              Check here and Confirm the payment and number of volunteers as it wont get
+              Check here and Confirm the payment, number of volunteers and Event Dates as it wont get
               changed afterwards
             </label>
           </div>

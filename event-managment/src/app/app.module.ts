@@ -70,6 +70,7 @@ import { CallComponent } from './components/chat-screen/chat/call/call.component
 import { AddTaskComponent } from './components/dashboard/add-task/add-task.component';
 import { CompletedEventsComponent } from './components/completed-events/completed-events.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
+import { EditEventComponent } from './components/edit-event/edit-event.component';
 
 
 
@@ -116,6 +117,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
     AddTaskComponent,
     CompletedEventsComponent,
     PaginationComponent,
+    EditEventComponent,
   ],
   imports: [
     BrowserModule,

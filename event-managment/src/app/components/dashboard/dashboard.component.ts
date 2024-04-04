@@ -89,10 +89,10 @@ export class DashboardComponent implements OnInit {
 
     // get activity of user
     this.http.getActivity().subscribe((res: any) => {
-      
       res.activity.forEach((element: { date: string; timeSpent: number }) => {
         this.currentWeekDays.forEach((day) => {
           if (day.day === format(element.date, 'dd MMMM')) {
+            
             day.timeSpent = +element.timeSpent;
           }
         });

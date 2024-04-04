@@ -61,4 +61,20 @@ export class AlertService {
               },
             });
     }
+
+    showConfirmBox(title:string,text:string, confirmBtnText:string, redirectUrl:string) {
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: confirmBtnText
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate([redirectUrl]);
+        }
+      });
+    }
 }

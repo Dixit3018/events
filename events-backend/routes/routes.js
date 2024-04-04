@@ -48,6 +48,7 @@ router.use(
 //============================ Home Controller ============================
 
 router.post("/contact-form", homeController.contactInfo);
+router.get("/homepage-details", homeController.homePageData);
 
 //============================ Db Seeder Controller ============================
 
@@ -120,17 +121,19 @@ router.get("/application-list", userController.getApplications);
 // update application status
 router.put("/update-application-status", userController.responseToApplication);
 
-
 //============================ Feedback Controller ============================
 
 //feedback to volunteer
-router.post("/feedback-to-volunteer", feedbackController.giveFeedbackToVolunteer);
+router.post(
+  "/feedback-to-volunteer",
+  feedbackController.giveFeedbackToVolunteer
+);
 
 //get event feedbacks
 router.get("/get-event-feedbacks", feedbackController.getEventFeedbacks);
 
 //get feedback from organizer to single user
-router.get("/get-feedback", feedbackController.getEventFeedback)
+router.get("/get-feedback", feedbackController.getEventFeedback);
 
 //============================ Event Controller ============================
 
@@ -148,7 +151,20 @@ router.post(
 );
 
 //get single event
-router.post("/get-event", eventController.getSingleEvent);
+router.get("/get-event", eventController.getSingleEvent);
+
+// Update event image
+router.put(
+  "/update-cover-image",
+  uploadEvent.single("eventImage"),
+  eventController.updateEventImage
+);
+
+// Update event data
+router.put(
+  "/update-event",
+  eventController.updateEventData
+);
 
 //============================ Task Controller ============================
 
@@ -169,7 +185,7 @@ router.get("/get-single-user", chatController.getSingleUser);
 
 router.get("/get-users", chatController.getAllUsers);
 
-router.put("/create-message-instance", chatController.createMessageInstance)
+router.put("/create-message-instance", chatController.createMessageInstance);
 
 //============================ Activity Controller ============================
 

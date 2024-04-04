@@ -47,7 +47,6 @@ export class VolunteerListComponent implements OnInit {
 
   createInstance(recieverId: string) {
     this.http.createMsgInstance(recieverId).subscribe((res) => {
-      console.log(recieverId);
       this.router.navigate(['/chat/' + recieverId]);
     });
   }
@@ -61,7 +60,6 @@ export class VolunteerListComponent implements OnInit {
       this.getVolunteers();
     }
     if (term !== '') {
-      console.log(term);
       const newList = this.volunteersList.filter((volunteer) => {
         const name = volunteer.firstname + volunteer.lastname;
         return (

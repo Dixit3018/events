@@ -75,7 +75,6 @@ const createMessageInstance = async (req,res) => {
     participants: { $all: participants },
   });
 
-  console.log(chat);
   if(!chat) {
     await ChatData.create({
       participants:participants 

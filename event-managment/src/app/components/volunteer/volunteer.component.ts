@@ -30,10 +30,7 @@ export class VolunteerComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.http.getSingleVolunteer(params['id']).subscribe((res:{volunteer:profileDetails}) => {
-        // console.log(res.volunteer);
         this.profileDetails = res.volunteer;
-        console.log(this.profileDetails);
-        
       });
     });
   }

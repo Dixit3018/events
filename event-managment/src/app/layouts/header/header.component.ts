@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   constructor(private _auth: AuthService, private router: Router, private cryptoService:CryptoService, private dataService:DataService) {}
 
   ngOnInit(): void {
+
     this.dataService.onUserImageChange.subscribe(img => {
       this.userImg = img;
     })
@@ -35,13 +36,10 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    this._auth.endTracking(this.userId);
+    this._auth.endTracking();
     this._auth.user.next(null);
 
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('expiry');
-    sessionStorage.removeItem('profileImg');
+    localStorage.clear();
     sessionStorage.clear();
 
     this.router.navigate(['/login']);

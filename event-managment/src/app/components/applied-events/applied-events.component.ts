@@ -48,7 +48,6 @@ export class AppliedEventsComponent implements OnInit {
         let status = app.status;
         this.http.singleEvent(app.event_id).subscribe((res: any) => {
           const resData = { ...res.event, status: status };
-          console.log(resData);
           const today = new Date();
           //condition to show only recent applications
           // if(!(new Date(resData.start_date) > today)){

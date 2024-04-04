@@ -8,6 +8,7 @@ import { LoginData } from '../login/login.component';
 import { ageRangeValidator } from '../../shared/validators/ageRangeValidator';
 import { limitCharacterValidator } from '../../shared/validators/limitCharacter.validator';
 import { CryptoService } from '../../services/crypto.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-signup',
@@ -27,6 +28,7 @@ export class SignupComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _auth: AuthService,
     private router: Router,
+    private alertService: AlertService,
     private _http: HttpService,
     private cryptoService: CryptoService
   ) {}
@@ -154,6 +156,24 @@ export class SignupComponent implements OnInit {
   }
 
   private _previewImage(file: File) {
+    if (!file) {
+      return;
+    }
+  
+    const allowedExtensions = ['image/jpeg', 'image/png', 'image/jpg'];
+  
+    if (!allowedExtensions.includes(file.type)) {
+      this.alertService.showAlert(
+        'Invalid',
+        'Please select a valid JPEG, PNG or JPG file',
+        'warning',
+        'green'
+      );
+      this.imagePreview = '';
+      this.signupForm.get('generalInfo.image').setValue('')
+      return;
+    }
+    
     const reader = new FileReader();
 
     reader.onload = () => {

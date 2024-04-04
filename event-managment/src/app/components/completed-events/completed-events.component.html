@@ -23,7 +23,10 @@
                     @for (star of getStars(event.review); track $index) {
                       <mat-icon class="mat-18 text-warning">star</mat-icon>
                     }
-                  } 
+                    @for (star of getEmptyStars(event.review); track $index) {
+                      <mat-icon class="mat-18 text-secondary">star</mat-icon>
+                    }
+                  }
                   @else {
                     <span>(no review)</span> 
                   }

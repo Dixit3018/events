@@ -10,15 +10,7 @@ import {
 
 @Component({
   selector: 'app-achievement-box-two',
-  template: `
-    <div [@count]="count" class="achievement-box-two">
-      <h2>
-        <span class="number">{{ animatedNumber }}</span
-        >+
-      </h2>
-      <h5>{{ title }}</h5>
-    </div>
-  `,
+  templateUrl: 'achievement-box-two.component.html',
   animations: [
     trigger('count', [
       transition(':increment', [

@@ -139,7 +139,7 @@
     var sec = a.getSeconds();
     var time =
       date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
-    console.log(date);
+
     $("#timer #days").html(date);
     $("#timer #hours").html(hour);
     $("#timer #minutes").html(min);

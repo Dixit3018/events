@@ -13,6 +13,7 @@ export class EventListComponent implements OnInit {
   eventsList = [];
   displayEvents = [];
   sortOrder: string = 'desc';
+
   pageSize = 6;
   currentPage = 1;
 
@@ -33,7 +34,6 @@ export class EventListComponent implements OnInit {
     return this.displayEvents.slice(startIndex, endIndex + 1);
   }
 
-
   constructor(
     private _http: HttpService,
     private dataService: DataService,
@@ -42,9 +42,9 @@ export class EventListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getEventData();
-    this.dataService.feedbackChanged.subscribe(change => {
+    this.dataService.feedbackChanged.subscribe((change) => {
       this.getEventData();
-    })
+    });
   }
 
   getEventData() {
@@ -115,25 +115,43 @@ export class EventListComponent implements OnInit {
     });
   }
 
-  filterEvents(event:any) {
+  filterEvents(event: any): void {
     const filterOn = event.target.value;
+
+    const currentDate = this.convertDate(new Date().toString())
+
     switch (filterOn) {
-      case 'all':        
-      this.displayEvents = this.eventsList;
+      case 'all':
+        this.displayEvents = this.eventsList;
         break;
-      case 'upcoming':        
-      this.displayEvents = this.eventsList.filter(event => new Date(event.start_date) > new Date());
+      case 'upcoming':
+        this.displayEvents = this.eventsList.filter((eventData) => {
+          const eventStartDate = this.convertDate(eventData.start_date);
+          return eventStartDate > currentDate;
+        });
         break;
-    
       case 'ongoing':
-        const currentDate = new Date();
-        this.displayEvents = this.eventsList.filter(event => new Date(event.start_date) <= currentDate && new Date(event.end_date) >= currentDate);
+        this.displayEvents = this.eventsList.filter((eventData) => {
+          const eventEndDate = this.convertDate(eventData.start_date);
+          const eventStartDate = this.convertDate(eventData.end_date);
+          return eventStartDate <= currentDate && eventEndDate >= currentDate;
+        });
         break;
-    
       case 'completed':
-        this.displayEvents = this.eventsList.filter(event => new Date(event.end_date) < new Date());
+        this.displayEvents = this.eventsList.filter((eventData) => {
+          const eventEndDate = this.convertDate(eventData.end_date);
+          return eventEndDate < currentDate;
+        });
         break;
     }
-    
+  }
+
+  convertDate(date: string) {
+    const dateToReturn = new Date(date);
+    return new Date(
+      dateToReturn.getFullYear(),
+      dateToReturn.getMonth(),
+      dateToReturn.getDate()
+    );
   }
 }

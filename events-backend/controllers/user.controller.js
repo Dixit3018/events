@@ -4,7 +4,6 @@ const fs = require("fs");
 const User = require("../models/user");
 const Event = require("../models/event");
 const Application = require("../models/application");
-const Feedback = require("../models/feedback");
 
 const {
   imagePathToBase64,
@@ -396,8 +395,6 @@ const getDashboardData = async (req, res) => {
       start_date: { $gte: startOfMonth, $lte: endOfMonth },
       end_date: { $gte: startOfMonth, $lte: endOfMonth, $lt: today }
     });
-    
-    console.log("History" + history);
 
     
     const promises = completedEvents.map(event => {

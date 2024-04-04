@@ -13,7 +13,10 @@
           get a great experience here...
         </p>
         <div class="mt-5 mx-3">
-          <button routerLink="/login" class="btn btn-danger w-50 py-2 fs-5 rounded">
+          <button
+            routerLink="/login"
+            class="btn btn-danger w-50 py-2 fs-5 rounded"
+          >
             Get started
           </button>
         </div>
@@ -37,362 +40,131 @@
 <div class="container mt-3">
   <div class="row">
     <div class="section-head-style-two">
-      <h5>Event</h5>
-      <h3>Past <span>Event</span></h3>
+      <h3>Top <span>Events</span></h3>
     </div>
   </div>
 
   <mat-tab-group color="accent" animationDuration="1000ms">
-
-    <mat-tab label="Environment">
+    <mat-tab label="Upcoming">
       <div class="row m-0 p-0">
+        @if(upcomingEvents.length > 0){ @for (event of
+        upcomingEvents.slice(0,displayCountUpcoming); track $index) {
         <div class="col-lg-4 col-md-5">
           <div class="event-card-style-two">
             <div class="event-thumb">
-              <img src="assets/images/home/env1.jpg" />
+              <img src="{{ event.image }}" />
               <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                <a>
+                  <i class="bi bi-calendar2-week"></i>
+                  {{ event.date.slice(0, 10) }}
                 </a>
               </div>
             </div>
             <div class="event-content">
               <div class="event-card-main">
                 <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  <a>
+                    <i class="bi bi-geo-alt"></i> {{ event.location }}</a
                   >
                 </div>
                 <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a>
+                  <a>{{ event.description | truncate : 10 }}</a>
                 </h5>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/env2.jpg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-             </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/env3.jpg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
+        } @if(upcomingEvents.length > displayCountUpcoming){
+        <button class="btn btn-danger" (click)="loadMoreUpcoming()">
+          Load More
+        </button>
+        } } @else {
+        <div>No Events</div>
+        }
       </div>
     </mat-tab>
 
-    <mat-tab label="Bussiness">
+    <mat-tab label="Ongoing">
       <div class="row m-0 p-0">
+        @if(ongoingEvents.length > 0){ @for (event of
+        ongoingEvents.slice(0,displayCountOngoing); track $index) {
         <div class="col-lg-4 col-md-5">
           <div class="event-card-style-two">
             <div class="event-thumb">
-              <img src="assets/images/home/biz1.webp" />
+              <img src="{{ event.image }}" />
               <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                <a>
+                  <i class="bi bi-calendar2-week"></i>
+                  {{ event.date.slice(0, 10) }}
                 </a>
               </div>
             </div>
             <div class="event-content">
               <div class="event-card-main">
                 <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  <a>
+                    <i class="bi bi-geo-alt"></i> {{ event.location }}</a
                   >
                 </div>
                 <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a>
+                  <a>{{ event.description | truncate : 10 }}</a>
                 </h5>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/biz2.jpeg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-             </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/biz3.jpg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
+        } @if(ongoingEvents.length > displayCountOngoing){
+        <button class="btn btn-danger" (click)="loadMoreOngoing()">
+          Load More
+        </button>
+        } }@else {
+        <div>No Events</div>
+        }
       </div>
     </mat-tab>
 
-    <mat-tab label="Camps">
+    <mat-tab label="Completed">
       <div class="row m-0 p-0">
+        @if (completedEvents.length > 0) { @for (event of
+        completedEvents.slice(0,displayCountCompleted); track $index) {
         <div class="col-lg-4 col-md-5">
           <div class="event-card-style-two">
             <div class="event-thumb">
-              <img src="assets/images/home/camp1.jpeg" />
+              <img src="{{ event.image }}" />
               <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
+                <a>
+                  <i class="bi bi-calendar2-week"></i>
+                  {{ event.date.slice(0, 10) }}
                 </a>
               </div>
             </div>
             <div class="event-content">
               <div class="event-card-main">
                 <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
+                  <a>
+                    <i class="bi bi-geo-alt"></i> {{ event.location }}</a
                   >
                 </div>
                 <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a>
+                  <a>{{ event.description | truncate : 10 }}</a>
                 </h5>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/camp2.jpeg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-             </div>
-            </div>
+        } @if(completedEvents.length > displayCountCompleted){
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-3">
+            <button class="btn btn-danger w-100" (click)="loadMoreCompleted()">
+              Load More
+            </button>
           </div>
         </div>
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/camp3.jpeg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
+        } }@else {
+        <div>No Events</div>
+        }
       </div>
     </mat-tab>
-    
-
-    <mat-tab label="Sports">
-      <div class="row m-0 p-0">
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/sports1.jpeg" />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a>
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/sports2.jpeg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-             </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-5">
-          <div class="event-card-style-two">
-            <div class="event-thumb">
-              <img src="assets/images/home/sports3.jpg" alt />
-              <div class="event-date">
-                <a href="#">
-                  <i class="bi bi-calendar2-week"></i> January 21, 2021
-                </a>
-              </div>
-            </div>
-            <div class="event-content">
-              <div class="event-card-main">
-                <div class="event-location">
-                  <a href="#">
-                    <i class="bi bi-geo-alt"></i> Broadw, New York</a
-                  >
-                </div>
-                <h5 class="event-title">
-                  <a href="#"
-                    >Media companies need to better one then educate
-                    advertisers.</a
-                  >
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-    
   </mat-tab-group>
 </div>
 

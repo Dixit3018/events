@@ -69,7 +69,7 @@ export class CreateEventComponent implements CanComponentDeactivate{
         eventCity: ['', Validators.required],
         eventState: [''],
         eventImage: ['', Validators.required],
-        check: ['', Validators.required],
+        check: ['', Validators.requiredTrue],
       },
       { validators: [dateRangeValidator] }
     );

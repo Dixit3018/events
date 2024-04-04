@@ -4,6 +4,8 @@ import { Event } from '../../shared/modals/event.modal';
 import { HttpService } from '../../services/http.service';
 import { User } from '../../models/user.model';
 import { DataService } from '../../services/data.service';
+import { AlertService } from '../../services/alert.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-details',
@@ -12,7 +14,7 @@ import { DataService } from '../../services/data.service';
 })
 export class EventDetailsComponent implements OnInit {
   eventData: Event;
-
+  currentDate = new Date().toISOString();
   participants: { _id: string; username: string; profilePicture: string }[] =
     [];
   feedbacks: { rate: number; userId: string; eventId: string; role: string }[] =
@@ -33,6 +35,8 @@ export class EventDetailsComponent implements OnInit {
   constructor(
     private http: HttpService,
     private dataService: DataService,
+    private alertService: AlertService,
+    private router:Router,
     private dialogRef: MatDialogRef<EventDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { eventData: Event }
   ) {}
@@ -42,7 +46,7 @@ export class EventDetailsComponent implements OnInit {
     const volunteers = this.data.eventData.hired_volunteers;
 
     if (
-      new Date(this.data.eventData.end_date) < new Date() &&
+      this.convertDate(this.data.eventData.end_date) < this.convertDate(new Date().toString()) &&
       this.data.eventData.feedbackStatus === false
       ) {
         this.feedbackStatus = true;
@@ -50,7 +54,6 @@ export class EventDetailsComponent implements OnInit {
         //get feedbacks to display
         
           this.feedbackStatus = false;
-          console.log(this.feedbackStatus);
           this.http
           .getEventFeedbacks(this.data.eventData._id)
           .subscribe((res: any) => {
@@ -103,6 +106,26 @@ export class EventDetailsComponent implements OnInit {
       this.dialogRef.close();
     });
   }
+
+  navigateToEdit(event_id:string) {
+    if(this.participants.length > 0){
+      this.alertService.showAlert("Error","You cannot change the event data as a user has participated",'error','green')
+    }
+    else{
+      this.router.navigate(['/edit-event/'+event_id]);
+      this.closeDialog()
+    }
+  }
+
+  convertDate(date: string) {
+    const dateToReturn = new Date(date);
+    return new Date(
+      dateToReturn.getFullYear(),
+      dateToReturn.getMonth(),
+      dateToReturn.getDate()
+    );
+  }
+  
   closeDialog() {
     this.dialogRef.close();
   }

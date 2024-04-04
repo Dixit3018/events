@@ -30,6 +30,7 @@ import { CallComponent } from './components/chat-screen/chat/call/call.component
 import { CompletedEventsComponent } from './components/completed-events/completed-events.component';
 import { organizerGuard } from './guards/organizer.guard';
 import { volunteerGuard } from './guards/volunteer.guard';
+import { EditEventComponent } from './components/edit-event/edit-event.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -81,6 +82,11 @@ const routes: Routes = [
         path: 'create-event',
         component: CreateEventComponent,
         canDeactivate: [FormCanDeactivateGuard],
+        canActivate: [organizerGuard],
+      },
+      {
+        path: 'edit-event/:id',
+        component: EditEventComponent,
         canActivate: [organizerGuard],
       },
       {

@@ -72,6 +72,9 @@ export class HttpService {
   getFeedback(eventId:string) {
     return this._http.get(`${this.baseUrl}/get-feedback?eventId=${eventId}`);
   }
+  homePageData() {
+    return this._http.get(`${this.baseUrl}/homepage-details`);
+  }
 
   //=================================================================
   //=============================== Post Requests
@@ -82,7 +85,7 @@ export class HttpService {
   }
 
   singleEvent(event_id: string) {
-    return this._http.post(`${this.baseUrl}/get-event`, { event_id: event_id });
+    return this._http.get(`${this.baseUrl}/get-event?event_id=${event_id}`);
   }
 
   getOrganizerData(organizer_id: string) {
@@ -152,6 +155,14 @@ export class HttpService {
     return this._http.put(`${this.baseUrl}/update-user`, userData);
   }
   
+  updateEventImage(data: FormData) {
+    return this._http.put(`${this.baseUrl}/update-cover-image`, data);
+  }
+  
+  updateEventData(eventData: FormData) {
+    return this._http.put(`${this.baseUrl}/update-event`, eventData);
+  }
+
   createMsgInstance(recieverId: string) {
     return this._http.put(`${this.baseUrl}/create-message-instance`, {recieverId:recieverId});
   }

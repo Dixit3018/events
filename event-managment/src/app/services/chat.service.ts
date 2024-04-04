@@ -12,10 +12,7 @@ export class ChatService {
 
     selectedChatId:string = '';
 
-    setUnReadMsg(senderId:string, count:number) {
-
-        console.log("service called");
-        
+    setUnReadMsg(senderId:string, count:number) {        
         const previousCount = +localStorage.getItem(senderId);
 
         if(previousCount){

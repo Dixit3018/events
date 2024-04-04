@@ -40,7 +40,6 @@ const login = async (req, res) => {
       role: role,
     });
 
-    console.log(user);
     if (!user) {
       return res
         .status(404)
@@ -193,8 +192,6 @@ const resetPassword = async (req, res) => {
     await ResetPassword.findOneAndDelete({ token: token });
 
     if (id === "" || token === "") {
-      console.log(token);
-      console.log(id);
       return res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -219,7 +216,6 @@ const resetPassword = async (req, res) => {
     });
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
-      console.log("error of jwt");
       return res.status(401).json({ error: "Invalid token" });
     }
 
@@ -232,7 +228,6 @@ const verifyToken = async (req, res) => {
   const { token, id } = req.body;
 
   const resetPass = await ResetPassword.findOne({ token: token, user_id: id });
-  console.log(resetPass);
   if (resetPass && resetPass.token !== "" && resetPass.token !== null) {
     return res.status(200).json({ verify: true, token: resetPass.token });
   } else {

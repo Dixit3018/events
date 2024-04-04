@@ -40,7 +40,6 @@ export class ApplicationListComponent implements OnInit {
   getApplicationDetails() {
     this.http.getApplicationList().subscribe((res: any) => {
       this.applications = res.data;
-      console.log(this.applications);
     });
   }
 

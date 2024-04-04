@@ -59,7 +59,6 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Submitted');
 
     const password = this.resetPass.value.password;
     const data = { id: this.id, token: this.token };
@@ -70,8 +69,6 @@ export class ResetPasswordComponent implements OnInit {
           this.token = data.token;
           this._http.resetPassword(this.id, password).subscribe({
             next: (res: any) => {
-              console.log(res);
-
               if (res.success) {
                 this.alertService.showAlertRedirect(
                   'Successs!',

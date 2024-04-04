@@ -13,13 +13,15 @@ import { CryptoService } from '../services/crypto.service';
 @Injectable()
 export class MyHttpInterceptor implements HttpInterceptor {
   private readonly paramsApis = ['/api/get-single-user', '/api/get-volunteer'];
-  private readonly authApis = [
+  private readonly openApis = [
     '/login',
     '/cities',
     '/register',
     '/forgot-password',
     '/reset-password/:id/:token',
     '/verify-token',
+    '/contact-form',
+    '/homepage-details'
   ];
 
   constructor(
@@ -74,7 +76,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
   }
 
   private isAuthApi(url: string): boolean {
-    return this.authApis.some((api) => url.includes(api));
+    return this.openApis.some((api) => url.includes(api));
   }
 
   private handleUnauthorized(): void {

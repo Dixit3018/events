@@ -51,16 +51,16 @@ export class AuthService {
     }
   }
 
-  endTracking(userId: string) {
-    const endTime = Date.now();
-    const startTime = +localStorage.getItem('startTime');
+  endTracking() {
+    const endTime = parseInt(Date.now().toString(), 10) ;
+    const startTime = parseInt(localStorage.getItem('startTime') || '',10);
+
+    
     const timeSpentInMilliseconds = endTime - startTime;
 
     const timeSpentInMinutes = Math.floor(
       timeSpentInMilliseconds / (1000 * 60)
     );
-
-    console.log(`Time spent in app: ${timeSpentInMinutes} minutes`);
 
     const currentDate = new Date();
     const year = currentDate.getFullYear();

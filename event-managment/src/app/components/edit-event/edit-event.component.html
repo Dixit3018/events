@@ -1,0 +1,91 @@
+@if ((this.currentEvent != null)) {
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 d-flex align-items-center">
+      <form [formGroup]="updateForm">
+        <h3 class="mb-4">Edit Event</h3>
+        <div class="row p-0">
+          <div class="col-md-6">
+            <div class="mb-3">
+              Event Name
+              <input type="text" class="form-control" formControlName="name" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              Venue
+              <input type="text" class="form-control" formControlName="venue" />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="mb-3">
+              Description
+              <input
+                type="text"
+                class="form-control"
+                formControlName="description"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              City
+              <select
+                (change)="setState($event)"
+                class="form-select form-select-sm"
+                formControlName="city"
+                id="city"
+              >
+                <option disabled>Select City</option>
+                @for (data of citiesAndStates; track $index) { @if(data[0] !==
+                null){
+                <option [value]="data[0]">{{ data[0] }}</option>
+                } }
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              State
+              <input
+                type="text"
+                class="form-control"
+                formControlName="state"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary me-3" (click)="onUpdate()">Update</button>
+        <button type="button" (click)="navigateBack()" class="btn btn-danger">Cancel</button>
+      </form>
+    </div>
+
+    <div class="col-md-6 p-5">
+      <div class="d-flex justify-content-center align-items-center mb-4">
+        <div class="position-relative content d-inline-block">
+          <img
+            
+            [src]="eventImg"
+            class="cover-img border border-1 rounded-3 shadow"
+          />
+          <div
+            class="overlay top-0 start-0 d-flex align-items-center justify-content-center"
+          >
+            <button (click)="openFileInp()" class="btn btn-primary px-5">
+              Update
+            </button>
+            <input
+              type="file"
+              class="d-none file-input"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+} @else {
+<app-preloader />
+}

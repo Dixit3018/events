@@ -1,0 +1,27 @@
+.cover-img {
+    width: 100%;
+    height: 400px;
+}
+
+.content {
+    width: 100%;
+ }
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay button:hover {
+    opacity: 1;
+}
+
+.content:hover {
+    .overlay {
+        opacity: 1;
+    }
+}
