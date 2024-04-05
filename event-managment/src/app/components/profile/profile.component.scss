@@ -129,3 +129,9 @@ table tfoot tr th {
 input[type="file"] {
     display: none;
   }
+
+.completed-list {
+    min-height:400px;
+    max-height:400px;
+    overflow: auto;
+}

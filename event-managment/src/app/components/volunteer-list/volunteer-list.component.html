@@ -64,12 +64,12 @@
             <ng-container>
               <mat-icon
                 class="mat-18 text-warning"
-                *ngFor="let star of getStars(volunteer.rating)"
+                *ngFor="let star of getStars(+volunteer.rating)"
                 >star</mat-icon
               >
               <mat-icon
                 class="mat-18 text-secondary"
-                *ngFor="let star of getEmptyStars(volunteer.rating)"
+                *ngFor="let star of getEmptyStars(+volunteer.rating)"
                 >star</mat-icon
               >
             </ng-container>

@@ -168,8 +168,11 @@ router.put(
 
 //============================ Task Controller ============================
 
-// get task
-router.get("/get-task", taskController.getTask);
+// get pending task
+router.get("/get-task", taskController.getPendingTask);
+
+// get completed task
+router.get("/get-completed-task", taskController.getCompletedTask);
 
 // Update task list
 router.put("/update-status", taskController.updateStatus);

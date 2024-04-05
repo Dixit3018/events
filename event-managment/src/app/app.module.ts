@@ -71,6 +71,7 @@ import { AddTaskComponent } from './components/dashboard/add-task/add-task.compo
 import { CompletedEventsComponent } from './components/completed-events/completed-events.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -153,6 +154,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
         siteKey: environment.recaptcha.siteKey,
       } as RecaptchaSettings,
     },
+    DatePipe
   ],
   bootstrap: [AppComponent],
 })

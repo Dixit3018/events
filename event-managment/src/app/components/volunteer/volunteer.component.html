@@ -32,12 +32,12 @@
       profileDetails.rating === ''){ (No Reviews) } @else {
       <mat-icon
         class="mat-18 text-warning"
-        *ngFor="let star of getStars(profileDetails.rating)"
+        *ngFor="let star of getStars(+profileDetails.rating)"
         >star</mat-icon
       >
       <mat-icon
         class="mat-18 text-secondary"
-        *ngFor="let star of getEmptyStars(profileDetails.rating)"
+        *ngFor="let star of getEmptyStars(+profileDetails.rating)"
         >star</mat-icon
       >
       }
@@ -47,7 +47,7 @@
           class="dec-box-1 d-flex align-items-center justify-content-center text-center p-2"
         >
           <a href="{{ 'mailto:' + profileDetails.email }}">
-            <p class="text-danger mt-2">
+            <p class="text-danger mt-2 fw-bold">
               {{ profileDetails.email }}
               <mat-icon class="mat-18 text-danger icon-style">mail</mat-icon>
             </p>
@@ -58,15 +58,17 @@
           class="dec-box-1 d-flex flex-column text-danger align-items-center justify-content-center text-center p-2"
         >
         <div>
-          {{ profileDetails.address }}
-          <mat-icon class="mat-18 text-danger icon-style">house</mat-icon>
+          <p class="text-danger mt-2 fw-bold">
+            {{ profileDetails.address }}
+            <mat-icon class="mat-18 text-danger icon-style">house</mat-icon>
+          </p>
         </div>
           
         </div>
         <div
           class="dec-box-1 d-flex align-items-center justify-content-center text-center p-2"
         >
-          <p class="text-danger mt-2">
+          <p class="text-danger mt-2 fw-bold">
             {{ profileDetails.city + " , " + profileDetails.state }}
             <mat-icon class="mat-18 text-danger icon-style">home</mat-icon>
           </p>

@@ -5,7 +5,7 @@ const feedbackSchema = new mongoose.Schema(
     user_id: { type: String },
     event_id: { type: String },
     role: { type: String },
-    review: { type: Number, default: null },
+    review: { type: String, default: null },
   },
   { timestamps: true }
 );

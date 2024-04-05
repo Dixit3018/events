@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+
+
 import { AuthService, User } from '../../services/auth.service';
 import { HttpService } from '../../services/http.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,19 +19,41 @@ export class ProfileComponent implements OnInit {
   userData: User;
   img: string;
   profileForm: FormGroup;
-  citiesAndStates: string[] = [];
   state: string = '';
   fileErr: string = '';
+  citiesAndStates: string[] = [];
+  completedTasks: { name: string; created_at: string }[] = [];
 
   isEditMode: boolean = false;
   fileSelected: boolean = false;
+
+  pageSize = 5;
+  currentPage = 1;
+
+  getTotalPages() {
+    return Math.ceil(this.completedTasks.length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getCurrentPageTasks() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(
+      startIndex + this.pageSize - 1,
+      this.completedTasks.length - 1
+    );
+    return this.completedTasks.slice(startIndex, endIndex + 1);
+  }
 
   constructor(
     private _auth: AuthService,
     private _http: HttpService,
     private fb: FormBuilder,
     private dataService: DataService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +65,18 @@ export class ProfileComponent implements OnInit {
       this.userData = user;
       this.img = user.profilePicture;
     });
+
+    this._http
+      .getCompletedTask()
+      .subscribe((res: { message: string; tasks: [] }) => {
+        res.tasks.map((task: any) => {
+
+          this.completedTasks.push({
+            name: task.name,
+            created_at: this.datePipe.transform(new Date(task.createdAt), 'dd/MM/yy'),
+          });
+        });        
+      });
 
     const { firstname, lastname, username, email, address, age, state, city } =
       this.userData;
@@ -71,7 +108,6 @@ export class ProfileComponent implements OnInit {
   toggleEdit() {
     if (this.profileForm.dirty) {
       if (!this.profileForm.valid) {
-
         this.alertService.showAlert(
           'Invalid Form',
           'Please enter the details correctly',
@@ -113,7 +149,7 @@ export class ProfileComponent implements OnInit {
       const fileExtension = file.name.split('.').pop().toLowerCase();
       if (allowedExtensions.indexOf(fileExtension) === -1) {
         this.fileErr =
-          'Invalid file format. Only JPG, JPEG, and PNG files are allowed.';
+          'Invalid file format. only JPG, JPEG, and PNG files are allowed.';
 
         return;
       }

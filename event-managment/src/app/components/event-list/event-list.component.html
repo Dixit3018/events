@@ -21,14 +21,14 @@
     <div class="row">
       @if(displayEvents.length > 0){
     @for (event of displayEvents; track $index) {
-    <a (click)="openDetails(event,'500ms', '200ms')" class="col-md-4">
-      <div class="card mb-3">
+    <a (click)="openDetails(event,'500ms', '200ms')" class="col-md-4 d-flex">
+      <div class="card mb-3 align-self-stretch">
         <img
           [src]="event.cover_img"
           class="card-img-top"
         />
         <div class="card-body">
-          <h5 class="card-title">{{ event.name | titlecase }}</h5>
+          <h5 class="card-title mt-0">{{ event.name | titlecase }}</h5>
           <p class="card-text my-0">{{ event.description | truncate : 10 | titlecase }}</p>
           <p class="card-text mt-1">
             <span class="fw-semibold">Started: </span>

@@ -1,5 +1,7 @@
 const Event = require("../models/event");
 const Feedback = require("../models/feedback");
+const Users = require("../models/user");
+
 const { getUserIdFromToken } = require("../utils/utils");
 
 const giveFeedbackToVolunteer = async (req, res) => {
@@ -13,6 +15,7 @@ const giveFeedbackToVolunteer = async (req, res) => {
         user_id: feed.userId,
         event_id: feed.eventId,
       });
+
       if (checkFeedback === null) {
         eventId = feed.eventId;
         feedExists = true;
@@ -22,7 +25,12 @@ const giveFeedbackToVolunteer = async (req, res) => {
           role: feed.role,
           review: feed.rate,
         });
+
+        const user = await Users.findOne({ _id: feed.userId})
+        averageRate = +user.rating != 0 ? (+feed.rate + +user.rating)/2 : +feed.rate;
+        user.rating = averageRate.toString();
         await newFeedback.save();
+        await user.save();
       }
     });
 

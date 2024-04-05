@@ -32,6 +32,7 @@ import { organizerGuard } from './guards/organizer.guard';
 import { volunteerGuard } from './guards/volunteer.guard';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 
+
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 

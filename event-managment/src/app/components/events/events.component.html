@@ -10,7 +10,7 @@
         >
           <div class="list-content">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 text-danger">{{ event.name | titlecase }}</h5>
+              <h5 class="mb-2 mt-0 text-danger">{{ event.name | titlecase }}</h5>
 
               <span
                 class="badge text-bg-primary mb-2 border-0 position-absolute end-0 p-2"
@@ -21,35 +21,37 @@
             <div class="mb-1 mt-4">
               <span class="fw-semibold">Description: </span>
               <span class="text-secondary-emphasis">{{
-                event.description | truncate : 3
+                event.description | truncate : 10
               }}</span>
             </div>
 
             <div class="mt-3">
-              <div>
-                <span class="fw-semibold">Location: </span>
-                <span class="text-secondary-emphasis">
+              <div class="row mb-1">
+                <span class="fw-semibold col-md-6 align-self-stretch">Location <img src="/assets/icons/location.png" width="22px" alt=""> </span>
+                <span class="text-secondary-emphasis col-md-6">
                   {{ event.city + "," + event.state }}
                 </span>
               </div>
-              <div>
-                <span class="fw-semibold">Budget: </span>
-                <span class="text-secondary-emphasis"
+
+              <div class="row mb-1">
+                <span class="fw-semibold col-md-6">Budget <img src="/assets/icons/budget.png" width="22px" alt=""> </span>
+                <span class="text-secondary-emphasis col-md-6"
                   >&#8377; {{ event.pay_per_volunteer }}/per day
                 </span>
               </div>
-              <div>
-                <span class="fw-semibold">Days: </span>
-                <span class="text-secondary-emphasis">{{ event.days }} </span>
+
+              <div class="row mb-1">
+                <span class="fw-semibold col-md-6">Days <img src="/assets/icons/days.png" width="22px" alt=""> </span>
+                <span class="text-secondary-emphasis col-md-6">{{ event.days }} days</span>
               </div>
 
-              <div>
-                <span class="fw-semibold">From: </span>
-                <span class="text-secondary-emphasis">{{ event.start_date }} </span>
+              <div class="row mb-1">
+                <span class="fw-semibold col-md-6">From <img src="/assets/icons/dates.png" width="22px" alt=""> </span>
+                <span class="text-secondary-emphasis col-md-6">{{ event.start_date }} </span>
               </div>
-              <div>
-                <span class="fw-semibold">To: </span>
-                <span class="text-secondary-emphasis">{{ event.end_date }} </span>
+              <div class="row mb-1">
+                <span class="fw-semibold col-md-6">To <img src="/assets/icons/dates.png" width="22px" alt=""> </span>
+                <span class="text-secondary-emphasis col-md-6">{{ event.end_date }} </span>
               </div>
             </div>
 

@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   city: { type: String, required: true },
   state: { type: String, required: true },
   role: { type: String, required: true },
-  rating: { type: Number, default: 0 },
+  rating: { type: String, default: 0 },
   profilePicture: { type: String, required: true },
 });
 

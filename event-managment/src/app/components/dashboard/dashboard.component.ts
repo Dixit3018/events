@@ -211,7 +211,7 @@ export class DashboardComponent implements OnInit {
       .subscribe((res: { message: string }) => {
         this.tasks.splice(index, 1);
         if (res.message === 'success') {
-          this.alertService.showAlert('Success','Task Updated!','success','green')
+          this.alertService.showAlert('Completed','Task completed!','success','green')
         }
       });
   }

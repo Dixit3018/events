@@ -15,8 +15,12 @@ import { Router } from '@angular/router';
 export class EventDetailsComponent implements OnInit {
   eventData: Event;
   currentDate = new Date().toISOString();
-  participants: { _id: string; username: string; profilePicture: string }[] =
-    [];
+  participants: {
+    _id: string;
+    username: string;
+    profilePicture: string;
+    rating: 0;
+  }[] = [];
   feedbacks: { rate: number; userId: string; eventId: string; role: string }[] =
     [];
   feedbackStatus: boolean = false;
@@ -36,7 +40,7 @@ export class EventDetailsComponent implements OnInit {
     private http: HttpService,
     private dataService: DataService,
     private alertService: AlertService,
-    private router:Router,
+    private router: Router,
     private dialogRef: MatDialogRef<EventDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { eventData: Event }
   ) {}
@@ -46,19 +50,21 @@ export class EventDetailsComponent implements OnInit {
     const volunteers = this.data.eventData.hired_volunteers;
 
     if (
-      this.convertDate(this.data.eventData.end_date) < this.convertDate(new Date().toString()) &&
+      this.convertDate(this.data.eventData.end_date) <
+        this.convertDate(new Date().toString()) &&
       this.data.eventData.feedbackStatus === false
-      ) {
-        this.feedbackStatus = true;
-      } else {
-        //get feedbacks to display
-        
-          this.feedbackStatus = false;
-          this.http
-          .getEventFeedbacks(this.data.eventData._id)
-          .subscribe((res: any) => {
-            this.feedBackHistory = res.feedbacks;
-          });
+    ) {
+      this.feedbackStatus = true;
+    } else {
+      //get feedbacks to display
+
+      this.feedbackStatus = false;
+      console.log(this.feedbackStatus);
+      this.http
+        .getEventFeedbacks(this.data.eventData._id)
+        .subscribe((res: any) => {
+          this.feedBackHistory = res.feedbacks;
+        });
     }
 
     volunteers.forEach((volunteerId) => {
@@ -67,34 +73,27 @@ export class EventDetailsComponent implements OnInit {
           _id: res.user._id,
           username: res.user.username,
           profilePicture: res.user.profilePicture,
+          rating: 0,
         });
       });
     });
     this.eventData = this.data.eventData;
   }
 
-  rate(value: number, userId: string) {
-    this.rating = value;
-    this.fillStars(value);
+  rate(participant: any, value: number) {
+    participant.rating = value;
+    console.log(participant);
 
-    if (this.feedbacks.length > 0) {
-      this.feedbacks.forEach((feedback) => {
-        if (feedback.userId === userId) {
-          feedback.rate = value;
-        }
-      });
-    } else {
-      this.feedbacks.push({
-        rate: value,
-        userId: userId,
-        eventId: this.eventData._id,
-        role: 'volunteer',
-      });
-    }
+    this.fillStars(value);
+    this.feedbacks.push({
+      rate: +value,
+      userId: participant._id,
+      eventId: this.eventData._id,
+      role: 'volunteer',
+    });
   }
 
   fillStars(value: number) {
-    // Fill stars up to the selected value
     this.stars.forEach((star) => {
       star.filled = star.value <= value;
     });
@@ -107,13 +106,17 @@ export class EventDetailsComponent implements OnInit {
     });
   }
 
-  navigateToEdit(event_id:string) {
-    if(this.participants.length > 0){
-      this.alertService.showAlert("Error","You cannot change the event data as a user has participated",'error','green')
-    }
-    else{
-      this.router.navigate(['/edit-event/'+event_id]);
-      this.closeDialog()
+  navigateToEdit(event_id: string) {
+    if (this.participants.length > 0) {
+      this.alertService.showAlert(
+        'Error',
+        'You cannot change the event data as a user has participated',
+        'error',
+        'green'
+      );
+    } else {
+      this.router.navigate(['/edit-event/' + event_id]);
+      this.closeDialog();
     }
   }
 
@@ -125,7 +128,7 @@ export class EventDetailsComponent implements OnInit {
       dateToReturn.getDate()
     );
   }
-  
+
   closeDialog() {
     this.dialogRef.close();
   }

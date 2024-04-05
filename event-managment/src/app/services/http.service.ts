@@ -46,6 +46,10 @@ export class HttpService {
     return this._http.get(`${this.baseUrl}/get-task`);
   }
 
+  getCompletedTask() {
+    return this._http.get(`${this.baseUrl}/get-completed-task`);
+  }
+
   getAppliedEvents() {
     return this._http.get(`${this.baseUrl}/get-applied-events`);
   }

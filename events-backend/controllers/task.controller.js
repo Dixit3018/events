@@ -1,13 +1,33 @@
 const Task = require("../models/tasks");
 const { getUserIdFromToken } = require("../utils/utils");
 
-//Get task
-const getTask = async (req, res) => {
+//Get pending task
+const getPendingTask = async (req, res) => {
   try {
     const userId = getUserIdFromToken(req);
     const tasks = await Task.findOne({
       user_id: userId,
       "tasks.status": "pending",
+    });
+
+    if (tasks !== null && tasks !== "") {
+      return res.status(200).json({ message: "success", tasks: tasks.tasks });
+    } else {
+      return res.status(200).json({ message: "no tasks", tasks: {} });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error });
+  }
+};
+
+//get completed tasks
+const getCompletedTask = async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    const tasks = await Task.findOne({
+      user_id: userId,
+      "tasks.status": "completed",
     });
 
     if (tasks !== null && tasks !== "") {
@@ -74,4 +94,4 @@ const addTask = async (req, res) => {
   }
 };
 
-module.exports = { getTask, updateStatus, addTask };
+module.exports = { getPendingTask, updateStatus, addTask,getCompletedTask };

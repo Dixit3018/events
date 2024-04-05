@@ -1,47 +1,54 @@
 @if(loadedEvent !== undefined && organizer !== undefined){
-<div class="container-fluid pb-5">
-  <div class="text-center mb-4">
-    <img src="{{ loadedEvent.cover_img }}" class="event-details-cover-img" />
-  </div>
-  <h3 class="text-center fw-bold">{{ loadedEvent.name | titlecase }}</h3>
-  <div class="desc w-75 mx-auto">
-    <hr />
-    <h4 class="mb-4 text-center">Details about event</h4>
-    <p class="mt-1"><b>Description:</b> {{ loadedEvent.description }}</p>
-    <p class="mt-1">
-      <b>Budget:</b> &#8377; {{ loadedEvent.pay_per_volunteer }}/per day
-    </p>
-    <p class="mt-1">
-      <b>Venue:</b>
-      {{
-        loadedEvent.venue +
-          ", " +
-          loadedEvent.city +
-          ", " +
-          loadedEvent.state +
-          "."
-      }}
-    </p>
-    <p class="mt-1"><b>Number of Days:</b> {{ loadedEvent.days }}</p>
-    <p class="mt-1"><b>Starting Date:</b> {{ loadedEvent.start_date }}</p>
-    <p class="mt-1"><b>Ending Date:</b> {{ loadedEvent.end_date }}</p>
-    <hr />
-    <h3>Details about organizer</h3>
-    <img
-      src="{{ organizer.profilePicture }}"
-      class="rounded-circle border border-2 p-1"
-      style="width: 100px"
-      alt=""
-    />
-    <p class="mt-1"><b>Username:</b> {{ organizer.username }}</p>
-    <p class="mt-1"><b>Email:</b> {{ organizer.email }}</p>
-    <p class="mt-1">
-      <b>From:</b> {{ organizer.city + "," + organizer.state }}
-    </p>
-
-    <div class="d-flex gap-2 mt-5" *ngIf="isEndDateInPast()">
-      <button class="btn btn-danger px-5" type="button" (click)="onApply()">Apply now</button>
-      <a routerLink="/events" class="btn btn-default border px-5">Back</a>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <h3 class=" fw-bold">{{ loadedEvent.name | titlecase }}</h3>
+      <div class="desc ">
+        <hr />
+        <h4 class="mb-4">Details about event</h4>
+        <p class="mt-1 text-justify"><b>Description:</b> {{ loadedEvent.description }}</p>
+        <p class="mt-1">
+          <b>Budget:</b> &#8377; {{ loadedEvent.pay_per_volunteer }}/per day
+        </p>
+        <p class="mt-1">
+          <b>Venue:</b>
+          {{
+            loadedEvent.venue +
+              ", " +
+              loadedEvent.city +
+              ", " +
+              loadedEvent.state +
+              "."
+          }}
+        </p>
+        <p class="mt-1"><b>Number of Days:</b> {{ loadedEvent.days }}</p>
+        <p class="mt-1"><b>Starting Date:</b> {{ loadedEvent.start_date }}</p>
+        <p class="mt-1"><b>Ending Date:</b> {{ loadedEvent.end_date }}</p>
+        
+      </div>
+    </div>
+    <div class="col-md-5 mt-2">
+      <div class="text-center mb-4">
+        <img src="{{ loadedEvent.cover_img }}" class="event-details-cover-img border border-1 rounded-2" />
+      </div>
+      <hr />
+        <h4 class="mb-2">Details about organizer</h4>
+        <img
+          src="{{ organizer.profilePicture }}"
+          class="rounded-circle border border-2 p-1"
+          style="width: 100px; height: 80px"
+          alt=""
+        />
+        <p class="mt-1"><b>Username:</b> {{ organizer.username }}</p>
+        <p class="mt-1"><b>Email:</b> {{ organizer.email }}</p>
+        <p class="mt-1">
+          <b>From:</b> {{ organizer.city + "," + organizer.state }}
+        </p>
+    
+        <div class="d-flex gap-2 mt-4" *ngIf="isEndDateInPast()">
+          <button class="btn btn-danger px-5" type="button" (click)="onApply()">Apply now</button>
+          <a routerLink="/events" class="btn btn-default border px-5">Back</a>
+        </div>
     </div>
   </div>
 </div>

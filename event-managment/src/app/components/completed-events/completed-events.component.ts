@@ -11,7 +11,7 @@ export class CompletedEventsComponent implements OnInit {
 
   constructor(private http: HttpService) {}
 
-  pageSize =  6;
+  pageSize =  4;
   currentPage = 1;
 
   getTotalPages() {

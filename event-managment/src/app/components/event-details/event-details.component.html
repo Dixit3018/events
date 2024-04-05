@@ -1,20 +1,28 @@
 <div mat-dialog-title>
-<span>Event details</span>
-  <span (click)="closeDialog()" class="float-end mt-1 me-2 cursor-pointer"><mat-icon style="stroke-width: 0.8;font-size: 30px;" class="mat-18me-2 mt-1 text-danger">close</mat-icon></span>
+  <span>Event details</span>
+  <span (click)="closeDialog()" class="float-end mt-1 me-2 cursor-pointer"
+    ><mat-icon
+      style="stroke-width: 0.8; font-size: 30px"
+      class="mat-18me-2 mt-1 text-danger"
+      >close</mat-icon
+    ></span
+  >
 </div>
 
 <mat-dialog-content class="mat-typography">
-  <p class="fs-1 pt-2">{{ eventData.name | titlecase}}</p>
-  <div class="row pt-0 mt-0"> 
+  <p class="fs-1 pt-2">{{ eventData.name | titlecase }}</p>
+  <div class="row pt-0 mt-0">
     <div class="col-md-7">
-
-      <p> <span class="fw-bold">Description: </span>{{ eventData.description }}</p>
+      <p>
+        <span class="fw-bold">Description: </span>{{ eventData.description }}
+      </p>
       <p>
         Start Date:
         <span>{{ eventData.start_date | date : "d MMMM y (EEEE)" }}</span>
       </p>
       <p>
-        End Date: <span>{{ eventData.end_date | date : "d MMMM y (EEEE)" }}</span>
+        End Date:
+        <span>{{ eventData.end_date | date : "d MMMM y (EEEE)" }}</span>
       </p>
       <p>
         Required Volunteers: <span>{{ eventData.volunteers }}</span>
@@ -23,11 +31,11 @@
         Pay Per Volunteer:
         <span>{{ "&#x20b9; " + eventData.pay_per_volunteer }}</span>
       </p>
-    
+
       <p>
         Address: <span>{{ eventData.city + "," + eventData.state }}</span>
       </p>
-    
+
       <h4 *ngIf="participants.length > 0">Participants</h4>
       <div *ngFor="let participant of participants" class="mt-3">
         <div class="d-flex gap-3 align-items-center">
@@ -39,29 +47,23 @@
           />
           <p class="fw-bold">{{ participant.username }}</p>
           @if (feedbackStatus) {
-    
+            <span *ngFor="let star of stars; let i = index" (click)="rate(participant,i + 1)" [class]="i < participant.rating ? 'star filled' : 'star empty'">&#9733;</span>
+          } @else { @for (feedback of feedBackHistory; track $index) {
+          @if(feedback.user_id === participant._id){
+
           <div class="rating d-flex align-items-center">
+            {{ fillStars(feedback.review) }}
             <span
               class="star"
               *ngFor="let star of stars"
-              [class.full]="star.filled"
-              (click)="rate(star.value, participant._id)"
-              >&#9733;</span
-            >
-          </div>
-          } @else { @for (feedback of feedBackHistory; track $index) {
-          @if(feedback.user_id === participant._id){
-    
-          <div class="rating d-flex align-items-center">
-            {{ fillStars(feedback.review) }}
-            <span class="star" *ngFor="let star of stars" [class.full]="star.filled"
+              [class.filled]="star.filled"
               >&#9733;</span
             >
           </div>
           } } }
         </div>
       </div>
-      @if (feedbackStatus) {
+      @if (feedbackStatus && participants.length > 0) {
       <button
         (click)="SubmitFeedback()"
         type="button"
@@ -71,7 +73,6 @@
         Submit feedback
       </button>
       }
-
     </div>
     <div class="col-md-5 d-flex">
       <div class="text-center">
@@ -79,10 +80,14 @@
       </div>
     </div>
   </div>
-  
 </mat-dialog-content>
 @if (eventData.end_date > currentDate && eventData.start_date > currentDate) {
 <mat-dialog-actions align="start">
-  <button class="btn btn-warning px-2 m-3" (click)="navigateToEdit(eventData._id)">Edit Event</button>
+  <button
+    class="btn btn-warning px-2 m-3"
+    (click)="navigateToEdit(eventData._id)"
+  >
+    Edit Event
+  </button>
 </mat-dialog-actions>
 }
