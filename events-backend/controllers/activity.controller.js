@@ -1,4 +1,4 @@
-const Activity = require("../models/activity");
+const Activity = require("../models/activity.model");
 const { getUserIdFromToken } = require("../utils/utils");
 
 
@@ -21,7 +21,7 @@ const trackUserActivity = async (req, res) => {
   
       return res.status(200);
     } catch (error) {
-      return res.status(500).json({ err: "something went wrong" });
+      return res.status(500).json({ err: "Something went wrong" });
     }
   }
 

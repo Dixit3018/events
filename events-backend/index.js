@@ -3,23 +3,28 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
 const socketIO = require("socket.io");
-const routes = require("./routes/routes");
 const cors = require("cors");
 const path = require("path");
 
 // Middlewares
 const { authenticateJWT } = require("./middlewares/authenticateJWT.middleware");
 
+//Routes
+const activityRoutes = require("./routes/activity.routes");
+const authRoutes = require("./routes/auth.routes");
+const chatRoutes = require("./routes/chat.routes");
+const eventRoutes = require("./routes/event.routes");
+const feedbackRoutes = require("./routes/feedback.routes");
+const homeRoutes = require("./routes/home.routes");
+const paymentRoutes = require("./routes/payment.routes");
+const seederRoutes = require("./routes/seeder.routes");
+const taskRoutes = require("./routes/task.routes");
+const userRoutes = require("./routes/user.routes");
+
 const socketManager = require("./socket/socketManager");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
 
 const PORT = 4000;
 
@@ -42,6 +47,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+
+
 const openApis = [
   "/api/contact-form",
   "/api/cities",
@@ -61,9 +68,24 @@ app.use((req, res, next) => {
   }
 });
 
-app.use("/api", routes);
+app.use(
+  "/api",
+  activityRoutes,
+  eventRoutes,
+  authRoutes,
+  feedbackRoutes,
+  chatRoutes,
+  homeRoutes,
+  paymentRoutes,
+  seederRoutes,
+  taskRoutes,
+  userRoutes
+);
+
 
 socketManager(server);
+
+
 
 // Start the server
 server.listen(PORT, () => {

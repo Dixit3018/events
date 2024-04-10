@@ -27,9 +27,9 @@ import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
 import { AppComponent } from './app.component';
 
 
-import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './components/public/home/home.component';
+import { AboutComponent } from './components/public/about/about.component';
+import { ContactComponent } from './components/public/contact/contact.component';
 
 import { HeaderComponent } from './layouts/header/header.component';
 import { FooterComponent } from './layouts/footer/footer.component';
@@ -48,8 +48,8 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
-import { PrivacyPolicyComponent } from './docs/privacy-policy/privacy-policy.component';
-import { TermsConditionsComponent } from './docs/terms-conditions/terms-conditions.component';
+import { PrivacyPolicyComponent } from './components/public/docs/privacy-policy/privacy-policy.component';
+import { TermsConditionsComponent } from './components/public/docs/terms-conditions/terms-conditions.component';
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { VolunteerListComponent } from './components/volunteer-list/volunteer-list.component';

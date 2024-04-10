@@ -1,6 +1,6 @@
-const Event = require("../models/event");
-const Feedback = require("../models/feedback");
-const Users = require("../models/user");
+const Event = require("../models/event.model");
+const Feedback = require("../models/feedback.model");
+const Users = require("../models/user.model");
 
 const { getUserIdFromToken } = require("../utils/utils");
 
@@ -55,7 +55,7 @@ const getEventFeedbacks = async (req, res) => {
   const feedbacks = await Feedback.find({ event_id: eventId });
 
   if (!feedbacks) {
-    return res.status(404).json({ error: "feedback not found" });
+    return res.status(404).json({ error: "Feedback not found" });
   }
 
   res.status(200).json({ feedbacks: feedbacks });
@@ -67,7 +67,7 @@ const getEventFeedback = async (req,res) => {
 
     const feedback = await Feedback.findOne({ user_id: userId, event_id: eventId });
     if (!feedback) {
-      return res.status(204).json({ message: "feedback not found", feedback:[] });
+      return res.status(204).json({ message: "Feedback not found", feedback:[] });
     }
     return res.status(200).json({ mesage: "success", feedback: feedback})
 }

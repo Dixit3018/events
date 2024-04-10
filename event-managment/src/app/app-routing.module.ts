@@ -1,12 +1,12 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
+import { HomeComponent } from './components/public/home/home.component';
+import { AboutComponent } from './components/public/about/about.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
-import { TermsConditionsComponent } from './docs/terms-conditions/terms-conditions.component';
-import { PrivacyPolicyComponent } from './docs/privacy-policy/privacy-policy.component';
-import { ContactComponent } from './contact/contact.component';
+import { TermsConditionsComponent } from './components/public/docs/terms-conditions/terms-conditions.component';
+import { PrivacyPolicyComponent } from './components/public/docs/privacy-policy/privacy-policy.component';
+import { ContactComponent } from './components/public/contact/contact.component';
 import { NotFoundComponent } from './shared/not-found/not-found.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { authGuard } from './guards/auth-guard.guard';

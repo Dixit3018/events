@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -58,8 +57,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpService,
-    private chatService: ChatService,
-    private sanitizer: DomSanitizer
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -103,11 +101,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.chatService.setSelectedChatId(this.recipentId);
 
-    this.chatService.unReadMsg.next({
-      senderId: this.recipentId,
-      totalCount: null,
-    });
-    localStorage.removeItem(this.recipentId);
 
     this.selfSendMsgSubscription = this.socketService
       .onMessageSelf()
@@ -119,7 +112,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         };
         this.messages.push(sent);
         this.sentSound();
-        this.chatService.setUnReadMsg(data.sender_id, 1);
       });
 
     this.fromMsgSubscription = this.socketService
@@ -136,7 +128,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.recieveSound();
           this.markMsgRead();
         } else {
-          this.chatService.setUnReadMsg(receive.sender_id, 1);
+
         }
       });
 

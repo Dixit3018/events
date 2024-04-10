@@ -3,6 +3,8 @@ import { HttpService } from '../../services/http.service';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { SocketService } from '../../services/socket.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat-screen',
@@ -14,6 +16,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   activeId: string = '';
   filteredUsers: any[] = [];
   searchForm: FormGroup;
+  onScreen: boolean = true;
 
   notifySound: HTMLAudioElement;
 
@@ -21,7 +24,9 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     private http: HttpService,
     private chatService: ChatService,
     private auth: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private socketService: SocketService,
+    private route:ActivatedRoute
   ) {
     this.searchForm = this.fb.group({
       searchQuery: [''],
@@ -31,9 +36,9 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     this.notifySound.play();
   }
 
-  markRead() {
-    this.chatService.unReadMsg.next(null); 
-}
+  markRead(sender_id: string) {
+
+  }
 
   ngOnInit(): void {
     this.notifySound = new Audio();
@@ -48,22 +53,6 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       this.filteredUsers.forEach((user) => {
         if (user.id === id) {
           this.shiftUser(user);
-        }
-      });
-    });
-
-    this.chatService.unReadMsg.subscribe((data) => {
-      this.filteredUsers.forEach((user) => {
-        
-        if (data.senderId === user.id) {
-          if (data.totalCount !== null && data.totalCount !== 0) {
-            user.unread = data.totalCount;
-            this.shiftUser(user);
-            this.playNotifySound();
-          } else {
-            user.unread = '';
-          }
-          this.storeUsers();
         }
       });
     });

@@ -89,10 +89,10 @@
                 id="name"
                 placeholder="Your Name"
               />
-              <app-error 
-              [control]="this.contactForm.get('name')"
-              controlErr="required"
-              errorMsg="Name is Required"
+              <app-error
+                [control]="this.contactForm.get('name')"
+                controlErr="required"
+                errorMsg="Name is Required"
               />
             </div>
             <div class="primary-input-group">
@@ -102,16 +102,19 @@
                 id="email"
                 placeholder="Your Email"
               />
-              <app-error 
-              [control]="this.contactForm.get('email')"
-              controlErr="required"
-              errorMsg="Email is Required"
+              <app-error
+                [control]="this.contactForm.get('email')"
+                controlErr="required"
+                errorMsg="Email is Required"
               />
               <app-error
-              *ngIf="!this.contactForm.get('email').hasError('required') && this.contactForm.get('email').touched" 
-              [control]="this.contactForm.get('email')"
-              controlErr="email"
-              errorMsg="Invalid email address"
+                *ngIf="
+                  !this.contactForm.get('email').hasError('required') &&
+                  this.contactForm.get('email').touched
+                "
+                [control]="this.contactForm.get('email')"
+                controlErr="email"
+                errorMsg="Invalid email address"
               />
             </div>
             <div class="primary-input-group">
@@ -121,10 +124,10 @@
                 id="subject"
                 placeholder="Subject"
               />
-              <app-error 
-              [control]="this.contactForm.get('subject')"
-              controlErr="required"
-              errorMsg="Subject is required"
+              <app-error
+                [control]="this.contactForm.get('subject')"
+                controlErr="required"
+                errorMsg="Subject is required"
               />
             </div>
             <div class="primary-input-group">
@@ -136,10 +139,10 @@
                 formControlName="message"
                 placeholder="Write Message"
               ></textarea>
-              <app-error 
-              [control]="this.contactForm.get('message')"
-              controlErr="required"
-              errorMsg="Message is required"
+              <app-error
+                [control]="this.contactForm.get('message')"
+                controlErr="required"
+                errorMsg="Message is required"
               />
             </div>
             <div class="primary-input-group">
@@ -152,8 +155,13 @@
               </re-captcha>
             </div>
             <div class="submit-btn">
-              <button type="submit" [disabled]="!contactForm.valid" (click)="onSubmit()" class="btn btn-danger">
-                Submit Now
+              <button
+                type="submit"
+                [disabled]="!contactForm.valid || clickedOnce"
+                (click)="onSubmit()"
+                class="btn btn-danger"
+              >
+                {{ clickedOnce ? "Please Wait..." : "Submit" }}
               </button>
             </div>
           </div>

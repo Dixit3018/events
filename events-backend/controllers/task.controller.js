@@ -1,4 +1,4 @@
-const Task = require("../models/tasks");
+const Task = require("../models/task.model");
 const { getUserIdFromToken } = require("../utils/utils");
 
 //Get pending task
@@ -90,7 +90,7 @@ const addTask = async (req, res) => {
     return res.status(200).json({ message: "success", task: response });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "fail", error: error });
+    return res.status(500).json({ message: "failed", error: error });
   }
 };
 

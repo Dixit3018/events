@@ -1,4 +1,4 @@
-const Cities = require("../models/cities");
+const Cities = require("../models/cities.model");
 
 const getCities = async (req, res) => {
     const data = await Cities.find().select("city admin_name").sort({ city: 1 });

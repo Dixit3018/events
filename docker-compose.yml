@@ -1,0 +1,22 @@
+version: '3'
+services:
+  express-server:
+    build: ./events-backend
+    container_name: express-server
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+networks:
+  backend:

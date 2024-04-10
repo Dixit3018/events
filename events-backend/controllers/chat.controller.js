@@ -1,5 +1,5 @@
-const ChatData = require("../models/chatData");
-const User = require("../models/user");
+const ChatData = require("../models/chatData.model");
+const User = require("../models/user.model");
 const { getUserIdFromToken, imagePathToBase64 } = require("../utils/utils");
 
 const getChatHistory = async (req, res) => {
@@ -61,7 +61,7 @@ const getAllUsers = async (req, res) => {
     if (participatedUsers) {
       return res.status(200).json({ users: participatedUsers });
     } else {
-      return res.status(500).json({ err: "something went wrong" });
+      return res.status(500).json({ err: "Something went wrong" });
     }
   }
 

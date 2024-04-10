@@ -1,7 +1,7 @@
 const fs = require("fs");
 
-const Event = require("../models/event");
-const User = require("../models/user");
+const Event = require("../models/event.model");
+const User = require("../models/user.model");
 
 const { getUserIdFromToken, imagePathToBase64 } = require("../utils/utils");
 
@@ -124,7 +124,7 @@ const createEvent = async (req, res) => {
     });
 
     if (!userExist) {
-      return res.status(404).json("User Not Found");
+      return res.status(404).json("User not found");
     }
     const event = req.body;
 
@@ -149,7 +149,7 @@ const createEvent = async (req, res) => {
     const savedEv = await newEvent.save();
 
     return res.status(200).json({
-      message: "Event Registered Successfully",
+      message: "Event registered successfully",
       event_details: savedEv,
     });
   } catch (error) {
@@ -179,7 +179,7 @@ const getSingleEvent = async (req, res) => {
   if (event) {
     return res.status(200).json({ event: modifiedEvent });
   } else {
-    return res.status(500).json({ err: "something went wrong" });
+    return res.status(500).json({ err: "Something went wrong" });
   }
 };
 

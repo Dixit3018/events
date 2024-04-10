@@ -20,7 +20,7 @@ export class AlertService {
       icon: icon,
       showConfirmButton: false,
       confirmButtonColor: confirmButtonColor,
-      timer: 600,
+      timer: 1000,
       showClass: {
         popup: `
               animate__animated

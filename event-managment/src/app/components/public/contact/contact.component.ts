@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpService } from '../services/http.service';
+import { HttpService } from '../../../services/http.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { environment } from '../../environments/environment';
-import { AlertService } from '../services/alert.service';
+import { environment } from '../../../../environments/environment';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-contact',
@@ -11,17 +11,16 @@ import { AlertService } from '../services/alert.service';
 })
 export class ContactComponent implements OnInit {
   contactForm: FormGroup;
+  clickedOnce: boolean = false;
   siteKey: string = environment.recaptcha.siteKey;
   public captchaResolved: boolean = false;
-
-  center = { lat: 37.7749, lng: -122.4194 };
 
   constructor(
     private http: HttpService,
     private fb: FormBuilder,
     private alertService: AlertService
   ) {
-    this.contactForm = fb.group({
+    this.contactForm = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       subject: ['', [Validators.required]],
@@ -37,6 +36,7 @@ export class ContactComponent implements OnInit {
 
   onSubmit() {
     const formData = this.contactForm.value;
+    this.clickedOnce = true;
     const data = {
       name: formData.name,
       email: formData.email,
@@ -44,16 +44,29 @@ export class ContactComponent implements OnInit {
       message: formData.message,
     };
 
-    this.http.storeContactForm(data).subscribe((res: any) => {
-      if (res.message === 'success') {
+    this.http.storeContactForm(data).subscribe({
+      next: (res: any) => {
+        if (res.message === 'success') {
+          this.alertService.showAlert(
+            'Success',
+            'your message has been sent successfully',
+            'success',
+            'green'
+          );
+          this.contactForm.reset();
+        }
+      },
+      error: (error) => {
         this.alertService.showAlert(
-          'Success',
-          'your message has been sent successfully',
-          'success',
-          'green'
+          'Oops!',
+          error.error.message,
+          'error',
+          'red'
         );
-        this.contactForm.reset();
-      }
+      },
+      complete: () => {
+        this.clickedOnce = false;
+      },
     });
   }
 }

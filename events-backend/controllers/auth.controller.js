@@ -11,8 +11,8 @@ const {
 } = require("../utils/utils");
 
 // models
-const User = require("../models/user");
-const ResetPassword = require("../models/passwordReset");
+const User = require("../models/user.model");
+const ResetPassword = require("../models/passwordReset.model");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -101,10 +101,10 @@ const register = async (req, res) => {
     const userUnameExist = await User.findOne({ username: uname });
 
     if (userEmailExist) {
-      return res.status(400).json("Email Exists");
+      return res.status(400).json("Email exists");
     }
     if (userUnameExist) {
-      return res.status(400).json("Username Exists");
+      return res.status(400).json("Username exists");
     }
 
     const hashPassword = await bcrypt.hash(password, 12);
@@ -120,7 +120,7 @@ const register = async (req, res) => {
       state: state,
       role: role,
       profilePicture:
-        req.file !== undefined ? req.file.path : "default-profile.png",
+        req.file !== undefined ? req.file.path : "assets/image/default-profile.png",
     });
 
     const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
@@ -220,7 +220,7 @@ const resetPassword = async (req, res) => {
     }
 
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

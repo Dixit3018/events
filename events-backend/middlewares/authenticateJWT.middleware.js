@@ -20,7 +20,7 @@ const authenticateJWT = (req, res, next) => {
         console.log(err);
         return res
         .status(403)
-        .json({ status: "error", message: "Token Expired" });
+        .json({ status: "error", message: "Token expired" });
       }
       req.user = decoded;
       next();

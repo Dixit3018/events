@@ -1,9 +1,9 @@
 const fs = require("fs");
 
 //models
-const User = require("../models/user");
-const Event = require("../models/event");
-const Application = require("../models/application");
+const User = require("../models/user.model");
+const Event = require("../models/event.model");
+const Application = require("../models/application.model");
 
 const {
   imagePathToBase64,
@@ -66,10 +66,10 @@ const updateProfileImage = async (req, res) => {
 
     const oldProfilePicture = user.profilePicture;
 
-    if (oldProfilePicture && oldProfilePicture !== 'default-profile.png') {
+    if (oldProfilePicture && oldProfilePicture !== 'assets/default-profile.png') {
       fs.unlink(oldProfilePicture, (err) => {
         if (err) {
-          console.error("error deleting profile picture:" + err);
+          console.error("Error deleting profile picture:" + err);
         }
       });
     }
@@ -435,7 +435,7 @@ const getDashboardData = async (req, res) => {
       });
   } else {
     //no user found
-    res.status(404).json({ status: "fail", message: "fail to find the user" });
+    res.status(404).json({ status: "fail", message: "Fail to find the user" });
   }
 };
 

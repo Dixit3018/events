@@ -1,9 +1,9 @@
 require("dotenv").config();
 const Utils = require("../utils/utils");
 
-const Contact = require("../models/contactInfo");
-const Event = require("../models/event");
-const Users = require("../models/user");
+const Contact = require("../models/contactInfo.model");
+const Event = require("../models/event.model");
+const Users = require("../models/user.model");
 
 const nodemailer = require("nodemailer");
 

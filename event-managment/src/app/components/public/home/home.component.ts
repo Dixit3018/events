@@ -7,7 +7,7 @@ import {
 } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { register } from 'swiper/element/bundle';
-import { HttpService } from '../services/http.service';
+import { HttpService } from '../../../services/http.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

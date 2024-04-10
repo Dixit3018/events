@@ -33,6 +33,9 @@ const getUserIdFromToken = (req) => {
 };
 
 //func for image path to base 64
+/**
+ * 
+ */
 imagePathToBase64 = (imagePath) => {
   const imgPath = path.join(__dirname, "../", imagePath);
 
@@ -44,7 +47,12 @@ imagePathToBase64 = (imagePath) => {
   }
 };
 
-//calculate earnings
+
+/**
+ * Calculate earnings 
+ * @param {*} event - The event object
+ * @returns - The earnings
+ */
 const calculateEarnings = (event) => {
   const earnings = event.days * event.pay_per_volunteer;
   return earnings;
