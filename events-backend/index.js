@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
-const socketIO = require("socket.io");
 const cors = require("cors");
 const path = require("path");
 
@@ -47,8 +46,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-
-
 const openApis = [
   "/api/contact-form",
   "/api/cities",
@@ -82,10 +79,7 @@ app.use(
   userRoutes
 );
 
-
 socketManager(server);
-
-
 
 // Start the server
 server.listen(PORT, () => {

@@ -21,7 +21,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
     '/reset-password/:id/:token',
     '/verify-token',
     '/contact-form',
-    '/homepage-details'
+    '/homepage-details',
   ];
 
   constructor(
@@ -39,7 +39,7 @@ export class MyHttpInterceptor implements HttpInterceptor {
     if (req.url.includes('/reset-password/')) {
       return next.handle(req);
     }
-    
+
     if (token) {
       const jwtToken = JSON.parse(this.cryptoService.decrypt(token));
 

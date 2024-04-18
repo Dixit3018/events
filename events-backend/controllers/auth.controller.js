@@ -161,7 +161,7 @@ const forgotPassword = async (req, res) => {
 
     const sendmailOptions = {
       from: {
-        name: "Dixit Suthar",
+        name: "Eventlab",
         address: process.env.GMAIL_USER,
       }, // sender address
       to: ["suthardixit.ite@gmail.com"],
